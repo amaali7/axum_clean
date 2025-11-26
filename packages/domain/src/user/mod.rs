@@ -9,29 +9,18 @@ use std::collections::HashSet;
 use std::ops::DerefMut;
 
 use std::collections::VecDeque;
-use uuid::Uuid;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct UserId(Uuid);
+pub struct UserId(String);
 
 impl UserId {
     pub fn new() -> Self {
-        Self(Uuid::new_v4())
-    }
-
-    pub fn parse_str(s: &str) -> Result<Self, super::error::UserError> {
-        Uuid::parse_str(s)
-            .map(Self)
-            .map_err(|_| super::error::UserError::InvalidUserId(s.to_string()))
-    }
-
-    pub fn nil() -> Self {
-        Self(Uuid::nil())
+        Self(String::new())
     }
 }
 
 impl std::ops::Deref for UserId {
-    type Target = Uuid;
+    type Target = String;
 
     fn deref(&self) -> &Self::Target {
         &self.0

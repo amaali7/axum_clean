@@ -1,5 +1,3 @@
-use chrono::{DateTime, Utc};
-
 use crate::{value_objects::Diff, ReportId, ReportStatus, UserId};
 
 use super::DomainEvent;
@@ -9,25 +7,25 @@ pub enum ReportEvent {
     ReportCreated {
         report_id: ReportId,
         auther_id: UserId,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     ReportRemoved {
         report_id: ReportId,
         auther_id: UserId,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     ReportModified {
         report_id: ReportId,
         auther_id: UserId,
         diff: Diff,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     ReportStatusChanged {
         report_id: ReportId,
         old_status: ReportStatus,
         new_status: ReportStatus,
         changed_by: UserId,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
 }
 
@@ -40,12 +38,12 @@ impl DomainEvent for ReportEvent {
             ReportEvent::ReportStatusChanged { .. } => "report.status.changed",
         }
     }
-    fn occurred_at(&self) -> DateTime<Utc> {
+    fn occurred_at(&self) -> String {
         match self {
-            ReportEvent::ReportCreated { occurred_at, .. } => *occurred_at,
-            ReportEvent::ReportRemoved { occurred_at, .. } => *occurred_at,
-            ReportEvent::ReportModified { occurred_at, .. } => *occurred_at,
-            ReportEvent::ReportStatusChanged { occurred_at, .. } => *occurred_at,
+            ReportEvent::ReportCreated { occurred_at, .. } => occurred_at.clone(),
+            ReportEvent::ReportRemoved { occurred_at, .. } => occurred_at.clone(),
+            ReportEvent::ReportModified { occurred_at, .. } => occurred_at.clone(),
+            ReportEvent::ReportStatusChanged { occurred_at, .. } => occurred_at.clone(),
         }
     }
 }

@@ -5,6 +5,7 @@ pub mod email;
 pub mod name;
 pub mod password;
 pub mod phone_number;
+pub mod title;
 pub mod url;
 pub mod username;
 
@@ -15,5 +16,6 @@ pub use email::Email;
 pub use name::Name;
 pub use password::{HashedPassword, Password};
 pub use phone_number::{PhoneNumber, PhoneNumbers};
+pub use title::Title;
 pub use url::Url;
 pub use username::Username;

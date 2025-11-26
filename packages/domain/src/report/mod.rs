@@ -7,27 +7,27 @@ pub use content::ReportContent;
 pub use report_type::ReportType;
 pub use status::ReportStatus;
 
+use crate::value_objects::Title;
 use crate::DomainError;
 
 use super::events::DomainEvent;
 use super::events::ReportEvent;
 use super::role::Permission;
 use super::user::UserId;
-use chrono::{DateTime, Utc};
 use std::collections::HashSet;
 use std::collections::VecDeque;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct ReportId(uuid::Uuid);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ReportId(String);
 
 impl ReportId {
     pub fn new() -> Self {
-        Self(uuid::Uuid::new_v4())
+        Self(String::new())
     }
 }
 
 impl std::ops::Deref for ReportId {
-    type Target = uuid::Uuid;
+    type Target = String;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
@@ -42,16 +42,16 @@ impl std::ops::DerefMut for ReportId {
 #[derive(Debug)]
 pub struct Report {
     id: ReportId,
-    title: String,
+    title: Title,
     content: ReportContent,
     report_type: ReportType,
     permissions: HashSet<Permission>,
     status: ReportStatus,
     author_id: UserId,
     assigned_reviewer_id: Option<HashSet<UserId>>,
-    created_at: DateTime<Utc>,
-    updated_at: DateTime<Utc>,
-    due_date: Option<DateTime<Utc>>,
+    created_at: String,
+    updated_at: String,
+    due_date: Option<String>,
     version: u64,
     events: VecDeque<Box<dyn DomainEvent>>,
 }
@@ -73,21 +73,19 @@ impl Report {
 
 #[derive(Debug)]
 pub struct ReportBuilder {
-    title: Option<String>,
     permissions: HashSet<Permission>,
     content: Option<ReportContent>,
     report_type: Option<ReportType>,
     author_id: UserId,
     reviewer_id: HashSet<UserId>,
-    created_at: Option<DateTime<Utc>>,
-    due: Option<DateTime<Utc>>,
+    created_at: Option<String>,
+    due: Option<String>,
     events: VecDeque<Box<dyn DomainEvent>>,
 }
 
 impl ReportBuilder {
-    fn new(author_id: UserId, created_at: Option<DateTime<Utc>>) -> Self {
+    fn new(author_id: UserId, created_at: Option<String>) -> Self {
         Self {
-            title: None,
             permissions: HashSet::new(),
             content: None,
             report_type: None,
@@ -98,12 +96,8 @@ impl ReportBuilder {
             events: VecDeque::new(),
         }
     }
-    fn set_due(mut self, due: DateTime<Utc>) -> Self {
+    fn set_due(mut self, due: String) -> Self {
         self.due = Some(due);
-        self
-    }
-    fn set_title(mut self, title: &str) -> Self {
-        self.title = Some(title.to_string());
         self
     }
     fn add_permission(mut self, permission: Permission) -> Self {
@@ -126,20 +120,18 @@ impl ReportBuilder {
         self.events.push_back(Box::new(event));
         self
     }
-    fn build(self) -> Result<Report, DomainError> {
+    fn build(self, title: &str, time: &str) -> Result<Report, DomainError> {
         Ok(Report {
             id: ReportId::new(),
-            title: self.title.ok_or(DomainError::ValidationError(
-                "Report Title is require !".to_string(),
-            ))?,
+            title: Title::new(title)?,
             content: self.content.unwrap_or(ReportContent::new(String::new())),
             report_type: self.report_type.unwrap_or(ReportType::Other),
             permissions: self.permissions,
             status: ReportStatus::Draft,
             author_id: self.author_id,
             assigned_reviewer_id: Some(self.reviewer_id),
-            created_at: self.created_at.unwrap_or(Utc::now()),
-            updated_at: Utc::now(),
+            created_at: self.created_at.unwrap_or(time.to_string()),
+            updated_at: time.to_string(),
             due_date: self.due,
             version: 1,
             events: self.events,

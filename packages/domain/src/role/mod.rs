@@ -5,24 +5,17 @@ pub use permissions::Permission;
 use std::collections::HashSet;
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct RoleId(uuid::Uuid);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct RoleId(String);
 
 impl RoleId {
     pub fn new() -> Self {
-        Self(uuid::Uuid::new_v4())
-    }
-
-    pub fn system_role(id: &str) -> Self {
-        Self(uuid::Uuid::new_v5(
-            &uuid::Uuid::NAMESPACE_OID,
-            id.as_bytes(),
-        ))
+        Self(String::new())
     }
 }
 
 impl Deref for RoleId {
-    type Target = uuid::Uuid;
+    type Target = String;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
@@ -41,7 +34,7 @@ pub struct Role {
     description: String,
     permissions: HashSet<Permission>,
     is_system_role: bool,
-    created_at: chrono::DateTime<chrono::Utc>,
+    created_at: String,
 }
 
 impl Role {
@@ -52,18 +45,7 @@ impl Role {
             description,
             permissions: HashSet::new(),
             is_system_role: false,
-            created_at: chrono::Utc::now(),
-        }
-    }
-
-    pub fn system_role(name: String, description: String, permissions: Vec<Permission>) -> Self {
-        Self {
-            id: RoleId::system_role(&name),
-            name,
-            description,
-            permissions: permissions.into_iter().collect(),
-            is_system_role: true,
-            created_at: chrono::Utc::now(),
+            created_at: String::new(),
         }
     }
 
@@ -99,49 +81,5 @@ impl Role {
     }
     pub fn is_system_role(&self) -> bool {
         self.is_system_role
-    }
-}
-
-// Pre-defined system roles
-impl Role {
-    pub fn admin() -> Self {
-        Self::system_role(
-            "admin".to_string(),
-            "System administrator with full access".to_string(),
-            Permission::all(),
-        )
-    }
-
-    pub fn manager() -> Self {
-        Self::system_role(
-            "manager".to_string(),
-            "Manager who can review and approve reports".to_string(),
-            vec![
-                Permission::ViewReports,
-                Permission::ReviewReports,
-                Permission::ApproveReports,
-                Permission::ManageUsers,
-            ],
-        )
-    }
-
-    pub fn user() -> Self {
-        Self::system_role(
-            "user".to_string(),
-            "Regular user who can create and view their own reports".to_string(),
-            vec![
-                Permission::CreateReport,
-                Permission::ViewOwnReports,
-                Permission::EditOwnReports,
-            ],
-        )
-    }
-
-    pub fn auditor() -> Self {
-        Self::system_role(
-            "auditor".to_string(),
-            "Auditor who can view all reports but not modify".to_string(),
-            vec![Permission::ViewReports, Permission::ExportReports],
-        )
     }
 }

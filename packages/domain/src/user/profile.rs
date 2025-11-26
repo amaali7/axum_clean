@@ -1,5 +1,3 @@
-use chrono::{DateTime, NaiveDate, Utc};
-
 use crate::{
     value_objects::{address::Addressess, phone_number::PhoneNumbers, Bio, Url},
     DomainError, Name, Password,
@@ -13,12 +11,12 @@ pub struct UserProfile {
     bio: Option<Bio>,
     phone_numbers: Option<PhoneNumbers>,
     avatar_url: Option<Url>,
-    date_of_birth: Option<NaiveDate>,
+    date_of_birth: Option<String>,
     addresses: Option<Addressess>,
     website: Option<Url>,
     is_deleted: bool,
-    created_at: DateTime<Utc>,
-    updated_at: DateTime<Utc>,
+    created_at: String,
+    updated_at: String,
 }
 
 #[derive(Debug, Clone)]
@@ -28,7 +26,7 @@ pub struct UserProfileBuilder {
     password: Option<Password>,
     bio: Option<Bio>,
     avatar_url: Option<Url>,
-    date_of_birth: Option<NaiveDate>,
+    date_of_birth: Option<String>,
     addressess: Option<Addressess>,
     website: Option<Url>,
     phone_numbers: Option<PhoneNumbers>,
@@ -74,7 +72,7 @@ impl UserProfileBuilder {
         self
     }
 
-    pub fn set_date_of_birth(mut self, date: NaiveDate) -> Self {
+    pub fn set_date_of_birth(mut self, date: String) -> Self {
         self.date_of_birth = Some(date);
         self
     }
@@ -89,7 +87,7 @@ impl UserProfileBuilder {
         self
     }
 
-    pub fn build(self) -> Result<UserProfile, DomainError> {
+    pub fn build(self, time: &str) -> Result<UserProfile, DomainError> {
         Ok(UserProfile {
             first_name: self.first_name.unwrap(),
             last_name: self.last_name.unwrap(),
@@ -103,8 +101,8 @@ impl UserProfileBuilder {
             addresses: self.addressess,
             website: self.website,
             is_deleted: false,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: time.to_string(),
+            updated_at: time.to_string(),
         })
     }
 }

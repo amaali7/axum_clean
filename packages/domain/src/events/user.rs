@@ -1,5 +1,3 @@
-use chrono::{DateTime, Utc};
-
 use crate::{value_objects::Diff, RoleId, UserId};
 
 use super::DomainEvent;
@@ -9,51 +7,51 @@ pub enum UserEvent {
     Created {
         user_id: UserId,
         created_by: UserId,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     Removed {
         user_id: UserId,
         removed_by: UserId,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     UpdateUsername {
         user_id: UserId,
         diff: Diff,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     UpdateEmail {
         user_id: UserId,
         diff: Diff,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     UpdateProfile {
         user_id: UserId,
         diff: Diff,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     UpdatePreferences {
         user_id: UserId,
         diff: Diff,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     UpdateRoles {
         user_id: UserId,
         updated_by: UserId,
         roles_ids: Vec<RoleId>,
         diff: Diff,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     UpdatePermissions {
         user_id: UserId,
         updated_by: UserId,
         diff: Diff,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
     UpdateStatus {
         user_id: UserId,
         updated_by: UserId,
         diff: Diff,
-        occurred_at: DateTime<Utc>,
+        occurred_at: String,
     },
 }
 
@@ -72,17 +70,17 @@ impl DomainEvent for UserEvent {
         }
     }
 
-    fn occurred_at(&self) -> DateTime<Utc> {
+    fn occurred_at(&self) -> String {
         match self {
-            UserEvent::Created { occurred_at, .. } => *occurred_at,
-            UserEvent::Removed { occurred_at, .. } => *occurred_at,
-            UserEvent::UpdateUsername { occurred_at, .. } => *occurred_at,
-            UserEvent::UpdateEmail { occurred_at, .. } => *occurred_at,
-            UserEvent::UpdateProfile { occurred_at, .. } => *occurred_at,
-            UserEvent::UpdatePreferences { occurred_at, .. } => *occurred_at,
-            UserEvent::UpdateRoles { occurred_at, .. } => *occurred_at,
-            UserEvent::UpdatePermissions { occurred_at, .. } => *occurred_at,
-            UserEvent::UpdateStatus { occurred_at, .. } => *occurred_at,
+            UserEvent::Created { occurred_at, .. } => occurred_at.clone(),
+            UserEvent::Removed { occurred_at, .. } => occurred_at.clone(),
+            UserEvent::UpdateUsername { occurred_at, .. } => occurred_at.clone(),
+            UserEvent::UpdateEmail { occurred_at, .. } => occurred_at.clone(),
+            UserEvent::UpdateProfile { occurred_at, .. } => occurred_at.clone(),
+            UserEvent::UpdatePreferences { occurred_at, .. } => occurred_at.clone(),
+            UserEvent::UpdateRoles { occurred_at, .. } => occurred_at.clone(),
+            UserEvent::UpdatePermissions { occurred_at, .. } => occurred_at.clone(),
+            UserEvent::UpdateStatus { occurred_at, .. } => occurred_at.clone(),
         }
     }
 }

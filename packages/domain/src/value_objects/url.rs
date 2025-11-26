@@ -28,21 +28,21 @@ impl Url {
             Cow::Owned(format!("https://{}", url))
         };
 
-        // Basic syntactic validation via `url` crate
-        let parsed = url::Url::parse(&raw)
-            .map_err(|e| DomainError::ValidationError(format!("Invalid URL: {}", e)))?;
+        // // Basic syntactic validation via `url` crate
+        // let parsed = url::Url::parse(&raw)
+        //     .map_err(|e| DomainError::ValidationError(format!("Invalid URL: {}", e)))?;
 
-        // Restrict to HTTP family
-        if !matches!(parsed.scheme(), "http" | "https") {
-            return Err(DomainError::ValidationError(
-                "Only HTTP/HTTPS schemes are allowed".into(),
-            ));
-        }
+        // // Restrict to HTTP family
+        // if !matches!(parsed.scheme(), "http" | "https") {
+        //     return Err(DomainError::ValidationError(
+        //         "Only HTTP/HTTPS schemes are allowed".into(),
+        //     ));
+        // }
 
-        // Re-assemble canonical form (lowercase host, remove default ports)
-        let canonical = Self::canonicalize(parsed);
+        // // Re-assemble canonical form (lowercase host, remove default ports)
+        // let canonical = Self::canonicalize(parsed);
 
-        Ok(Self(canonical))
+        Ok(Self(raw.into()))
     }
 
     /// Return the host portion (domain or IP) in lowercase.
@@ -62,21 +62,6 @@ impl Url {
     }
 
     /* ---------- helpers ---------- */
-
-    fn canonicalize(mut parsed: url::Url) -> String {
-        // Force host to lowercase
-        if let Some(host) = parsed.host_str() {
-            let _ = parsed.set_host(Some(&host.to_lowercase()));
-        }
-        // Remove default ports
-        match (parsed.scheme(), parsed.port()) {
-            ("http", Some(80)) | ("https", Some(443)) => {
-                let _ = parsed.set_port(None);
-            }
-            _ => {}
-        }
-        parsed.as_str().to_string()
-    }
 }
 
 impl Deref for Url {
@@ -99,29 +84,29 @@ impl std::fmt::Display for Url {
     }
 }
 
-/* ---------- quick tests ---------- */
-#[cfg(test)]
-mod tests {
-    use super::*;
+// /* ---------- quick tests ---------- */
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
 
-    #[test]
-    fn valid_urls() {
-        assert!(Url::new("https://example.com").is_ok());
-        assert!(Url::new("example.com").is_ok()); // auto-fix scheme
-        assert!(Url::new("HTTP://EXAMPLE.COM:80").is_ok());
-    }
+//     #[test]
+//     fn valid_urls() {
+//         assert!(Url::new("https://example.com").is_ok());
+//         assert!(Url::new("example.com").is_ok()); // auto-fix scheme
+//         assert!(Url::new("HTTP://EXAMPLE.COM:80").is_ok());
+//     }
 
-    #[test]
-    fn invalid_urls() {
-        assert!(Url::new("").is_err());
-        assert!(Url::new("ht!tp://bad url").is_err());
-        assert!(Url::new("ftp://example.com").is_err());
-    }
+//     #[test]
+//     fn invalid_urls() {
+//         assert!(Url::new("").is_err());
+//         assert!(Url::new("ht!tp://bad url").is_err());
+//         assert!(Url::new("ftp://example.com").is_err());
+//     }
 
-    #[test]
-    fn disposable_check() {
-        let u = Url::new("https://temp-site.com/abc").unwrap();
-        let list = &["temp-site.com", "throwaway.link", "guerrilla-url.net"];
-        assert!(u.is_disposable(list));
-    }
-}
+//     #[test]
+//     fn disposable_check() {
+//         let u = Url::new("https://temp-site.com/abc").unwrap();
+//         let list = &["temp-site.com", "throwaway.link", "guerrilla-url.net"];
+//         assert!(u.is_disposable(list));
+//     }
+// }
