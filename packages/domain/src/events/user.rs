@@ -1,7 +1,5 @@
 use crate::{value_objects::Diff, RoleId, UserId};
 
-use super::DomainEvent;
-
 #[derive(Debug, Clone)]
 pub enum UserEvent {
     Created {
@@ -55,7 +53,7 @@ pub enum UserEvent {
     },
 }
 
-impl DomainEvent for UserEvent {
+impl UserEvent {
     fn event_type(&self) -> &'static str {
         match self {
             UserEvent::Created { .. } => "user.created",

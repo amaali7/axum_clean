@@ -2,8 +2,12 @@ pub mod permissions;
 
 pub use permissions::Permission;
 
-use std::collections::HashSet;
+use std::collections::{HashSet, VecDeque};
 use std::ops::{Deref, DerefMut};
+
+use crate::events::DomainEvent;
+use crate::value_objects::{DateTime, Description};
+use crate::{DomainError, Name};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct RoleId(String);
@@ -27,59 +31,121 @@ impl DerefMut for RoleId {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct Role {
     id: RoleId,
-    name: String,
-    description: String,
+    name: Name,
+    description: Description,
     permissions: HashSet<Permission>,
     is_system_role: bool,
-    created_at: String,
+    created_at: DateTime,
+    events: VecDeque<DomainEvent>,
 }
 
 impl Role {
-    pub fn new(name: String, description: String) -> Self {
+    pub fn new(id: RoleId) -> RoleBuilder {
+        RoleBuilder::new(id)
+    }
+
+    pub fn id(&self) -> RoleId {
+        self.id.clone()
+    }
+
+    pub fn name(&self) -> Name {
+        self.name.clone()
+    }
+    pub fn description(&self) -> Description {
+        self.description.clone()
+    }
+
+    pub fn permissions(&self) -> HashSet<Permission> {
+        self.permissions.clone()
+    }
+
+    pub fn is_system_role(&self) -> bool {
+        self.is_system_role.clone()
+    }
+
+    pub fn created_at(&self) -> DateTime {
+        self.created_at.clone()
+    }
+
+    pub fn events(&self) -> VecDeque<DomainEvent> {
+        self.events.clone()
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct RoleBuilder {
+    id: RoleId,
+    name: Option<Name>,
+    description: Option<Description>,
+    permissions: HashSet<Permission>,
+    is_system_role: Option<bool>,
+    created_at: Option<DateTime>,
+    events: VecDeque<DomainEvent>,
+}
+
+impl RoleBuilder {
+    pub fn new(id: RoleId) -> Self {
+        let events: VecDeque<DomainEvent> = VecDeque::new();
         Self {
-            id: RoleId::new(),
-            name,
-            description,
+            id,
+            name: None,
+            description: None,
             permissions: HashSet::new(),
-            is_system_role: false,
-            created_at: String::new(),
+            is_system_role: None,
+            created_at: None,
+            events,
         }
     }
 
-    pub fn add_permission(&mut self, permission: Permission) -> bool {
-        self.permissions.insert(permission)
+    pub fn set_name(mut self, name: Name) -> Self {
+        self.name = Some(name);
+        self
+    }
+    pub fn set_description(mut self, description: Description) -> Self {
+        self.description = Some(description);
+        self
     }
 
-    pub fn remove_permission(&mut self, permission: &Permission) -> bool {
-        self.permissions.remove(permission)
+    pub fn add_permissions(mut self, permission: Permission) -> Self {
+        self.permissions.insert(permission);
+        self
     }
 
-    pub fn has_permission(&self, permission: &Permission) -> bool {
-        self.permissions.contains(permission)
+    pub fn set_is_system_role(mut self, is_system_role: bool) -> Self {
+        self.is_system_role = Some(is_system_role);
+        self
     }
 
-    pub fn can_grant_permission(&self, permission: &Permission) -> bool {
-        // System roles can grant any permission, regular roles have limits
-        self.is_system_role || !permission.is_sensitive()
+    pub fn set_created_at(mut self, created_at: DateTime) -> Self {
+        self.created_at = Some(created_at);
+        self
     }
 
-    // Getters
-    pub fn id(&self) -> &RoleId {
-        &self.id
+    pub fn events(mut self, event: DomainEvent) -> Self {
+        self.events.insert(self.events.len() + 1, event);
+        self
     }
-    pub fn name(&self) -> &str {
-        &self.name
-    }
-    pub fn description(&self) -> &str {
-        &self.description
-    }
-    pub fn permissions(&self) -> &HashSet<Permission> {
-        &self.permissions
-    }
-    pub fn is_system_role(&self) -> bool {
-        self.is_system_role
+
+    pub fn build(self) -> Result<Role, DomainError> {
+        Ok(Role {
+            id: self.id,
+            name: self
+                .name
+                .ok_or(DomainError::ValidationError("Name not found".to_string()))?,
+            description: self.description.ok_or(DomainError::ValidationError(
+                "Description not found".to_string(),
+            ))?,
+            permissions: self.permissions,
+            is_system_role: self.is_system_role.ok_or(DomainError::ValidationError(
+                "Is System Role not found".to_string(),
+            ))?,
+            created_at: self.created_at.ok_or(DomainError::ValidationError(
+                "Created At not found".to_string(),
+            ))?,
+            events: self.events,
+        })
     }
 }

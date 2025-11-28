@@ -1,7 +1,5 @@
 use crate::{Permission, RoleId, UserId};
 
-use super::DomainEvent;
-
 #[derive(Debug, Clone)]
 pub enum RoleEvent {
     Created {
@@ -28,7 +26,7 @@ pub enum RoleEvent {
     },
 }
 
-impl DomainEvent for RoleEvent {
+impl RoleEvent {
     fn event_type(&self) -> &'static str {
         match self {
             RoleEvent::Created { .. } => "role.created",

@@ -1,4 +1,4 @@
-use domain::{events::ReportEvent, value_objects::Title, Name, Permission, Report, ReportId, Role, RoleId, UserId};
+use domain::{events::ReportEvent, value_objects::Title, Permission, Report, ReportId, RoleId, UserId};
 
 use crate::error::ApplicationError;
 

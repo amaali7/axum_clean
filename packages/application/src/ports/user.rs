@@ -5,7 +5,7 @@ use crate::error::ApplicationError;
 #[async_trait::async_trait]
 pub trait UserRepository {
     async fn save(&self, user: &User) -> Result<(), ApplicationError>;
-    async fn update(&self,user_id: &UserId, user: &User) -> Result<(), ApplicationError>;
+    async fn update(&self, user: &User) -> Result<(), ApplicationError>;
     async fn get_by_id(&self, id: &UserId) -> Result<Option<User>, ApplicationError>;
     async fn get_by_email(&self, id: &Email) -> Result<Option<User>, ApplicationError>;
     async fn get_by_username(&self, id: &Username) -> Result<Option<User>, ApplicationError>;

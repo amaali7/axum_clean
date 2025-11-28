@@ -1,5 +1,9 @@
 pub mod address;
 pub mod bio;
+pub mod body;
+pub mod comment;
+pub mod date_time;
+pub mod description;
 pub mod diff;
 pub mod email;
 pub mod name;
@@ -11,6 +15,10 @@ pub mod username;
 
 pub use address::{Address, AddressBuilder, Addressess};
 pub use bio::Bio;
+pub use body::Body;
+pub use comment::Comment;
+pub use date_time::DateTime;
+pub use description::Description;
 pub use diff::Diff;
 pub use email::Email;
 pub use name::Name;

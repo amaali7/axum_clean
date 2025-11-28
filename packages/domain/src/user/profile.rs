@@ -1,5 +1,5 @@
 use crate::{
-    value_objects::{address::Addressess, phone_number::PhoneNumbers, Bio, Url},
+    value_objects::{address::Addressess, phone_number::PhoneNumbers, Bio, DateTime, Url},
     DomainError, Name, Password,
 };
 
@@ -11,12 +11,56 @@ pub struct UserProfile {
     bio: Option<Bio>,
     phone_numbers: Option<PhoneNumbers>,
     avatar_url: Option<Url>,
-    date_of_birth: Option<String>,
+    date_of_birth: Option<DateTime>,
     addresses: Option<Addressess>,
     website: Option<Url>,
     is_deleted: bool,
-    created_at: String,
-    updated_at: String,
+    created_at: DateTime,
+    updated_at: DateTime,
+}
+
+impl UserProfile {
+    pub fn new() -> UserProfileBuilder {
+        UserProfileBuilder::new()
+    }
+
+    pub fn first_name(&self) -> Name {
+        self.first_name.clone()
+    }
+    pub fn last_name(&self) -> Name {
+        self.last_name.clone()
+    }
+    pub fn password(&self) -> Password {
+        self.password.clone()
+    }
+    pub fn bio(&self) -> Option<Bio> {
+        self.bio.clone()
+    }
+    pub fn phone_numbers(&self) -> Option<PhoneNumbers> {
+        self.phone_numbers.clone()
+    }
+    pub fn avatar_url(&self) -> Option<Url> {
+        self.avatar_url.clone()
+    }
+    pub fn date_of_birth(&self) -> Option<DateTime> {
+        self.date_of_birth.clone()
+    }
+    pub fn addresses(&self) -> Option<Addressess> {
+        self.addresses.clone()
+    }
+    pub fn website(&self) -> Option<Url> {
+        self.website.clone()
+    }
+    pub fn is_deleted(&self) -> bool {
+        self.is_deleted.clone()
+    }
+    pub fn created_at(&self) -> DateTime {
+        self.created_at.clone()
+    }
+
+    pub fn updated_at(&self) -> DateTime {
+        self.updated_at.clone()
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -26,7 +70,7 @@ pub struct UserProfileBuilder {
     password: Option<Password>,
     bio: Option<Bio>,
     avatar_url: Option<Url>,
-    date_of_birth: Option<String>,
+    date_of_birth: Option<DateTime>,
     addressess: Option<Addressess>,
     website: Option<Url>,
     phone_numbers: Option<PhoneNumbers>,
@@ -72,7 +116,7 @@ impl UserProfileBuilder {
         self
     }
 
-    pub fn set_date_of_birth(mut self, date: String) -> Self {
+    pub fn set_date_of_birth(mut self, date: DateTime) -> Self {
         self.date_of_birth = Some(date);
         self
     }
@@ -87,7 +131,11 @@ impl UserProfileBuilder {
         self
     }
 
-    pub fn build(self, time: &str) -> Result<UserProfile, DomainError> {
+    pub fn build(
+        self,
+        created_at: Option<DateTime>,
+        updated_at: DateTime,
+    ) -> Result<UserProfile, DomainError> {
         Ok(UserProfile {
             first_name: self.first_name.unwrap(),
             last_name: self.last_name.unwrap(),
@@ -101,8 +149,8 @@ impl UserProfileBuilder {
             addresses: self.addressess,
             website: self.website,
             is_deleted: false,
-            created_at: time.to_string(),
-            updated_at: time.to_string(),
+            created_at: created_at.unwrap_or(updated_at.clone()),
+            updated_at: updated_at,
         })
     }
 }

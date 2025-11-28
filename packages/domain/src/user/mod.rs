@@ -49,12 +49,49 @@ pub struct User {
     permissions: HashSet<Permission>, // Cached permissions for performance
     preferences: UserPreferences,
     status: UserStatus,
-    events: VecDeque<Box<dyn DomainEvent>>,
+    events: VecDeque<DomainEvent>,
 }
 
 impl User {
-    pub fn new() -> Result<UserBuilder, super::error::DomainError> {
-        Ok(UserBuilder::new())
+    pub fn new(id: UserId) -> Result<UserBuilder, super::error::DomainError> {
+        Ok(UserBuilder::new(id))
+    }
+    // Basic getters - return references to avoid cloning
+    pub fn id(&self) -> UserId {
+        self.id.clone()
+    }
+
+    pub fn email(&self) -> Email {
+        self.email.clone()
+    }
+
+    pub fn username(&self) -> Username {
+        self.username.clone()
+    }
+
+    pub fn profile(&self) -> UserProfile {
+        self.profile.clone()
+    }
+
+    pub fn preferences(&self) -> UserPreferences {
+        self.preferences.clone()
+    }
+
+    pub fn status(&self) -> UserStatus {
+        self.status.clone()
+    }
+
+    // Collection getters - return references to avoid cloning
+    pub fn roles(&self) -> HashSet<RoleId> {
+        self.roles.clone()
+    }
+
+    pub fn permissions(&self) -> HashSet<Permission> {
+        self.permissions.clone()
+    }
+
+    pub fn events(&self) -> VecDeque<DomainEvent> {
+        self.events.clone()
     }
 }
 
@@ -64,7 +101,24 @@ pub struct UserPreferences {
     push_notifications: bool,
     two_factor_auth: bool,
     language: String,
-    timezone: String,
+}
+
+impl UserPreferences {
+    pub fn email_notifications(&self) -> bool {
+        self.email_notifications.clone()
+    }
+
+    pub fn push_notifications(&self) -> bool {
+        self.push_notifications.clone()
+    }
+
+    pub fn two_factor_auth(&self) -> bool {
+        self.two_factor_auth.clone()
+    }
+
+    pub fn language(&self) -> String {
+        self.language.clone()
+    }
 }
 
 impl Default for UserPreferences {
@@ -74,7 +128,6 @@ impl Default for UserPreferences {
             push_notifications: true,
             two_factor_auth: false,
             language: "en".to_string(),
-            timezone: "UTC".to_string(),
         }
     }
 }
@@ -89,23 +142,28 @@ pub enum UserStatus {
 
 // Builder pattern for complex object creation
 pub struct UserBuilder {
+    id: UserId,
     email: Option<Email>,
     username: Option<Username>,
     profile: Option<UserProfile>,
     roles: HashSet<RoleId>,
     permissions: HashSet<Permission>, // Cached permissions for performance
+    events: VecDeque<DomainEvent>,
 }
 
 impl UserBuilder {
-    pub fn new() -> Self {
+    pub fn new(id: UserId) -> Self {
         let roles: HashSet<RoleId> = HashSet::new();
         let permissions: HashSet<Permission> = HashSet::new();
+        let events: VecDeque<DomainEvent> = VecDeque::new();
         Self {
             email: None,
             username: None,
             profile: None,
             roles,
             permissions,
+            events,
+            id,
         }
     }
 
@@ -113,7 +171,14 @@ impl UserBuilder {
         self.email = Some(email);
         self
     }
-
+    pub fn add_roles(mut self, roles: HashSet<RoleId>) -> Self {
+        self.roles.extend(roles);
+        self
+    }
+    pub fn add_permissions(mut self, permissions: HashSet<Permission>) -> Self {
+        self.permissions.extend(permissions);
+        self
+    }
     pub fn add_role(mut self, role: RoleId) -> Self {
         self.roles.insert(role);
         self
@@ -131,11 +196,14 @@ impl UserBuilder {
         self.profile = Some(profile);
         self
     }
+    fn add_event(mut self, event: DomainEvent) -> Self {
+        self.events.push_back(event);
+        self
+    }
 
     pub fn build(self) -> Result<User, super::error::DomainError> {
-        let events: VecDeque<Box<dyn DomainEvent>> = VecDeque::new();
         Ok(User {
-            id: UserId::new(),
+            id: self.id,
             email: self
                 .email
                 .ok_or(DomainError::ValidationError("Email not found".to_string()))?,
@@ -149,7 +217,7 @@ impl UserBuilder {
             permissions: self.permissions,
             preferences: UserPreferences::default(),
             status: UserStatus::Inactive,
-            events,
+            events: self.events,
         })
     }
 }

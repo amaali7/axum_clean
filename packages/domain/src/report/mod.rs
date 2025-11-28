@@ -7,11 +7,12 @@ pub use content::ReportContent;
 pub use report_type::ReportType;
 pub use status::ReportStatus;
 
+use crate::value_objects::Body;
+use crate::value_objects::DateTime;
 use crate::value_objects::Title;
 use crate::DomainError;
 
 use super::events::DomainEvent;
-use super::events::ReportEvent;
 use super::role::Permission;
 use super::user::UserId;
 use std::collections::HashSet;
@@ -49,15 +50,16 @@ pub struct Report {
     status: ReportStatus,
     author_id: UserId,
     assigned_reviewer_id: Option<HashSet<UserId>>,
-    created_at: String,
-    updated_at: String,
-    due_date: Option<String>,
+    created_at: DateTime,
+    updated_at: DateTime,
+    due_date: Option<DateTime>,
     version: u64,
-    events: VecDeque<Box<dyn DomainEvent>>,
+    events: VecDeque<DomainEvent>,
 }
 
 impl Report {
-    pub fn create(
+    pub fn new(
+        id: ReportId,
         title: String,
         author_id: UserId,
     ) -> Result<ReportBuilder, super::error::DomainError> {
@@ -66,25 +68,78 @@ impl Report {
                 "Report title cannot be empty".to_string(),
             ));
         }
-        let report = ReportBuilder::new(author_id, None);
+        let report = ReportBuilder::new(id, author_id, None);
         Ok(report)
+    }
+
+    pub fn id(&self) -> ReportId {
+        self.id.clone()
+    }
+
+    pub fn title(&self) -> Title {
+        self.title.clone()
+    }
+
+    pub fn content(&self) -> ReportContent {
+        self.content.clone()
+    }
+
+    pub fn report_type(&self) -> ReportType {
+        self.report_type.clone()
+    }
+
+    pub fn permissions(&self) -> HashSet<Permission> {
+        self.permissions.clone()
+    }
+
+    pub fn status(&self) -> ReportStatus {
+        self.status.clone()
+    }
+
+    pub fn author_id(&self) -> UserId {
+        self.author_id.clone()
+    }
+
+    pub fn assigned_reviewer_id(&self) -> Option<HashSet<UserId>> {
+        self.assigned_reviewer_id.clone()
+    }
+
+    pub fn created_at(&self) -> DateTime {
+        self.created_at.clone()
+    }
+
+    pub fn updated_at(&self) -> DateTime {
+        self.updated_at.clone()
+    }
+
+    pub fn due_date(&self) -> Option<DateTime> {
+        self.due_date.clone()
+    }
+
+    pub fn events(&self) -> VecDeque<DomainEvent> {
+        self.events.clone()
+    }
+
+    pub fn version(&self) -> u64 {
+        self.version.clone()
     }
 }
 
 #[derive(Debug)]
 pub struct ReportBuilder {
+    id: ReportId,
     permissions: HashSet<Permission>,
     content: Option<ReportContent>,
     report_type: Option<ReportType>,
     author_id: UserId,
     reviewer_id: HashSet<UserId>,
-    created_at: Option<String>,
-    due: Option<String>,
-    events: VecDeque<Box<dyn DomainEvent>>,
+    created_at: Option<DateTime>,
+    due: Option<DateTime>,
+    events: VecDeque<DomainEvent>,
 }
 
 impl ReportBuilder {
-    fn new(author_id: UserId, created_at: Option<String>) -> Self {
+    fn new(id: ReportId, author_id: UserId, created_at: Option<DateTime>) -> Self {
         Self {
             permissions: HashSet::new(),
             content: None,
@@ -94,9 +149,10 @@ impl ReportBuilder {
             created_at,
             due: None,
             events: VecDeque::new(),
+            id,
         }
     }
-    fn set_due(mut self, due: String) -> Self {
+    fn set_due(mut self, due: DateTime) -> Self {
         self.due = Some(due);
         self
     }
@@ -116,22 +172,24 @@ impl ReportBuilder {
         self.reviewer_id.insert(reviewer);
         self
     }
-    fn add_event(mut self, event: ReportEvent) -> Self {
-        self.events.push_back(Box::new(event));
+    fn add_event(mut self, event: DomainEvent) -> Self {
+        self.events.push_back(event);
         self
     }
-    fn build(self, title: &str, time: &str) -> Result<Report, DomainError> {
+    fn build(self, title: &str, time: DateTime) -> Result<Report, DomainError> {
         Ok(Report {
-            id: ReportId::new(),
+            id: self.id,
             title: Title::new(title)?,
-            content: self.content.unwrap_or(ReportContent::new(String::new())),
+            content: self
+                .content
+                .unwrap_or(ReportContent::new(Body::new("Empty Content")?)),
             report_type: self.report_type.unwrap_or(ReportType::Other),
             permissions: self.permissions,
             status: ReportStatus::Draft,
             author_id: self.author_id,
             assigned_reviewer_id: Some(self.reviewer_id),
-            created_at: self.created_at.unwrap_or(time.to_string()),
-            updated_at: time.to_string(),
+            created_at: self.created_at.unwrap_or(time.clone()),
+            updated_at: time,
             due_date: self.due,
             version: 1,
             events: self.events,

@@ -1,7 +1,5 @@
 use crate::{value_objects::Diff, ReportId, ReportStatus, UserId};
 
-use super::DomainEvent;
-
 #[derive(Debug, Clone)]
 pub enum ReportEvent {
     ReportCreated {
@@ -29,7 +27,7 @@ pub enum ReportEvent {
     },
 }
 
-impl DomainEvent for ReportEvent {
+impl ReportEvent {
     fn event_type(&self) -> &'static str {
         match self {
             ReportEvent::ReportCreated { .. } => "report.created",

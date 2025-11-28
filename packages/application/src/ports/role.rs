@@ -1,4 +1,4 @@
-use domain::{Name, Permission, Role, RoleId, UserId};
+use domain::{Name, Permission, Role, RoleId};
 
 use crate::error::ApplicationError;
 
