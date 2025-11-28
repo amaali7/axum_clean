@@ -7,6 +7,7 @@ pub trait UserRepository {
     async fn save(&self, user: &User) -> Result<(), ApplicationError>;
     async fn update(&self, user: &User) -> Result<(), ApplicationError>;
     async fn get_by_id(&self, id: &UserId) -> Result<Option<User>, ApplicationError>;
+    async fn delete(&self, id: &UserId) -> Result<(), ApplicationError>;
     async fn get_by_email(&self, id: &Email) -> Result<Option<User>, ApplicationError>;
     async fn get_by_username(&self, id: &Username) -> Result<Option<User>, ApplicationError>;
     async fn get_events(&self, user_id: &UserId) -> Result<Option<Vec<UserEvent>>, ApplicationError>;
