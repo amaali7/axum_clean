@@ -1,12 +1,12 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone, Default)]
 pub struct Body(String);
 
 impl Body {
-    pub fn new(body: &str) -> Result<Self, DomainError> {
+    pub fn new(body: &str) -> DomainResult<Self> {
         let body = body.trim();
 
         if body.len() < 3 {

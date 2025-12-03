@@ -1,15 +1,14 @@
 use domain::{Permission, UserId};
 
-use crate::{error::ApplicationError, ports::UserRepository};
+use crate::{error::AppResult, ports::UserRepository};
 
 
-pub struct RemovePermissionToUserUseCase<R: UserRepository> {
+pub struct RemovePermissionFromUserUseCase<R: UserRepository> {
     repo: R,
 }
 
-impl<R: UserRepository> RemovePermissionToUserUseCase<R> {
-    pub async fn execute(&self, user_id: UserId , permission:Permission) -> Result<(), ApplicationError> {
-        self.repo.remove_permission(user_id, permission).await?;
-        Ok(())
+impl<R: UserRepository> RemovePermissionFromUserUseCase<R> {
+    pub async fn execute(&self, user_id: UserId , permission:Permission) -> AppResult<()> {
+        self.repo.remove_permission(user_id, permission).await
     }
 }

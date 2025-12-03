@@ -1,6 +1,6 @@
 use domain::{User, UserProfile};
 
-use crate::{dto::{CreateUserInput, OwnerUserOutput}, error::ApplicationError, ports::UserRepository};
+use crate::{ dto::user_dto::{input::CreateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository};
 
 
 pub struct CreateUserUseCase<R: UserRepository> {
@@ -8,9 +8,9 @@ pub struct CreateUserUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> CreateUserUseCase<R> {
-    pub async fn execute(&self, input: CreateUserInput) -> Result<OwnerUserOutput, ApplicationError> {
-        let user_profile_builder = UserProfile::new();
-        let user_profile = user_profile_builder
+    pub async fn execute(&self, input: CreateUserInput) -> AppResult<OwnerUserOutput> {
+        let mut user_profile_builder = UserProfile::new();
+        user_profile_builder
             .set_addresss(input.profile.addresses)
             .set_last_name(input.profile.last_name)
             .set_first_name(input.profile.first_name)
@@ -18,17 +18,17 @@ impl<R: UserRepository> CreateUserUseCase<R> {
             .set_bio(input.profile.bio)
             .set_date_of_birth(input.profile.date_of_birth)
             .set_phone_numbers(input.profile.phone_numbers)
-            .set_password(input.profile.password)
-            .build(None, input.profile.updated_at)?;
+            .set_password(input.profile.password);
+          let user_profile =   user_profile_builder.build(None, input.profile.updated_at)?;
 
-        let user_builder = User::new(input.id)?;
-        let user = user_builder
+        let mut user_builder = User::new(input.id)?;
+        user_builder
             .add_permissions(input.permissions)
             .add_roles(input.roles)
             .set_email(input.email)
             .set_profile(user_profile)
-            .set_username(input.username)
-            .build()?;
+            .set_username(input.username);
+            let user = user_builder.build()?;
 
         self.repo.save(&user).await?;
         Ok(OwnerUserOutput::from(user))

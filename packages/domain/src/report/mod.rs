@@ -7,16 +7,14 @@ pub use content::ReportContent;
 pub use report_type::ReportType;
 pub use status::ReportStatus;
 
-use crate::value_objects::Body;
+use crate::error::DomainResult;
 use crate::value_objects::DateTime;
 use crate::value_objects::Title;
-use crate::DomainError;
 
-use super::events::DomainEvent;
+use super::events::DomainEventId;
 use super::role::Permission;
 use super::user::UserId;
 use std::collections::HashSet;
-use std::collections::VecDeque;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ReportId(String);
@@ -39,8 +37,13 @@ impl std::ops::DerefMut for ReportId {
         &mut self.0
     }
 }
+impl std::fmt::Display for ReportId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Report {
     id: ReportId,
     title: Title,
@@ -49,27 +52,17 @@ pub struct Report {
     permissions: HashSet<Permission>,
     status: ReportStatus,
     author_id: UserId,
-    assigned_reviewer_id: Option<HashSet<UserId>>,
+    assigned_reviewer_id: HashSet<UserId>,
     created_at: DateTime,
     updated_at: DateTime,
     due_date: Option<DateTime>,
     version: u64,
-    events: VecDeque<DomainEvent>,
+    events: Vec<DomainEventId>,
 }
 
 impl Report {
-    pub fn new(
-        id: ReportId,
-        title: String,
-        author_id: UserId,
-    ) -> Result<ReportBuilder, super::error::DomainError> {
-        if title.trim().is_empty() {
-            return Err(super::error::DomainError::ValidationError(
-                "Report title cannot be empty".to_string(),
-            ));
-        }
-        let report = ReportBuilder::new(id, author_id, None);
-        Ok(report)
+    pub fn new(id: ReportId, author_id: UserId) -> ReportBuilder {
+        ReportBuilder::new(id, author_id)
     }
 
     pub fn id(&self) -> ReportId {
@@ -100,7 +93,7 @@ impl Report {
         self.author_id.clone()
     }
 
-    pub fn assigned_reviewer_id(&self) -> Option<HashSet<UserId>> {
+    pub fn assigned_reviewer_id(&self) -> HashSet<UserId> {
         self.assigned_reviewer_id.clone()
     }
 
@@ -116,7 +109,7 @@ impl Report {
         self.due_date.clone()
     }
 
-    pub fn events(&self) -> VecDeque<DomainEvent> {
+    pub fn events(&self) -> Vec<DomainEventId> {
         self.events.clone()
     }
 
@@ -125,7 +118,7 @@ impl Report {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ReportBuilder {
     id: ReportId,
     permissions: HashSet<Permission>,
@@ -135,59 +128,57 @@ pub struct ReportBuilder {
     reviewer_id: HashSet<UserId>,
     created_at: Option<DateTime>,
     due: Option<DateTime>,
-    events: VecDeque<DomainEvent>,
+    events: Vec<DomainEventId>,
 }
 
 impl ReportBuilder {
-    fn new(id: ReportId, author_id: UserId, created_at: Option<DateTime>) -> Self {
+    pub fn new(id: ReportId, author_id: UserId) -> Self {
         Self {
             permissions: HashSet::new(),
             content: None,
             report_type: None,
             author_id,
             reviewer_id: HashSet::new(),
-            created_at,
+            created_at: None,
             due: None,
-            events: VecDeque::new(),
+            events: Vec::new(),
             id,
         }
     }
-    fn set_due(mut self, due: DateTime) -> Self {
+    pub fn set_due(&mut self, due: DateTime) -> &mut Self {
         self.due = Some(due);
         self
     }
-    fn add_permission(mut self, permission: Permission) -> Self {
+    pub fn add_permission(&mut self, permission: Permission) -> &mut Self {
         self.permissions.insert(permission);
         self
     }
-    fn set_content(mut self, content: ReportContent) -> Self {
+    pub fn set_content(&mut self, content: ReportContent) -> &mut Self {
         self.content = Some(content);
         self
     }
-    fn set_report_type(mut self, report_type: ReportType) -> Self {
+    pub fn set_report_type(&mut self, report_type: ReportType) -> &mut Self {
         self.report_type = Some(report_type);
         self
     }
-    fn add_reviewer(mut self, reviewer: UserId) -> Self {
+    pub fn add_reviewer(&mut self, reviewer: UserId) -> &mut Self {
         self.reviewer_id.insert(reviewer);
         self
     }
-    fn add_event(mut self, event: DomainEvent) -> Self {
-        self.events.push_back(event);
+    pub fn add_event(&mut self, event: DomainEventId) -> &mut Self {
+        self.events.push(event);
         self
     }
-    fn build(self, title: &str, time: DateTime) -> Result<Report, DomainError> {
+    pub fn build(self, title: &str, time: DateTime) -> DomainResult<Report> {
         Ok(Report {
             id: self.id,
             title: Title::new(title)?,
-            content: self
-                .content
-                .unwrap_or(ReportContent::new(Body::new("Empty Content")?)),
+            content: self.content.unwrap_or(ReportContent::default()),
             report_type: self.report_type.unwrap_or(ReportType::Other),
             permissions: self.permissions,
             status: ReportStatus::Draft,
             author_id: self.author_id,
-            assigned_reviewer_id: Some(self.reviewer_id),
+            assigned_reviewer_id: self.reviewer_id,
             created_at: self.created_at.unwrap_or(time.clone()),
             updated_at: time,
             due_date: self.due,

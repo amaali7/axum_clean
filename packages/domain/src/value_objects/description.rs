@@ -1,12 +1,12 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone, Default)]
 pub struct Description(String);
 
 impl Description {
-    pub fn new(description: &str) -> Result<Self, DomainError> {
+    pub fn new(description: &str) -> DomainResult<Self> {
         let description = description.trim();
 
         if description.len() < 3 {

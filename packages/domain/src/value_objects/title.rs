@@ -1,12 +1,12 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Title(String);
 
 impl Title {
-    pub fn new(title: &str) -> Result<Self, DomainError> {
+    pub fn new(title: &str) -> DomainResult<Self> {
         let title = title.trim();
 
         if title.len() < 3 {

@@ -11,6 +11,9 @@ pub mod value_objects;
 pub use error::DomainError;
 pub use report::{Report, ReportContent, ReportId, ReportStatus, ReportType};
 pub use role::{Permission, Role, RoleId};
-pub use traits::{ReportRepository, RoleRepository, UserRepository};
+pub use traits::{AndSpecification, Specification};
 pub use user::{User, UserId, UserProfile};
-pub use value_objects::{Email, Name, Password, PhoneNumber, Username};
+pub use value_objects::{
+    Address, Addressess, Bio, Body, Comment, DateTime, Description, Email, HashedPassword, Name,
+    Password, PhoneNumber, PhoneNumbers, Title, Url, Username,
+};

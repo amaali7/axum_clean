@@ -1,9 +1,10 @@
 use crate::{
+    error::DomainResult,
     value_objects::{Body, Comment, DateTime, Url},
-    UserId,
+    DomainError, UserId,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ReviewComment {
     reviewer_id: UserId,
     comment: Comment,
@@ -31,7 +32,7 @@ impl ReviewComment {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ReportContent {
     body: Body,
     attachments: Vec<Url>, // URLs or paths to attachments
@@ -41,13 +42,8 @@ pub struct ReportContent {
 
 impl ReportContent {
     /// Creates a new [`ReportContent`].
-    pub fn new(body: Body) -> Self {
-        Self {
-            body,
-            attachments: Vec::new(),
-            review_comments: Vec::new(),
-            rejection_reason: None,
-        }
+    pub fn new() -> ReportContentBuilder {
+        ReportContentBuilder::new()
     }
 
     pub fn body(&self) -> Body {
@@ -64,5 +60,55 @@ impl ReportContent {
 
     pub fn rejection_reason(&self) -> Option<Comment> {
         self.rejection_reason.clone()
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ReportContentBuilder {
+    body: Option<Body>,
+    attachments: Vec<Url>, // URLs or paths to attachments
+    review_comments: Vec<ReviewComment>,
+    rejection_reason: Option<Comment>,
+}
+
+impl ReportContentBuilder {
+    pub fn new() -> Self {
+        Self {
+            body: None,
+            attachments: Vec::new(),
+            review_comments: Vec::new(),
+            rejection_reason: None,
+        }
+    }
+
+    pub fn add_attachment(&mut self, attachment: Url) -> &mut Self {
+        self.attachments.push(attachment);
+        self
+    }
+
+    pub fn add_review_comment(&mut self, review_comment: ReviewComment) -> &mut Self {
+        self.review_comments.push(review_comment);
+        self
+    }
+
+    pub fn set_rejection_reason(&mut self, rejection_reason: Comment) -> &mut Self {
+        self.rejection_reason = Some(rejection_reason);
+        self
+    }
+
+    pub fn set_body(&mut self, body: Body) -> &mut Self {
+        self.body = Some(body);
+        self
+    }
+
+    pub fn build(self) -> DomainResult<ReportContent> {
+        Ok(ReportContent {
+            body: self.body.ok_or(DomainError::ReportError(
+                crate::error::ReportError::BodyEmpty,
+            ))?,
+            attachments: self.attachments,
+            review_comments: self.review_comments,
+            rejection_reason: self.rejection_reason,
+        })
     }
 }

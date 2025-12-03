@@ -1,6 +1,6 @@
 use domain::{RoleId, UserId};
 
-use crate::{error::ApplicationError, ports::UserRepository};
+use crate::{error::AppResult, ports::UserRepository};
 
 
 pub struct AssignRoleToUserUseCase<R: UserRepository> {
@@ -8,8 +8,7 @@ pub struct AssignRoleToUserUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> AssignRoleToUserUseCase<R> {
-    pub async fn execute(&self, user_id: UserId , role_id:RoleId) -> Result<(), ApplicationError> {
-        self.repo.assign_role(user_id, role_id).await?;
-        Ok(())
+    pub async fn execute(&self, user_id: UserId , role_id:RoleId) -> AppResult<()> {
+        self.repo.assign_role(user_id, role_id).await
     }
 }

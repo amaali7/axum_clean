@@ -1,0 +1,19 @@
+
+use domain::UserId;
+
+use crate::{dto::user_dto::output::PrivilegeUserOutput, error::{AppResult, ApplicationError}, ports::UserRepository};
+
+
+pub struct GetUserByIdPrivilegeUseCase<R: UserRepository> {
+    repo: R,
+}
+
+impl<R: UserRepository> GetUserByIdPrivilegeUseCase<R> {
+    pub async fn execute(&self, id: UserId) -> AppResult<PrivilegeUserOutput> {
+        let result = self.repo.get_by_id(&id).await?;
+        match result {
+            Some(user) => Ok(PrivilegeUserOutput::from(user)),
+            None => Err(ApplicationError::Repository(format!("User : {} not found", id))),
+        }
+    }
+}

@@ -1,12 +1,12 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone, Default)]
 pub struct Comment(String);
 
 impl Comment {
-    pub fn new(comment: &str) -> Result<Self, DomainError> {
+    pub fn new(comment: &str) -> DomainResult<Self> {
         let comment = comment.trim();
 
         if comment.len() < 3 {

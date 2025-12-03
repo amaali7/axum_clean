@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone, Default)]
 pub struct Addressess(Vec<Address>);
@@ -80,7 +80,7 @@ impl AddressBuilder {
         self.country = Some(value.to_string());
         self
     }
-    pub fn build(self) -> Result<Address, DomainError> {
+    pub fn build(self) -> DomainResult<Address> {
         let title = self.title.clone();
         if title.is_none() {
             return Err(DomainError::ValidationError(

@@ -1,19 +1,20 @@
 use domain::{events::UserEvent, Email, Permission, RoleId, User, UserId, Username};
 
-use crate::error::ApplicationError;
+use crate::error::AppResult;
+
 
 #[async_trait::async_trait]
 pub trait UserRepository {
-    async fn save(&self, user: &User) -> Result<(), ApplicationError>;
-    async fn update(&self, user: &User) -> Result<(), ApplicationError>;
-    async fn get_by_id(&self, id: &UserId) -> Result<Option<User>, ApplicationError>;
-    async fn delete(&self, id: &UserId) -> Result<(), ApplicationError>;
-    async fn get_by_email(&self, id: &Email) -> Result<Option<User>, ApplicationError>;
-    async fn get_by_username(&self, id: &Username) -> Result<Option<User>, ApplicationError>;
-    async fn get_events(&self, user_id: &UserId) -> Result<Option<Vec<UserEvent>>, ApplicationError>;
-    async fn list(&self) -> Result<Vec<User>, ApplicationError>;
-    async fn assign_permission(&self, user_id: UserId, permission: Permission) -> Result<(), ApplicationError>;
-    async fn remove_permission(&self, user_id: UserId, permission: Permission) -> Result<(), ApplicationError>;
-    async fn assign_role(&self, user_id: UserId, role_id: RoleId) -> Result<(), ApplicationError>;
-    async fn remove_role(&self, user_id: UserId, role_id: RoleId) -> Result<(), ApplicationError>;
+    async fn save(&self, user: &User) -> AppResult<()>;
+    async fn update(&self, user: &User) -> AppResult<()>;
+    async fn get_by_id(&self, id: &UserId) -> AppResult<Option<User>>;
+    async fn delete(&self, id: &UserId) -> AppResult<()>;
+    async fn get_by_email(&self, id: &Email) -> AppResult<Option<User>>;
+    async fn get_by_username(&self, id: &Username) -> AppResult<Option<User>>;
+    async fn get_events(&self, user_id: &UserId) -> AppResult<Option<Vec<UserEvent>>>;
+    async fn list(&self) -> AppResult<Vec<User>>;
+    async fn assign_permission(&self, user_id: UserId, permission: Permission) -> AppResult<()>;
+    async fn remove_permission(&self, user_id: UserId, permission: Permission) -> AppResult<()>;
+    async fn assign_role(&self, user_id: UserId, role_id: RoleId) -> AppResult<()>;
+    async fn remove_role(&self, user_id: UserId, role_id: RoleId) -> AppResult<()>;
 }

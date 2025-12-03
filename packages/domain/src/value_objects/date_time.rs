@@ -1,12 +1,12 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct DateTime(i64);
 
 impl DateTime {
-    pub fn new(timestamp: i64) -> Result<Self, DomainError> {
+    pub fn new(timestamp: i64) -> DomainResult<Self> {
         // Validate that it's a reasonable timestamp (between 1970 and 2100)
         if timestamp < 0 {
             return Err(DomainError::ValidationError(

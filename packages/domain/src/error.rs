@@ -40,8 +40,9 @@ pub enum RoleError {
 pub enum ReportError {
     #[error("Permission error: {0}")]
     PermissionError(#[from] PermissionError),
-
-    #[error("User not found")]
+    #[error("Body empty")]
+    BodyEmpty,
+    #[error("Report not found")]
     NotFound,
 
     #[error("Invalid report ID: {0}")]
@@ -83,3 +84,5 @@ pub enum UserError {
     #[error("Insufficient permissions")]
     InsufficientPermissions,
 }
+
+pub type DomainResult<T> = Result<T, DomainError>;

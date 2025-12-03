@@ -7,6 +7,4 @@ edition = "2024"
 domain = { path = "../domain" }
 
 async-trait =  { workspace = true }
-tokio =  { workspace = true }
 thiserror =  { workspace = true }
-chrono =  { workspace = true }

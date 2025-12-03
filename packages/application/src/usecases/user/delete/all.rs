@@ -1,6 +1,6 @@
 use domain::UserId;
 
-use crate::{error::ApplicationError, ports::UserRepository};
+use crate::{error::AppResult, ports::UserRepository};
 
 
 pub struct DeleteUserUseCase<R: UserRepository> {
@@ -8,8 +8,7 @@ pub struct DeleteUserUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> DeleteUserUseCase<R> {
-    pub async fn execute(&self, user_id: UserId) -> Result<(), ApplicationError> {
-        self.repo.delete(&user_id).await?;
-        Ok(())
+    pub async fn execute(&self, user_id: UserId) -> AppResult<()> {
+        self.repo.delete(&user_id).await
     }
 }

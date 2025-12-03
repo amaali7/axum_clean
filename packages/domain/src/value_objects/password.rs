@@ -1,12 +1,12 @@
 use std::str::FromStr;
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone)]
 pub struct Password(String);
 
 impl Password {
-    pub fn new(password: &str) -> Result<Self, DomainError> {
+    pub fn new(password: &str) -> DomainResult<Self> {
         if password.len() < 8 {
             return Err(DomainError::ValidationError(
                 "Password must be at least 8 characters".to_string(),
@@ -41,7 +41,7 @@ impl FromStr for Password {
 pub struct HashedPassword(String);
 
 impl HashedPassword {
-    pub fn new(hashed_password: &str) -> Result<Self, DomainError> {
+    pub fn new(hashed_password: &str) -> DomainResult<Self> {
         if hashed_password.len() < 43 || hashed_password.len() > 128 {
             return Err(DomainError::ValidationError(
                 "Its not Hashed Password".to_string(),

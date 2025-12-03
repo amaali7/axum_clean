@@ -1,12 +1,12 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Username(String);
 
 impl Username {
-    pub fn new(username: &str) -> Result<Self, DomainError> {
+    pub fn new(username: &str) -> DomainResult<Self> {
         let username = username.trim();
 
         if username.len() < 3 {

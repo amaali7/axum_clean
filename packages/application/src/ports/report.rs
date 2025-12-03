@@ -1,18 +1,20 @@
-use domain::{events::ReportEvent, value_objects::Title, Permission, Report, ReportId, RoleId, UserId};
+use domain::{events::ReportEvent, value_objects::Title, Permission, Report, ReportId, UserId};
 
-use crate::error::ApplicationError;
+use crate::error::AppResult;
+
 
 #[async_trait::async_trait]
 pub trait ReportRepository {
-    async fn save(&self, report: &Report) -> Result<(), ApplicationError>;
-    async fn update(&self,report_id: &ReportId, report: &Report) -> Result<(), ApplicationError>;
-    async fn get_by_id(&self, id: &ReportId) -> Result<Option<Report>, ApplicationError>;
-    async fn get_by_author_id(&self, id: &UserId) -> Result<Option<Report>, ApplicationError>;
-    async fn get_by_title(&self, title: &Title) -> Result<Option<Report>, ApplicationError>;
-    async fn get_events(&self, report_id: &ReportId) -> Result<Option<Vec<ReportEvent>>, ApplicationError>;
-    async fn list(&self) -> Result<Vec<Report>, ApplicationError>;
-    async fn assign_permission(&self, role_id: &RoleId, permission: &Permission) -> Result<(), ApplicationError>;
-    async fn remove_permission(&self, role_id: &RoleId, permission: &Permission) -> Result<(), ApplicationError>;
-    async fn assign_reviewer(&self, report_id: &ReportId, reviewer_id: &UserId) -> Result<(), ApplicationError>;
-    async fn remove_reviewer(&self, report_id: &ReportId, reviewer_id: &UserId) -> Result<(), ApplicationError>;
+    async fn save(&self, report: &Report) -> AppResult<()>;
+    async fn delete(&self, report_id: &ReportId) -> AppResult<()>;
+    async fn update(&self, report: &Report) -> AppResult<Report>;
+    async fn get_by_id(&self, id: &ReportId) -> AppResult<Option<Report>>;
+    async fn get_by_author_id(&self, id: &UserId) -> AppResult<Option<Report>>;
+    async fn get_by_title(&self, title: &Title) -> AppResult<Option<Report>>;
+    async fn get_events(&self, report_id: &ReportId) -> AppResult<Option<Vec<ReportEvent>>>;
+    async fn list(&self) -> AppResult<Vec<Report>>;
+    async fn assign_permission(&self, report_id: &ReportId, permission: &Permission) -> AppResult<()>;
+    async fn remove_permission(&self, report_id: &ReportId, permission: &Permission) -> AppResult<()>;
+    async fn assign_reviewer(&self, report_id: &ReportId, reviewer_id: &UserId) -> AppResult<()>;
+    async fn remove_reviewer(&self, report_id: &ReportId, reviewer_id: &UserId) -> AppResult<()>;
 }

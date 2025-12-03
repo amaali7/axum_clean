@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone, Default)]
 pub struct PhoneNumbers(Vec<PhoneNumber>);
@@ -37,7 +37,7 @@ pub struct PhoneNumber {
 }
 
 impl PhoneNumber {
-    pub fn new(title: &str, number: &str) -> Result<Self, DomainError> {
+    pub fn new(title: &str, number: &str) -> DomainResult<Self> {
         let cleaned = number
             .chars()
             .filter(|c| c.is_ascii_digit())

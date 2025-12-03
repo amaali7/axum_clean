@@ -2,15 +2,14 @@ pub mod profile;
 
 pub use profile::UserProfile;
 
-use crate::events::DomainEvent;
+use crate::error::DomainResult;
+use crate::events::DomainEventId;
 use crate::{DomainError, Email, Permission, RoleId, Username};
 
 use std::collections::HashSet;
 use std::ops::DerefMut;
 
-use std::collections::VecDeque;
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
 pub struct UserId(String);
 
 impl UserId {
@@ -49,7 +48,7 @@ pub struct User {
     permissions: HashSet<Permission>, // Cached permissions for performance
     preferences: UserPreferences,
     status: UserStatus,
-    events: VecDeque<DomainEvent>,
+    events: Vec<DomainEventId>,
 }
 
 impl User {
@@ -90,7 +89,7 @@ impl User {
         self.permissions.clone()
     }
 
-    pub fn events(&self) -> VecDeque<DomainEvent> {
+    pub fn events(&self) -> Vec<DomainEventId> {
         self.events.clone()
     }
 }
@@ -148,60 +147,57 @@ pub struct UserBuilder {
     profile: Option<UserProfile>,
     roles: HashSet<RoleId>,
     permissions: HashSet<Permission>, // Cached permissions for performance
-    events: VecDeque<DomainEvent>,
+    events: Vec<DomainEventId>,
 }
 
 impl UserBuilder {
     pub fn new(id: UserId) -> Self {
-        let roles: HashSet<RoleId> = HashSet::new();
-        let permissions: HashSet<Permission> = HashSet::new();
-        let events: VecDeque<DomainEvent> = VecDeque::new();
         Self {
             email: None,
             username: None,
             profile: None,
-            roles,
-            permissions,
-            events,
+            roles: HashSet::new(),
+            permissions: HashSet::new(),
+            events: Vec::new(),
             id,
         }
     }
 
-    pub fn set_email(mut self, email: Email) -> Self {
+    pub fn set_email(&mut self, email: Email) -> &mut Self {
         self.email = Some(email);
         self
     }
-    pub fn add_roles(mut self, roles: HashSet<RoleId>) -> Self {
+    pub fn add_roles(&mut self, roles: HashSet<RoleId>) -> &mut Self {
         self.roles.extend(roles);
         self
     }
-    pub fn add_permissions(mut self, permissions: HashSet<Permission>) -> Self {
+    pub fn add_permissions(&mut self, permissions: HashSet<Permission>) -> &mut Self {
         self.permissions.extend(permissions);
         self
     }
-    pub fn add_role(mut self, role: RoleId) -> Self {
+    pub fn add_role(&mut self, role: RoleId) -> &mut Self {
         self.roles.insert(role);
         self
     }
-    pub fn add_permission(mut self, permission: Permission) -> Self {
+    pub fn add_permission(&mut self, permission: Permission) -> &mut Self {
         self.permissions.insert(permission);
         self
     }
-    pub fn set_username(mut self, username: Username) -> Self {
+    pub fn set_username(&mut self, username: Username) -> &mut Self {
         self.username = Some(username);
         self
     }
 
-    pub fn set_profile(mut self, profile: UserProfile) -> Self {
+    pub fn set_profile(&mut self, profile: UserProfile) -> &mut Self {
         self.profile = Some(profile);
         self
     }
-    fn add_event(mut self, event: DomainEvent) -> Self {
-        self.events.push_back(event);
+    fn add_event(&mut self, event: DomainEventId) -> &mut Self {
+        self.events.push(event);
         self
     }
 
-    pub fn build(self) -> Result<User, super::error::DomainError> {
+    pub fn build(self) -> DomainResult<User> {
         Ok(User {
             id: self.id,
             email: self

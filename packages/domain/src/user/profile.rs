@@ -1,4 +1,5 @@
 use crate::{
+    error::DomainResult,
     value_objects::{address::Addressess, phone_number::PhoneNumbers, Bio, DateTime, Url},
     DomainError, Name, Password,
 };
@@ -91,42 +92,42 @@ impl UserProfileBuilder {
         }
     }
 
-    pub fn set_first_name(mut self, name: Name) -> Self {
+    pub fn set_first_name(&mut self, name: Name) -> &mut Self {
         self.first_name = Some(name);
         self
     }
 
-    pub fn set_last_name(mut self, name: Name) -> Self {
+    pub fn set_last_name(&mut self, name: Name) -> &mut Self {
         self.first_name = Some(name);
         self
     }
 
-    pub fn set_password(mut self, password: Password) -> Self {
+    pub fn set_password(&mut self, password: Password) -> &mut Self {
         self.password = Some(password);
         self
     }
 
-    pub fn set_bio(mut self, bio: Bio) -> Self {
+    pub fn set_bio(&mut self, bio: Bio) -> &mut Self {
         self.bio = Some(bio);
         self
     }
 
-    pub fn set_avatar_url(mut self, url: Url) -> Self {
+    pub fn set_avatar_url(&mut self, url: Url) -> &mut Self {
         self.avatar_url = Some(url);
         self
     }
 
-    pub fn set_date_of_birth(mut self, date: DateTime) -> Self {
+    pub fn set_date_of_birth(&mut self, date: DateTime) -> &mut Self {
         self.date_of_birth = Some(date);
         self
     }
 
-    pub fn set_addresss(mut self, addressess: Addressess) -> Self {
+    pub fn set_addresss(&mut self, addressess: Addressess) -> &mut Self {
         self.addressess = Some(addressess);
         self
     }
 
-    pub fn set_phone_numbers(mut self, phone_numbers: PhoneNumbers) -> Self {
+    pub fn set_phone_numbers(&mut self, phone_numbers: PhoneNumbers) -> &mut Self {
         self.phone_numbers = Some(phone_numbers);
         self
     }
@@ -135,7 +136,7 @@ impl UserProfileBuilder {
         self,
         created_at: Option<DateTime>,
         updated_at: DateTime,
-    ) -> Result<UserProfile, DomainError> {
+    ) -> DomainResult<UserProfile> {
         Ok(UserProfile {
             first_name: self.first_name.unwrap(),
             last_name: self.last_name.unwrap(),

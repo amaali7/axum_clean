@@ -3,7 +3,7 @@ use std::{
     ops::{Deref, DerefMut},
 };
 
-use crate::DomainError;
+use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone, Default)]
 pub struct Url(String);
@@ -13,7 +13,7 @@ impl Url {
     ///
     /// The string is normalized (trim + lowercase) and must parse as a
     /// valid `http`/`https` URL.  A missing scheme is fixed automatically.
-    pub fn new(url: &str) -> Result<Self, DomainError> {
+    pub fn new(url: &str) -> DomainResult<Self> {
         let url = url.trim();
 
         // Empty check

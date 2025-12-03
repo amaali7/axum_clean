@@ -1,6 +1,6 @@
 use domain::{Permission, UserId};
 
-use crate::{error::ApplicationError, ports::UserRepository};
+use crate::{error::AppResult, ports::UserRepository};
 
 
 pub struct AssignPermissionToUserUseCase<R: UserRepository> {
@@ -8,8 +8,7 @@ pub struct AssignPermissionToUserUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> AssignPermissionToUserUseCase<R> {
-    pub async fn execute(&self, user_id: UserId , permission:Permission) -> Result<(), ApplicationError> {
-        self.repo.assign_permission(user_id, permission).await?;
-        Ok(())
+    pub async fn execute(&self, user_id: UserId , permission:Permission) -> AppResult<()> {
+        self.repo.assign_permission(user_id, permission).await
     }
 }

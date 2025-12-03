@@ -15,3 +15,5 @@ pub enum ApplicationError {
     #[error("Unknown application error")]
     Unknown,
 }
+
+pub type AppResult<T> = Result<T, ApplicationError>;
