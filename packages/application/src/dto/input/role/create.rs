@@ -6,6 +6,8 @@ use domain::{
     Name, Permission, Role, RoleId,
 };
 
+use crate::error::ApplicationError;
+
 pub struct CreateRoleInput {
     pub id: RoleId,
     pub name: Name,
@@ -15,6 +17,8 @@ pub struct CreateRoleInput {
     pub created_at: DateTime,
     pub events: Vec<DomainEventId>,
 }
+
+/// Mapper from Domain
 
 impl From<Role> for CreateRoleInput {
     fn from(value: Role) -> Self {
@@ -27,5 +31,27 @@ impl From<Role> for CreateRoleInput {
             id: value.id(),
             events: value.events(),
         }
+    }
+}
+
+/// Mapper from DOT
+
+impl TryFrom<CreateRoleInput> for Role {
+    type Error = ApplicationError;
+    fn try_from(value: CreateRoleInput) -> Result<Self, Self::Error> {
+        let mut builder = Self::new(value.id);
+        builder
+            .set_name(value.name)
+            .set_description(value.description)
+            .set_created_at(value.created_at)
+            .set_is_system_role(value.is_system_role);
+        for event in value.events.into_iter() {
+            builder.add_event(event);
+        }
+        for permission in value.permissions.into_iter() {
+            builder.add_permission(permission);
+        }
+        let role = builder.build()?;
+        Ok(role)
     }
 }

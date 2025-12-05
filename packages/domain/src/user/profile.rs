@@ -1,19 +1,19 @@
 use crate::{
     error::DomainResult,
     value_objects::{address::Addressess, phone_number::PhoneNumbers, Bio, DateTime, Url},
-    DomainError, Name, Password,
+    Address, DomainError, Name, Password, PhoneNumber,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct UserProfile {
     first_name: Name,
     last_name: Name,
     password: Password,
     bio: Option<Bio>,
-    phone_numbers: Option<PhoneNumbers>,
+    phone_numbers: PhoneNumbers,
     avatar_url: Option<Url>,
     date_of_birth: Option<DateTime>,
-    addresses: Option<Addressess>,
+    addresses: Addressess,
     website: Option<Url>,
     is_deleted: bool,
     created_at: DateTime,
@@ -37,7 +37,7 @@ impl UserProfile {
     pub fn bio(&self) -> Option<Bio> {
         self.bio.clone()
     }
-    pub fn phone_numbers(&self) -> Option<PhoneNumbers> {
+    pub fn phone_numbers(&self) -> PhoneNumbers {
         self.phone_numbers.clone()
     }
     pub fn avatar_url(&self) -> Option<Url> {
@@ -46,7 +46,7 @@ impl UserProfile {
     pub fn date_of_birth(&self) -> Option<DateTime> {
         self.date_of_birth.clone()
     }
-    pub fn addresses(&self) -> Option<Addressess> {
+    pub fn addresses(&self) -> Addressess {
         self.addresses.clone()
     }
     pub fn website(&self) -> Option<Url> {
@@ -72,9 +72,9 @@ pub struct UserProfileBuilder {
     bio: Option<Bio>,
     avatar_url: Option<Url>,
     date_of_birth: Option<DateTime>,
-    addressess: Option<Addressess>,
+    addressess: Addressess,
     website: Option<Url>,
-    phone_numbers: Option<PhoneNumbers>,
+    phone_numbers: PhoneNumbers,
 }
 
 impl UserProfileBuilder {
@@ -86,9 +86,9 @@ impl UserProfileBuilder {
             bio: None,
             avatar_url: None,
             date_of_birth: None,
-            addressess: None,
+            addressess: Addressess::new(),
             website: None,
-            phone_numbers: None,
+            phone_numbers: PhoneNumbers::new(),
         }
     }
 
@@ -122,21 +122,27 @@ impl UserProfileBuilder {
         self
     }
 
-    pub fn set_addresss(&mut self, addressess: Addressess) -> &mut Self {
-        self.addressess = Some(addressess);
+    pub fn add_address(&mut self, address: Address) -> &mut Self {
+        self.addressess.add_address(address);
         self
     }
 
-    pub fn set_phone_numbers(&mut self, phone_numbers: PhoneNumbers) -> &mut Self {
-        self.phone_numbers = Some(phone_numbers);
+    pub fn add_phone_number(&mut self, phone_number: PhoneNumber) -> &mut Self {
+        self.phone_numbers.add_phone_number(phone_number);
         self
     }
 
-    pub fn build(
-        self,
-        created_at: Option<DateTime>,
-        updated_at: DateTime,
-    ) -> DomainResult<UserProfile> {
+    pub fn add_addresss(&mut self, addressess: Addressess) -> &mut Self {
+        self.addressess.add_addressess(addressess);
+        self
+    }
+
+    pub fn add_phone_numbers(&mut self, phone_numbers: PhoneNumbers) -> &mut Self {
+        self.phone_numbers.add_phone_numbers(phone_numbers);
+        self
+    }
+
+    pub fn build(self, created_at: DateTime, updated_at: DateTime) -> DomainResult<UserProfile> {
         Ok(UserProfile {
             first_name: self.first_name.unwrap(),
             last_name: self.last_name.unwrap(),
@@ -150,7 +156,7 @@ impl UserProfileBuilder {
             addresses: self.addressess,
             website: self.website,
             is_deleted: false,
-            created_at: created_at.unwrap_or(updated_at.clone()),
+            created_at: created_at,
             updated_at: updated_at,
         })
     }

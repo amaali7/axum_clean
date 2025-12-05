@@ -7,8 +7,10 @@ edition = "2024"
 domain = { path = "../domain" }
 application = { path = "../application" }
 
-sqlx =  { workspace = true , features = ["runtime-tokio", "postgres"]}
+surrealdb =  { workspace = true }
 reqwest =  { workspace = true, features = ["json"] }
 serde =  { workspace = true , features = ["derive"] }
 tokio =  { workspace = true , features = ["rt-multi-thread", "macros"]}
 async-trait =  { workspace = true }
+
+thiserror =  { workspace = true }

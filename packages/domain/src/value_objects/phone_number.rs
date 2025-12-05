@@ -6,11 +6,15 @@ use crate::{error::DomainResult, DomainError};
 pub struct PhoneNumbers(Vec<PhoneNumber>);
 
 impl PhoneNumbers {
-    pub fn new(phone_numbers: &[PhoneNumber]) -> Self {
-        PhoneNumbers(phone_numbers.to_vec())
+    pub fn new() -> Self {
+        PhoneNumbers(Vec::new())
     }
 
-    pub fn add_address(&mut self, phone_number: PhoneNumber) {
+    pub fn add_phone_numbers(&mut self, phone_numbers: Self) {
+        self.0.extend(phone_numbers.0);
+    }
+
+    pub fn add_phone_number(&mut self, phone_number: PhoneNumber) {
         self.0.push(phone_number);
     }
 }

@@ -6,10 +6,13 @@ use crate::{error::DomainResult, DomainError};
 pub struct Addressess(Vec<Address>);
 
 impl Addressess {
-    pub fn new(addressess: &[Address]) -> Self {
-        Addressess(addressess.to_vec())
+    pub fn new() -> Self {
+        Addressess(Vec::new())
     }
 
+    pub fn add_addressess(&mut self, address: Self) {
+        self.0.extend(address.0);
+    }
     pub fn add_address(&mut self, address: Address) {
         self.0.push(address);
     }

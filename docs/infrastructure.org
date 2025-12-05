@@ -1,0 +1,220 @@
+#+TITLE: Infrastructure Layer with SurrealDB
+#+AUTHOR: ChatGPT
+#+DESCRIPTION: Detailed explanation of implementing the Infrastructure layer in a Clean Architecture project using SurrealDB.
+#+OPTIONS: toc:3
+
+* Infrastructure Layer (with SurrealDB)
+
+The *infrastructure layer* is the outermost layer in Clean Architecture.  
+It contains everything related to:
+
+- Database implementations  
+- External services (email, queues, caching, file storage, etc.)  
+- API clients  
+- Logging and observability  
+- Configuration and environment bindings  
+- Framework and driver specifics (Axum, SurrealDB client, etc.)
+
+This layer *depends on* the *domain* and *application* layers but never the other way around.
+
+** Your repository traits belong in the application layer.  
+** The concrete implementations belong in the infrastructure layer.
+
+---
+
+* Goals of the Infrastructure Layer
+
+1. Implement ports (repository interfaces)
+2. Hide database-specific details
+3. Map domain objects <-> persistence models
+4. Provide transaction mechanisms
+5. Ensure testability by allowing the database to be mocked
+
+---
+
+* Example Directory Structure
+A realistic folder structure for the infrastructure layer:
+
+#+BEGIN_SRC
+infrastructure/
+ ├── surreal/
+ │    ├── mod.rs
+ │    ├── client.rs
+ │    ├── user_repository.rs
+ │    ├── role_repository.rs
+ │    └── report_repository.rs
+ ├── http/
+ │    └── external_api_client.rs
+ ├── email/
+ │    └── smtp_service.rs
+ ├── config/
+ │    └── settings.rs
+ └── mappers/
+      ├── user_mapper.rs
+      ├── role_mapper.rs
+      └── report_mapper.rs
+#+END_SRC
+
+---
+
+* SurrealDB Client Setup
+
+You usually wrap the SurrealDB client in a custom struct so that:
+- It can be cloned cheaply
+- You can centralize connection pooling
+- The application does not see SurrealDB APIs
+
+#+BEGIN_SRC rust
+// infrastructure/surreal/client.rs
+use surrealdb::{Surreal, engine::remote::ws::Ws};
+use anyhow::Result;
+
+#[derive(Clone)]
+pub struct SurrealDBClient {
+    pub db: Surreal<Ws>,
+}
+
+impl SurrealDBClient {
+    pub async fn new(url: &str, user: &str, pass: &str) -> Result<Self> {
+        let db = Surreal::new::<Ws>(url).await?;
+        db.signin(surrealdb::opt::auth::Root { username: user, password: pass }).await?;
+        db.use_ns("app").use_db("main").await?;
+
+        Ok(Self { db })
+    }
+}
+#+END_SRC
+
+---
+
+* Example: UserRepository Implementation (SurrealDB)
+
+Here is how you implement the repository in the infrastructure layer.
+
+#+BEGIN_SRC rust
+// infrastructure/surreal/user_repository.rs
+use async_trait::async_trait;
+use domain::{User, UserId};
+use application::ports::UserRepository;
+use surrealdb::sql;
+
+use super::client::SurrealDBClient;
+
+pub struct SurrealUserRepository {
+    client: SurrealDBClient,
+}
+
+impl SurrealUserRepository {
+    pub fn new(client: SurrealDBClient) -> Self {
+        Self { client }
+    }
+}
+
+#[async_trait]
+impl UserRepository for SurrealUserRepository {
+    async fn save(&self, user: &User) -> Result<(), ApplicationError> {
+        let dto = UserOutput::from(user.clone()); 
+
+        self.client
+            .db
+            .update(("user", user.id().to_string()))
+            .content(dto)
+            .await?;
+
+        Ok(())
+    }
+
+    async fn get_by_id(&self, id: &UserId) -> Result<Option<User>, ApplicationError> {
+        let record: Option<UserOutput> = self
+            .client
+            .db
+            .select(("user", id.to_string()))
+            .await?;
+
+        match record {
+            None => Ok(None),
+            Some(dto) => Ok(Some(dto.into_domain()?)),
+        }
+    }
+}
+#+END_SRC
+
+---
+
+* Why Do We Use DTOs in the Infrastructure Layer?
+
+**Because SurrealDB cannot store domain types directly.**
+
+Domain objects:
+- enforce invariants
+- have private fields
+- contain value objects
+- often contain events or references
+
+But a database expects:
+- flat models
+- primitives
+- indexes
+- foreign keys
+- raw strings
+
+So you create:
+
+- ~UserOutput~ → used in infrastructure only  
+- ~UserMapper~ → converts to/from domain layer
+
+#+BEGIN_SRC rust
+// infrastructure/mappers/user_mapper.rs
+impl From<User> for UserOutput { ... }
+impl TryInto<User> for UserOutput { ... }
+#+END_SRC
+
+This protects the domain layer from database concerns.
+
+---
+
+* How Application → Infrastructure Flow Works
+
+#+BEGIN_QUOTE
+Use case calls a port → infrastructure implements port → SurrealDB stores data  
+#+END_QUOTE
+
+Graph:
+
+#+BEGIN_SRC
+Application Layer:
+    CreateUserUseCase
+          |
+          v
+    UserRepository (trait)
+          |
+          v
+Infrastructure Layer:
+    SurrealUserRepository (struct)
+          |
+          v
+    SurrealDB client
+#+END_SRC
+
+---
+
+* Summary
+
+- Infrastructure is the *outermost* layer
+- It implements repository interfaces defined in the application layer
+- It uses DTOs and mappers to isolate database schemas
+- SurrealDB is injected into repositories through a client
+- All database details stay in the infrastructure layer
+
+This maintains *full Clean Architecture compliance*.
+
+---
+
+If you'd like, I can also generate:
+
+- A full working project template  
+- More SurrealDB examples (transactions, relations, SurrealQL)  
+- User / Role / Report complete implementation  
+- A diagram in PlantUML inside Org mode  
+
+Just tell me!

@@ -125,10 +125,12 @@ pub struct ReportBuilder {
     content: Option<ReportContent>,
     report_type: Option<ReportType>,
     author_id: UserId,
+    status: ReportStatus,
     reviewer_id: HashSet<UserId>,
     created_at: Option<DateTime>,
     due: Option<DateTime>,
     events: Vec<DomainEventId>,
+    version: u64,
 }
 
 impl ReportBuilder {
@@ -143,8 +145,23 @@ impl ReportBuilder {
             due: None,
             events: Vec::new(),
             id,
+            status: ReportStatus::Draft,
+            version: 1,
         }
     }
+    pub fn set_status(&mut self, status: ReportStatus) -> &mut Self {
+        self.status = status;
+        self
+    }
+    pub fn set_created_at(&mut self, created_at: DateTime) -> &mut Self {
+        self.created_at = Some(created_at);
+        self
+    }
+    pub fn set_version(&mut self, version: u64) -> &mut Self {
+        self.version = version;
+        self
+    }
+
     pub fn set_due(&mut self, due: DateTime) -> &mut Self {
         self.due = Some(due);
         self
@@ -169,20 +186,20 @@ impl ReportBuilder {
         self.events.push(event);
         self
     }
-    pub fn build(self, title: &str, time: DateTime) -> DomainResult<Report> {
+    pub fn build(self, title: &str, updated_at: DateTime) -> DomainResult<Report> {
         Ok(Report {
             id: self.id,
             title: Title::new(title)?,
             content: self.content.unwrap_or(ReportContent::default()),
             report_type: self.report_type.unwrap_or(ReportType::Other),
             permissions: self.permissions,
-            status: ReportStatus::Draft,
+            status: self.status,
             author_id: self.author_id,
             assigned_reviewer_id: self.reviewer_id,
-            created_at: self.created_at.unwrap_or(time.clone()),
-            updated_at: time,
+            created_at: self.created_at.unwrap_or(updated_at.clone()),
+            updated_at: updated_at,
             due_date: self.due,
-            version: 1,
+            version: self.version,
             events: self.events,
         })
     }

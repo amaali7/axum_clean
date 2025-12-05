@@ -110,7 +110,7 @@ impl RoleBuilder {
         self
     }
 
-    pub fn add_permissions(&mut self, permission: Permission) -> &mut Self {
+    pub fn add_permission(&mut self, permission: Permission) -> &mut Self {
         self.permissions.insert(permission);
         self
     }
@@ -125,7 +125,7 @@ impl RoleBuilder {
         self
     }
 
-    pub fn add_events(&mut self, event: DomainEventId) -> &mut Self {
+    pub fn add_event(&mut self, event: DomainEventId) -> &mut Self {
         self.events.push(event);
         self
     }

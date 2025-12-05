@@ -6,6 +6,8 @@ use domain::{
     value_objects::{Body, Comment, DateTime, Title, Url},
     Permission, Report, ReportContent, ReportId, ReportStatus, ReportType, UserId,
 };
+
+use crate::error::ApplicationError;
 /// Preivileg User Report Output
 pub struct UpdateReportInput {
     pub id: ReportId,
@@ -35,6 +37,8 @@ pub struct UpdateReviewCommentInput {
     pub comment: Comment,
     pub created_at: DateTime,
 }
+
+/// Mapper from Domain
 
 impl From<ReviewComment> for UpdateReviewCommentInput {
     fn from(value: ReviewComment) -> Self {
@@ -78,5 +82,58 @@ impl From<Report> for UpdateReportInput {
             events: value.events(),
             id: value.id(),
         }
+    }
+}
+
+/// Mapper from DOT
+
+impl TryFrom<UpdateReportInput> for Report {
+    type Error = ApplicationError;
+
+    fn try_from(value: UpdateReportInput) -> Result<Self, Self::Error> {
+        let mut builder = Self::new(value.id, value.author_id);
+        builder
+            .set_report_type(value.report_type)
+            .set_due(value.due_date.unwrap_or_default())
+            .set_status(value.status)
+            .set_version(value.version)
+            .set_created_at(value.created_at)
+            .set_content(ReportContent::try_from(value.content)?);
+        for event in value.events.into_iter() {
+            builder.add_event(event);
+        }
+        for permission in value.permissions.into_iter() {
+            builder.add_permission(permission);
+        }
+        for reviewer in value.assigned_reviewer_id.into_iter() {
+            builder.add_reviewer(reviewer);
+        }
+        let report = builder.build(&value.title, value.updated_at)?;
+        Ok(report)
+    }
+}
+
+impl TryFrom<UpdateReportContentInput> for ReportContent {
+    type Error = ApplicationError;
+
+    fn try_from(value: UpdateReportContentInput) -> Result<Self, Self::Error> {
+        let mut builder = Self::new();
+        builder
+            .set_body(value.body)
+            .set_rejection_reason(value.rejection_reason.unwrap_or_default());
+        for attachment in value.attachments.into_iter() {
+            builder.add_attachment(attachment);
+        }
+        for review_comment in value.review_comments.into_iter() {
+            builder.add_review_comment(ReviewComment::from(review_comment));
+        }
+        let report_content = builder.build()?;
+        Ok(report_content)
+    }
+}
+
+impl From<UpdateReviewCommentInput> for ReviewComment {
+    fn from(value: UpdateReviewCommentInput) -> Self {
+        Self::new(value.reviewer_id, value.comment, value.created_at)
     }
 }

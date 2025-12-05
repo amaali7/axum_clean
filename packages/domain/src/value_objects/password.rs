@@ -3,9 +3,22 @@ use std::str::FromStr;
 use crate::{error::DomainResult, DomainError};
 
 #[derive(Debug, Clone)]
-pub struct Password(String);
+pub enum Password {
+    Hashed(HashedPassword),
 
-impl Password {
+    NoneHashed(NoneHashedPassword),
+}
+
+impl Default for Password {
+    fn default() -> Self {
+        Password::NoneHashed(NoneHashedPassword::default())
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct NoneHashedPassword(String);
+
+impl NoneHashedPassword {
     pub fn new(password: &str) -> DomainResult<Self> {
         if password.len() < 8 {
             return Err(DomainError::ValidationError(
@@ -29,7 +42,7 @@ impl Password {
     }
 }
 
-impl FromStr for Password {
+impl FromStr for NoneHashedPassword {
     type Err = DomainError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -37,7 +50,7 @@ impl FromStr for Password {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct HashedPassword(String);
 
 impl HashedPassword {

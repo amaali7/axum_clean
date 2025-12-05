@@ -7,6 +7,8 @@ use domain::{
     Permission, Report, ReportContent, ReportId, ReportStatus, ReportType, UserId,
 };
 
+use crate::error::ApplicationError;
+
 /// Auther User Report Output
 pub struct AutherReportOutput {
     pub id: ReportId,
@@ -36,6 +38,8 @@ pub struct AutherReviewCommentOutput {
     pub comment: Comment,
     pub created_at: DateTime,
 }
+
+/// Mappers from Domain
 
 impl From<Report> for AutherReportOutput {
     fn from(value: Report) -> Self {
@@ -79,5 +83,53 @@ impl From<ReviewComment> for AutherReviewCommentOutput {
             comment: value.comment(),
             created_at: value.created_at(),
         }
+    }
+}
+/// Mappers to Domain
+impl TryFrom<AutherReportOutput> for Report {
+    type Error = ApplicationError;
+
+    fn try_from(value: AutherReportOutput) -> Result<Self, Self::Error> {
+        let mut builder = Self::new(value.id, value.author_id);
+        builder
+            .set_report_type(value.report_type)
+            .set_due(value.due_date.unwrap_or_default())
+            .set_content(ReportContent::try_from(value.content)?);
+        for event in value.events.into_iter() {
+            builder.add_event(event);
+        }
+        for permission in value.permissions.into_iter() {
+            builder.add_permission(permission);
+        }
+        for reviewer in value.assigned_reviewer_id.into_iter() {
+            builder.add_reviewer(reviewer);
+        }
+        let report = builder.build(&value.title, value.created_at)?;
+        Ok(report)
+    }
+}
+
+impl TryFrom<AutherReportContentOutput> for ReportContent {
+    type Error = ApplicationError;
+
+    fn try_from(value: AutherReportContentOutput) -> Result<Self, Self::Error> {
+        let mut builder = Self::new();
+        builder
+            .set_body(value.body)
+            .set_rejection_reason(value.rejection_reason.unwrap_or_default());
+        for attachment in value.attachments.into_iter() {
+            builder.add_attachment(attachment);
+        }
+        for review_comment in value.review_comments.into_iter() {
+            builder.add_review_comment(ReviewComment::from(review_comment));
+        }
+        let report_content = builder.build()?;
+        Ok(report_content)
+    }
+}
+
+impl From<AutherReviewCommentOutput> for ReviewComment {
+    fn from(value: AutherReviewCommentOutput) -> Self {
+        Self::new(value.reviewer_id, value.comment, value.created_at)
     }
 }

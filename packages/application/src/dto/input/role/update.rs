@@ -6,6 +6,8 @@ use domain::{
     Name, Permission, Role, RoleId,
 };
 
+use crate::error::ApplicationError;
+
 pub struct UpdateRoleInput {
     pub id: RoleId,
     pub name: Name,
@@ -27,5 +29,27 @@ impl From<Role> for UpdateRoleInput {
             id: value.id(),
             events: value.events(),
         }
+    }
+}
+
+/// Mapper from DOT
+
+impl TryFrom<UpdateRoleInput> for Role {
+    type Error = ApplicationError;
+    fn try_from(value: UpdateRoleInput) -> Result<Self, Self::Error> {
+        let mut builder = Self::new(value.id);
+        builder
+            .set_name(value.name)
+            .set_description(value.description)
+            .set_created_at(value.created_at)
+            .set_is_system_role(value.is_system_role);
+        for event in value.events.into_iter() {
+            builder.add_event(event);
+        }
+        for permission in value.permissions.into_iter() {
+            builder.add_permission(permission);
+        }
+        let role = builder.build()?;
+        Ok(role)
     }
 }

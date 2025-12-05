@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use domain::{
     events::DomainEventId,
     user::{UserPreferences, UserStatus},
-    value_objects::{Addressess, Bio, DateTime, PhoneNumbers, Url},
+    value_objects::{Addressess, Bio, DateTime, Language, PhoneNumbers, Url},
     Email, Name, Permission, RoleId, User, UserId, UserProfile, Username,
 };
 
@@ -25,17 +25,17 @@ pub struct OwnerUserPreferencesOutput {
     pub email_notifications: bool,
     pub push_notifications: bool,
     pub two_factor_auth: bool,
-    pub language: String,
+    pub language: Language,
 }
 
 pub struct OwnerUserProfileOutput {
     pub first_name: Name,
     pub last_name: Name,
     pub bio: Option<Bio>,
-    pub phone_numbers: Option<PhoneNumbers>,
+    pub phone_numbers: PhoneNumbers,
     pub avatar_url: Option<Url>,
     pub date_of_birth: Option<DateTime>,
-    pub addresses: Option<Addressess>,
+    pub addresses: Addressess,
     pub website: Option<Url>,
 }
 

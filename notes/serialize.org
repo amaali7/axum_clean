@@ -1,0 +1,293 @@
+* Where Do Serialized Objects Belong in Clean Architecture?
+
+**Short Answer**
+Serialized objects (JSON, msgpack, protobuf, etc.) belong in the *Infrastructure Layer*, not in Domain or Application.
+
+Serialization is a *technical concern*, not a business rule.
+
+---
+
+* 🧠 Key Rule
+
+#+begin_quote
+Serialization formats are external boundaries. They must not leak into core business logic.
+#+end_quote
+
+---
+
+* 🏛 Responsibilities of Each Layer Regarding Serialization
+
+| Layer               | Should Handle Serialization? | Reason |
+|---------------------|------------------------------|--------|
+| **Domain**          | 🚫 No                         | Must remain pure business logic |
+| **Application**     | ⚠️ Minimal (no serde)         | Only communicates using DTOs |
+| **Infrastructure**  | ✅ Yes                         | Talks to HTTP, database, message brokers |
+
+---
+
+* 📌 What Each Layer Contains
+
+**Domain Layer**
+- Entities, Value Objects, Domain Events
+- **No serde usage**
+- **No JSON, no frameworks**
+
+**Application Layer**
+- Input and Output DTOs
+- **No serde, no JSON annotations**
+- Pure data models for use cases
+
+**Infrastructure Layer**
+- HTTP request/response structs
+- Database models with serde
+- External API mappers
+
+---
+
+* 📍 Example Folder Structure
+
+#+BEGIN_SRC text
+domain/
+  user.rs             ;; Pure entity
+
+application/
+  dto/
+    user_input.rs     ;; No serde
+    user_output.rs    ;; No serde
+
+infrastructure/
+  http/
+    serializers/
+      user_request.rs   ;; serde here
+      user_response.rs  ;; serde here
+#+END_SRC
+
+---
+
+* 💡 Why Should Domain Avoid Serde?
+
+If you add `#[derive(Serialize, Deserialize)]` to domain entities:
+- They depend on external frameworks
+- They become tied to JSON or any I/O format
+- They are no longer business objects
+- It breaks Clean Architecture dependency rules
+
+#+begin_quote
+Domain must not depend on technical frameworks. 
+#+end_quote
+
+---
+
+* 🎯 Final Rule
+
+#+begin_quote
+*Domain talks business. Infrastructure talks JSON.*
+#+end_quote
+
+* Difference Between Mappers and Serializers in Clean Architecture
+
+A common confusion in Rust Clean Architecture is why we have **mappers** and **serializers** in different folders. They are not the same:
+
+---
+
+* 🗂 Definitions
+
+**Serializers**
+- Their job is to *encode/decode data formats* (JSON, BSON, MessagePack, Protobuf).
+- They exist to talk to *external protocols* (HTTP, DB storage format, APIs).
+- They use libraries like **serde**, **serde_json**, **bincode**, etc.
+- They belong to the **Infrastructure layer** only.
+
+**Mappers**
+- Their job is to *convert between layers* (DTO <-> Domain).
+- They translate values without caring about bytes or JSON.
+- They do *business-safe transformations*.
+- They belong in **Application layer** (sometimes shared with Domain).
+
+---
+
+* 📌 Example Difference
+
+**Serializer Example (Infrastructure HTTP request)**
+
+#+BEGIN_SRC rust
+#[derive(Deserialize)]
+pub struct CreateUserRequest {
+    pub name: String,
+    pub email: String,
+}
+#+END_SRC
+
+This knows how to read HTTP JSON. It uses serde → therefore Infrastructure.
+
+---
+
+**Mapper Example (Application DTO to Domain Entity)**
+
+#+BEGIN_SRC rust
+impl From<CreateUserInput> for User {
+    fn from(input: CreateUserInput) -> Self {
+        User::new(input.name, input.email)
+    }
+}
+#+END_SRC
+
+This performs *business-safe conversion* → no JSON, no serde.
+
+---
+
+* 🧠 Key Concept
+
+| Responsibility | Serializers | Mappers |
+|----------------|-------------|---------|
+| Convert to/from JSON/DB | ✅ Yes | 🚫 No |
+| Convert between Domain & DTO | 🚫 No | ✅ Yes |
+| Uses serde | Yes | Never |
+| Belongs to | Infrastructure | Application |
+| Purpose | External communication | Internal layer boundaries |
+
+---
+
+* 📍 Example Folder Structure
+
+#+BEGIN_SRC text
+application/
+  dto/
+    user_input.rs
+    user_output.rs
+  mappers/
+    user_mapper.rs       ;; CreateUserInput -> User
+
+infrastructure/
+  http/
+    serializers/
+      user_request.rs    ;; JSON request
+      user_response.rs   ;; JSON response
+  db/
+    serializers/
+      user_record.rs     ;; DB row format
+#+END_SRC
+
+---
+
+* 🎯 Final Rule
+
+#+begin_quote
+**Serializers deal with formats (JSON/DB).  
+Mappers deal with meanings (Domain/DTO).**
+#+end_quote
+
+---
+* Clarification: Why Were Mappers Previously Shown in Infrastructure?
+
+You noticed a contradiction: earlier, mappers appeared in the **Infrastructure layer**, but now we say mappers belong to **Application**.
+
+Both are correct, but for **different types of mappers**.
+
+---
+
+* 🧩 There Are Actually Two Types of Mappers
+
+| Mapper Type | Converts Between | Layer |
+|-------------|------------------|-------|
+| **Business Mapper** | DTO ↔ Domain | Application |
+| **Persistence Mapper** | Domain ↔ Database Models | Infrastructure |
+
+They do different jobs and must be separated.
+
+---
+
+* 🟦 1) Business Mappers (Application Layer)
+
+These convert between:
+- **Input DTOs ↔ Domain**
+- **Domain ↔ Output DTOs**
+
+They **do not touch JSON, DB, serde**.
+
+#+BEGIN_SRC rust
+impl From<CreateUserInput> for User {
+    fn from(dto: CreateUserInput) -> Self {
+        User::new(dto.name, dto.email)
+    }
+}
+#+END_SRC
+
+📌 Why Application?
+- They convert data for *use case execution*.
+- They enforce *business validation rules* before creating domain objects.
+
+---
+
+* 🟨 2) Persistence Mappers (Infrastructure Layer)
+
+These convert between:
+- **Domain Entities ↔ Database Records**
+- **Value Objects ↔ Columns/Fields**
+
+They may use:
+- serde
+- SQL/NoSQL model structs
+- SurrealDB JSON
+
+#+BEGIN_SRC rust
+impl From<UserRecord> for User {
+    fn from(rec: UserRecord) -> Self {
+        User::new(rec.id, rec.name)
+    }
+}
+#+END_SRC
+
+📌 Why Infrastructure?
+- They depend on specific DB technologies
+- They know DB shapes, storage schema
+- They use serde sometimes
+
+---
+
+* 🧠 Summary Table
+
+| Layer | Type of Mapper | Tools Used | Purpose |
+|-------|----------------|------------|----------|
+| **Application** | DTO ↔ Domain | No serde | Data for use cases |
+| **Infrastructure** | Domain ↔ DB/HTTP External | serde often used | Data for storage or networking |
+
+---
+
+* 📍 Final Folder Structure Example
+
+#+BEGIN_SRC text
+application/
+  dto/
+    user_input.rs
+    user_output.rs
+  mappers/
+    user_business_mapper.rs     ;; DTO ↔ Domain
+
+infrastructure/
+  db/
+    serializers/
+      user_record.rs            ;; serde DB record
+  mappers/
+    user_persistence_mapper.rs  ;; Domain ↔ DB
+#+END_SRC
+
+---
+
+* 🎯 Final Rule
+
+#+begin_quote
+**There is no single "mapper layer". The location depends on what you're mapping.**
+- Mapping DTO ↔ Domain = Application
+- Mapping Domain ↔ DB Models = Infrastructure
+#+end_quote
+
+---
+
+If you want, I can next provide:
+
+- 🔁 Full flow diagram from HTTP → Domain → DB
+- 🧪 Test strategy for mappers (unit + integration)
+- 📂 Full clean architecture template for Rust + SurrealDB
+
+Which one would you like?

@@ -4,6 +4,7 @@ pub use profile::UserProfile;
 
 use crate::error::DomainResult;
 use crate::events::DomainEventId;
+use crate::value_objects::Language;
 use crate::{DomainError, Email, Permission, RoleId, Username};
 
 use std::collections::HashSet;
@@ -38,7 +39,7 @@ impl std::fmt::Display for UserId {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct User {
     id: UserId,
     email: Email,
@@ -52,8 +53,8 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(id: UserId) -> Result<UserBuilder, super::error::DomainError> {
-        Ok(UserBuilder::new(id))
+    pub fn new(id: UserId) -> UserBuilder {
+        UserBuilder::new(id)
     }
     // Basic getters - return references to avoid cloning
     pub fn id(&self) -> UserId {
@@ -99,10 +100,23 @@ pub struct UserPreferences {
     email_notifications: bool,
     push_notifications: bool,
     two_factor_auth: bool,
-    language: String,
+    language: Language,
 }
 
 impl UserPreferences {
+    pub fn new(
+        email_notifications: bool,
+        push_notifications: bool,
+        two_factor_auth: bool,
+        language: Language,
+    ) -> Self {
+        Self {
+            email_notifications,
+            push_notifications,
+            two_factor_auth,
+            language,
+        }
+    }
     pub fn email_notifications(&self) -> bool {
         self.email_notifications.clone()
     }
@@ -115,7 +129,7 @@ impl UserPreferences {
         self.two_factor_auth.clone()
     }
 
-    pub fn language(&self) -> String {
+    pub fn language(&self) -> Language {
         self.language.clone()
     }
 }
@@ -126,7 +140,7 @@ impl Default for UserPreferences {
             email_notifications: true,
             push_notifications: true,
             two_factor_auth: false,
-            language: "en".to_string(),
+            language: Language::new("english").unwrap(),
         }
     }
 }
@@ -139,6 +153,12 @@ pub enum UserStatus {
     Banned,
 }
 
+impl Default for UserStatus {
+    fn default() -> Self {
+        UserStatus::Inactive
+    }
+}
+
 // Builder pattern for complex object creation
 pub struct UserBuilder {
     id: UserId,
@@ -148,6 +168,8 @@ pub struct UserBuilder {
     roles: HashSet<RoleId>,
     permissions: HashSet<Permission>, // Cached permissions for performance
     events: Vec<DomainEventId>,
+    preferences: Option<UserPreferences>,
+    status: UserStatus,
 }
 
 impl UserBuilder {
@@ -160,9 +182,19 @@ impl UserBuilder {
             permissions: HashSet::new(),
             events: Vec::new(),
             id,
+            preferences: None,
+            status: UserStatus::Inactive,
         }
     }
 
+    pub fn set_preferences(&mut self, preferences: UserPreferences) -> &mut Self {
+        self.preferences = Some(preferences);
+        self
+    }
+    pub fn set_status(&mut self, status: UserStatus) -> &mut Self {
+        self.status = status;
+        self
+    }
     pub fn set_email(&mut self, email: Email) -> &mut Self {
         self.email = Some(email);
         self
@@ -211,8 +243,8 @@ impl UserBuilder {
             ))?,
             roles: self.roles,
             permissions: self.permissions,
-            preferences: UserPreferences::default(),
-            status: UserStatus::Inactive,
+            preferences: self.preferences.unwrap_or_default(),
+            status: self.status,
             events: self.events,
         })
     }

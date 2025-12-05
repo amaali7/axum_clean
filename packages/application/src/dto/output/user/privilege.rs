@@ -24,9 +24,9 @@ pub struct PrivilegeUserProfileOutput {
     pub first_name: Name,
     pub last_name: Name,
     pub bio: Option<Bio>,
-    pub phone_numbers: Option<PhoneNumbers>,
+    pub phone_numbers: PhoneNumbers,
     pub avatar_url: Option<Url>,
-    pub addresses: Option<Addressess>,
+    pub addresses: Addressess,
     pub website: Option<Url>,
 }
 

@@ -2,7 +2,7 @@ use std::ops::{Deref, DerefMut};
 
 use crate::{error::DomainResult, DomainError};
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Name(String);
 
 impl Name {
