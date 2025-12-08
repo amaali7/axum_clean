@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{fmt, str::FromStr};
 
 use crate::{error::DomainResult, DomainError};
 
@@ -9,6 +9,15 @@ pub enum Password {
     NoneHashed(NoneHashedPassword),
 }
 
+impl fmt::Display for Password {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Password::Hashed(hashed_password) => write!(f, "{}", hashed_password),
+            Password::NoneHashed(none_hashed_password) => write!(f, "{}", none_hashed_password),
+        }
+    }
+}
+
 impl Default for Password {
     fn default() -> Self {
         Password::NoneHashed(NoneHashedPassword::default())
@@ -17,6 +26,12 @@ impl Default for Password {
 
 #[derive(Debug, Default, Clone)]
 pub struct NoneHashedPassword(String);
+
+impl fmt::Display for NoneHashedPassword {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
 
 impl NoneHashedPassword {
     pub fn new(password: &str) -> DomainResult<Self> {
@@ -52,6 +67,12 @@ impl FromStr for NoneHashedPassword {
 
 #[derive(Debug, Default, Clone)]
 pub struct HashedPassword(String);
+
+impl fmt::Display for HashedPassword {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
 
 impl HashedPassword {
     pub fn new(hashed_password: &str) -> DomainResult<Self> {

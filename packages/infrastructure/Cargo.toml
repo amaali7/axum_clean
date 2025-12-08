@@ -6,11 +6,10 @@ edition = "2024"
 [dependencies]
 domain = { path = "../domain" }
 application = { path = "../application" }
-
 surrealdb =  { workspace = true }
 reqwest =  { workspace = true, features = ["json"] }
 serde =  { workspace = true , features = ["derive"] }
 tokio =  { workspace = true , features = ["rt-multi-thread", "macros"]}
 async-trait =  { workspace = true }
-
 thiserror =  { workspace = true }
+chrono =   { workspace = true }
