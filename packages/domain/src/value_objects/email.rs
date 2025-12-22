@@ -1,4 +1,7 @@
-use std::ops::{Deref, DerefMut};
+use std::{
+    ops::{Deref, DerefMut},
+    str::FromStr,
+};
 
 use crate::{error::DomainResult, DomainError};
 
@@ -35,16 +38,20 @@ impl Email {
         Ok(Self(email))
     }
 
-    pub fn domain(&self) -> &str {
-        self.0.split('@').nth(1).unwrap_or("")
+    pub fn email(&self) -> String {
+        self.0.clone()
     }
 
-    pub fn is_disposable(&self) -> bool {
-        let disposable_domains = ["tempmail.com", "throwaway.com", "guerrillamail.com"];
-        disposable_domains
-            .iter()
-            .any(|domain| self.domain() == *domain)
-    }
+    // pub fn domain(&self) -> &str {
+    //     self.0.split('@').nth(1).unwrap_or("")
+    // }
+
+    // pub fn is_disposable(&self) -> bool {
+    //     let disposable_domains = ["tempmail.com", "throwaway.com", "guerrillamail.com"];
+    //     disposable_domains
+    //         .iter()
+    //         .any(|domain| self.domain() == *domain)
+    // }
 }
 
 impl Deref for Email {
@@ -64,5 +71,13 @@ impl DerefMut for Email {
 impl std::fmt::Display for Email {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl FromStr for Email {
+    type Err = DomainError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::new(s)
     }
 }

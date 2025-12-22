@@ -39,6 +39,10 @@ impl Title {
 
         Ok(Self(title.to_string()))
     }
+
+    pub fn title(&self) -> String {
+        self.0.clone()
+    }
 }
 
 impl Deref for Title {
@@ -58,5 +62,13 @@ impl DerefMut for Title {
 impl std::fmt::Display for Title {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl std::str::FromStr for Title {
+    type Err = DomainError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::new(s)
     }
 }

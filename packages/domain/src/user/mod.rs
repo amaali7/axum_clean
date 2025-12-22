@@ -1,10 +1,11 @@
+pub mod preferences;
 pub mod profile;
 
+pub use preferences::UserPreferences;
 pub use profile::UserProfile;
 
 use crate::error::DomainResult;
 use crate::events::DomainEventId;
-use crate::value_objects::Language;
 use crate::{DomainError, Email, Permission, RoleId, Username};
 
 use std::collections::HashSet;
@@ -14,8 +15,11 @@ use std::ops::DerefMut;
 pub struct UserId(String);
 
 impl UserId {
-    pub fn new() -> Self {
-        Self(String::new())
+    pub fn new(id: &str) -> Self {
+        Self(id.to_string())
+    }
+    pub fn id(&self) -> String {
+        self.0.clone()
     }
 }
 
@@ -92,56 +96,6 @@ impl User {
 
     pub fn events(&self) -> Vec<DomainEventId> {
         self.events.clone()
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct UserPreferences {
-    email_notifications: bool,
-    push_notifications: bool,
-    two_factor_auth: bool,
-    language: Language,
-}
-
-impl UserPreferences {
-    pub fn new(
-        email_notifications: bool,
-        push_notifications: bool,
-        two_factor_auth: bool,
-        language: Language,
-    ) -> Self {
-        Self {
-            email_notifications,
-            push_notifications,
-            two_factor_auth,
-            language,
-        }
-    }
-    pub fn email_notifications(&self) -> bool {
-        self.email_notifications.clone()
-    }
-
-    pub fn push_notifications(&self) -> bool {
-        self.push_notifications.clone()
-    }
-
-    pub fn two_factor_auth(&self) -> bool {
-        self.two_factor_auth.clone()
-    }
-
-    pub fn language(&self) -> Language {
-        self.language.clone()
-    }
-}
-
-impl Default for UserPreferences {
-    fn default() -> Self {
-        Self {
-            email_notifications: true,
-            push_notifications: true,
-            two_factor_auth: false,
-            language: Language::new("english").unwrap(),
-        }
     }
 }
 

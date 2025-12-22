@@ -22,6 +22,13 @@ pub enum InfrastructureError {
     #[error("Permission denied")]
     Forbidden,
 
+    #[error("Infrastucter Validation failed: {0}")]
+    ValidationError(String),
+    #[error("Pasword unhashed error")]
+    UnHashedPassword,
+
+    #[error("Invalid timestamp failed")]
+    InvalidTimestamp,
     #[error("Unknown application error")]
     Unknown,
 }

@@ -1,4 +1,7 @@
-use std::ops::{Deref, DerefMut};
+use std::{
+    ops::{Deref, DerefMut},
+    str::FromStr,
+};
 
 use crate::{error::DomainResult, DomainError};
 
@@ -23,6 +26,9 @@ impl Bio {
 
         Ok(Self(bio.to_string()))
     }
+    pub fn bio(&self) -> String {
+        self.0.clone()
+    }
 }
 
 impl Deref for Bio {
@@ -42,5 +48,13 @@ impl DerefMut for Bio {
 impl std::fmt::Display for Bio {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl FromStr for Bio {
+    type Err = DomainError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::new(s)
     }
 }

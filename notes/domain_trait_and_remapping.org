@@ -1,0 +1,187 @@
+* Infrastructure Mapping & Purpose of Domain Traits
+
+This answer clarifies **two very important Clean Architecture questions**:
+
+1. Do we need to re-map *all* objects again in the Infrastructure layer?
+2. What is the real purpose of **domain traits**?
+
+---
+
+* 1) Do I Need to Re-map Everything in Infrastructure?
+
+**Short answer:**  
+No — *only when crossing a technical boundary.*
+
+---
+
+* 🧠 Rule of Thumb
+
+#+begin_quote
+You only remap when data crosses a boundary between layers or technologies.
+#+end_quote
+
+---
+
+* ✅ When You MUST Re-map in Infrastructure
+
+You remap **Domain → Infrastructure models** when:
+
+- Saving to a database (SurrealDB, SQL, Redis)
+- Calling an external API
+- Publishing messages to a queue
+- Serializing to JSON / Protobuf
+
+Because:
+- Domain entities contain invariants
+- Domain uses value objects
+- Infrastructure needs primitives & flat structures
+
+Example (Domain → DB):
+
+#+BEGIN_SRC rust
+Domain:
+  User {
+    id: UserId,
+    email: Email,
+    role: RoleId,
+  }
+
+Infrastructure DB record:
+  {
+    "id": "user:123",
+    "email": "a@b.com",
+    "role": "admin"
+  }
+#+END_SRC
+
+---
+
+* ❌ When You Should NOT Re-map
+
+You do *not* remap:
+
+- Domain → Domain
+- Application DTO → Domain inside the same use case
+- Passing domain entities between domain services
+
+Avoid unnecessary mapping → less code, less bugs.
+
+---
+
+* 2) What Is the Purpose of Domain Traits?
+
+Domain traits exist to express **capabilities and contracts**, not technology.
+
+---
+
+* 🎯 Why Domain Traits Exist
+
+Domain traits are used to:
+
+- Model *roles* and *behavior* in the business
+- Express *policies* and *rules*
+- Remove conditional logic (`if/else`)
+- Allow multiple implementations inside the domain
+
+---
+
+* 🧩 Examples of Domain Traits
+
+**Behavior-based trait**
+
+#+BEGIN_SRC rust
+pub trait CanReviewReport {
+    fn can_review(&self, report: &Report) -> bool;
+}
+#+END_SRC
+
+Used to express *business capability*, not DB or HTTP.
+
+---
+
+**Policy-based trait**
+
+#+BEGIN_SRC rust
+pub trait PasswordPolicy {
+    fn validate(&self, password: &str) -> bool;
+}
+#+END_SRC
+
+This allows:
+- StrictPolicy
+- RelaxedPolicy
+- CountrySpecificPolicy
+
+All *inside the domain*.
+
+---
+
+* ❌ What Domain Traits Are NOT For
+
+Domain traits should NOT:
+
+- Represent repositories
+- Use async
+- Know about databases
+- Know about HTTP
+- Depend on serde
+
+Those belong to the **Application layer (ports)**.
+
+---
+
+* 🧠 Domain Traits vs Application Ports
+
+| Concept | Domain Trait | Application Port |
+|-------|-------------|------------------|
+| Purpose | Business capability | External dependency |
+| Async? | ❌ No | ✅ Yes |
+| Depends on DB | ❌ No | ❌ No |
+| Implemented in Infra | ❌ No | ✅ Yes |
+| Example | `CanApprove` | `UserRepository` |
+
+---
+
+* 🧱 Example Combined Flow
+
+#+BEGIN_SRC text
+HTTP JSON
+   ↓
+Infrastructure Serializer
+   ↓
+Application DTO
+   ↓
+Business Mapper
+   ↓
+Domain Entity
+   ↓
+Domain Trait / Policy
+   ↓
+Application Use Case
+   ↓
+Domain Entity
+   ↓
+Infrastructure Mapper
+   ↓
+SurrealDB JSON
+#+END_SRC
+
+---
+
+* 🎯 Final Rules
+
+#+begin_quote
+1. Re-map only when crossing a boundary.
+2. Domain traits express business behavior, not infrastructure.
+3. Application ports express dependencies, not business rules.
+#+end_quote
+
+---
+
+If you want next, I can show:
+
+- 🔍 Concrete SurrealDB mapping examples (User, Role, Report)
+- 🧪 Testing strategy for domain traits
+- 🧠 When to prefer enums over traits in domain
+
+Just tell me.

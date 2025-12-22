@@ -5,7 +5,6 @@ use crate::{error::DomainResult, DomainError};
 #[derive(Debug, Clone)]
 pub enum Password {
     Hashed(HashedPassword),
-
     NoneHashed(NoneHashedPassword),
 }
 
@@ -51,9 +50,8 @@ impl NoneHashedPassword {
         Ok(Self(password.to_string()))
     }
 
-    // Note: No Deref implementation for security - don't expose password
-    pub fn as_str(&self) -> &str {
-        &self.0
+    pub fn none_hashed_password(&self) -> String {
+        self.0.clone()
     }
 }
 
@@ -61,7 +59,7 @@ impl FromStr for NoneHashedPassword {
     type Err = DomainError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self::new(s)?)
+        Self::new(s)
     }
 }
 
@@ -86,8 +84,15 @@ impl HashedPassword {
         Ok(Self(hashed_password.to_string()))
     }
 
-    // Note: No Deref implementation for security - don't expose hashed_password
-    pub fn as_str(&self) -> &str {
-        &self.0
+    pub fn hashed_password(&self) -> String {
+        self.0.clone()
+    }
+}
+
+impl FromStr for HashedPassword {
+    type Err = DomainError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::new(s)
     }
 }

@@ -14,8 +14,11 @@ use crate::{DomainError, Name};
 pub struct RoleId(String);
 
 impl RoleId {
-    pub fn new() -> Self {
-        Self(String::new())
+    pub fn new(id: &str) -> Self {
+        Self(id.to_string())
+    }
+    pub fn id(&self) -> String {
+        self.0.clone()
     }
 }
 

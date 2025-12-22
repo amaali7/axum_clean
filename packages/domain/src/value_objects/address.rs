@@ -16,6 +16,10 @@ impl Addressess {
     pub fn add_address(&mut self, address: Address) {
         self.0.push(address);
     }
+
+    pub fn addressess(&self) -> Vec<Address> {
+        self.0.clone()
+    }
 }
 
 impl Deref for Addressess {
@@ -53,33 +57,52 @@ pub struct AddressBuilder {
 }
 
 impl Address {
-    pub fn builder() -> AddressBuilder {
+    pub fn new() -> AddressBuilder {
         AddressBuilder::default()
+    }
+    pub fn title(&self) -> String {
+        self.title.clone()
+    }
+    pub fn street(&self) -> String {
+        self.street.clone()
+    }
+    pub fn city(&self) -> String {
+        self.city.clone()
+    }
+    pub fn state(&self) -> String {
+        self.state.clone()
+    }
+    pub fn postal_code(&self) -> String {
+        self.postal_code.clone()
+    }
+
+    pub fn country(&self) -> String {
+        self.country.clone()
     }
 }
 
 impl AddressBuilder {
-    pub fn set_title(mut self, value: &str) -> Self {
+    pub fn set_title(&mut self, value: &str) -> &mut Self {
         self.title = Some(value.to_string());
         self
     }
-    pub fn set_street(mut self, value: &str) -> Self {
+    pub fn set_street(&mut self, value: &str) -> &mut Self {
         self.street = Some(value.to_string());
         self
     }
-    pub fn set_city(mut self, value: &str) -> Self {
+    pub fn set_city(&mut self, value: &str) -> &mut Self {
         self.city = Some(value.to_string());
         self
     }
-    pub fn set_state(mut self, value: &str) -> Self {
+    pub fn set_state(&mut self, value: &str) -> &mut Self {
         self.state = Some(value.to_string());
         self
     }
-    pub fn set_postal_code(mut self, value: &str) -> Self {
+    pub fn set_postal_code(&mut self, value: &str) -> &mut Self {
         self.postal_code = Some(value.to_string());
         self
     }
-    pub fn set_country(mut self, value: &str) -> Self {
+    pub fn set_country(&mut self, value: &str) -> &mut Self {
         self.country = Some(value.to_string());
         self
     }

@@ -1,4 +1,7 @@
-use std::ops::{Deref, DerefMut};
+use std::{
+    ops::{Deref, DerefMut},
+    str::FromStr,
+};
 
 use crate::{error::DomainResult, DomainError};
 
@@ -39,6 +42,10 @@ impl Name {
 
         Ok(Self(name.to_string()))
     }
+
+    pub fn name(&self) -> String {
+        self.0.clone()
+    }
 }
 
 impl Deref for Name {
@@ -58,5 +65,13 @@ impl DerefMut for Name {
 impl std::fmt::Display for Name {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl FromStr for Name {
+    type Err = DomainError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::new(s)
     }
 }

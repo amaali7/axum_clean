@@ -1,4 +1,7 @@
-use std::ops::{Deref, DerefMut};
+use std::{
+    ops::{Deref, DerefMut},
+    str::FromStr,
+};
 
 use crate::{error::DomainResult, DomainError};
 
@@ -16,6 +19,9 @@ impl Language {
         }
 
         Ok(Self(language.to_string()))
+    }
+    pub fn language(&self) -> String {
+        self.0.clone()
     }
 }
 
@@ -36,5 +42,13 @@ impl DerefMut for Language {
 impl std::fmt::Display for Language {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl FromStr for Language {
+    type Err = DomainError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::new(s)
     }
 }

@@ -13,7 +13,7 @@ pub struct UserProfile {
     phone_numbers: PhoneNumbers,
     avatar_url: Option<Url>,
     date_of_birth: Option<DateTime>,
-    addresses: Addressess,
+    addressess: Addressess,
     website: Option<Url>,
     is_deleted: bool,
     created_at: DateTime,
@@ -47,7 +47,7 @@ impl UserProfile {
         self.date_of_birth.clone()
     }
     pub fn addresses(&self) -> Addressess {
-        self.addresses.clone()
+        self.addressess.clone()
     }
     pub fn website(&self) -> Option<Url> {
         self.website.clone()
@@ -74,6 +74,7 @@ pub struct UserProfileBuilder {
     date_of_birth: Option<DateTime>,
     addressess: Addressess,
     website: Option<Url>,
+    is_deleted: bool,
     phone_numbers: PhoneNumbers,
 }
 
@@ -88,12 +89,18 @@ impl UserProfileBuilder {
             date_of_birth: None,
             addressess: Addressess::new(),
             website: None,
+            is_deleted: false,
             phone_numbers: PhoneNumbers::new(),
         }
     }
 
     pub fn set_first_name(&mut self, name: Name) -> &mut Self {
         self.first_name = Some(name);
+        self
+    }
+
+    pub fn set_is_deleted(&mut self, is_deleted: bool) -> &mut Self {
+        self.is_deleted = is_deleted;
         self
     }
 
@@ -109,6 +116,10 @@ impl UserProfileBuilder {
 
     pub fn set_bio(&mut self, bio: Bio) -> &mut Self {
         self.bio = Some(bio);
+        self
+    }
+    pub fn set_website(&mut self, url: Url) -> &mut Self {
+        self.website = Some(url);
         self
     }
 
@@ -153,9 +164,9 @@ impl UserProfileBuilder {
             date_of_birth: Some(self.date_of_birth.ok_or(DomainError::ValidationError(
                 "Date of Birth is not Optional !".to_string(),
             ))?),
-            addresses: self.addressess,
+            addressess: self.addressess,
             website: self.website,
-            is_deleted: false,
+            is_deleted: self.is_deleted,
             created_at: created_at,
             updated_at: updated_at,
         })

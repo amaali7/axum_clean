@@ -8,14 +8,6 @@ pub use report::ReportEvent;
 pub use role::RoleEvent;
 pub use user::UserEvent;
 
-// pub trait DomainEvent: std::fmt::Debug + Send + Sync {
-//     fn event_type(&self) -> &'static str;
-//     fn occurred_at(&self) -> String;
-//     fn version(&self) -> u64 {
-//         1
-//     }
-// }
-
 #[derive(Debug, Clone)]
 pub enum EventType {
     User(UserEvent),
@@ -26,8 +18,11 @@ pub enum EventType {
 #[derive(Debug, Clone)]
 pub struct DomainEventId(String);
 impl DomainEventId {
-    pub fn new() -> Self {
-        Self(String::new())
+    pub fn new(id: &str) -> Self {
+        Self(id.to_string())
+    }
+    pub fn id(&self) -> String {
+        self.0.clone()
     }
 }
 

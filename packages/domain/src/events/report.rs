@@ -1,29 +1,29 @@
-use crate::{value_objects::Diff, ReportId, ReportStatus, UserId};
+use crate::{value_objects::Diff, DateTime, ReportId, ReportStatus, UserId};
 
 #[derive(Debug, Clone)]
 pub enum ReportEvent {
     ReportCreated {
         report_id: ReportId,
         auther_id: UserId,
-        occurred_at: String,
+        occurred_at: DateTime,
     },
     ReportRemoved {
         report_id: ReportId,
         auther_id: UserId,
-        occurred_at: String,
+        occurred_at: DateTime,
     },
     ReportModified {
         report_id: ReportId,
         auther_id: UserId,
         diff: Diff,
-        occurred_at: String,
+        occurred_at: DateTime,
     },
     ReportStatusChanged {
         report_id: ReportId,
         old_status: ReportStatus,
         new_status: ReportStatus,
         changed_by: UserId,
-        occurred_at: String,
+        occurred_at: DateTime,
     },
 }
 
@@ -36,7 +36,7 @@ impl ReportEvent {
             ReportEvent::ReportStatusChanged { .. } => "report.status.changed",
         }
     }
-    fn occurred_at(&self) -> String {
+    fn occurred_at(&self) -> DateTime {
         match self {
             ReportEvent::ReportCreated { occurred_at, .. } => occurred_at.clone(),
             ReportEvent::ReportRemoved { occurred_at, .. } => occurred_at.clone(),

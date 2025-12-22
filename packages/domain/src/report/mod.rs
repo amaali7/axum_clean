@@ -20,8 +20,11 @@ use std::collections::HashSet;
 pub struct ReportId(String);
 
 impl ReportId {
-    pub fn new() -> Self {
-        Self(String::new())
+    pub fn new(id: &str) -> Self {
+        Self(id.to_string())
+    }
+    pub fn id(&self) -> String {
+        self.0.clone()
     }
 }
 

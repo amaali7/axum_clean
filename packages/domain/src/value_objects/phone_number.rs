@@ -2,6 +2,8 @@ use std::ops::{Deref, DerefMut};
 
 use crate::{error::DomainResult, DomainError};
 
+use super::Title;
+
 #[derive(Debug, Clone, Default)]
 pub struct PhoneNumbers(Vec<PhoneNumber>);
 
@@ -16,6 +18,10 @@ impl PhoneNumbers {
 
     pub fn add_phone_number(&mut self, phone_number: PhoneNumber) {
         self.0.push(phone_number);
+    }
+
+    pub fn phone_numbers(&self) -> Vec<PhoneNumber> {
+        self.0.clone()
     }
 }
 
@@ -36,7 +42,7 @@ impl DerefMut for PhoneNumbers {
 // More value objects...
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PhoneNumber {
-    title: String,
+    title: Title,
     number: String,
 }
 
@@ -60,9 +66,15 @@ impl PhoneNumber {
         }
 
         Ok(Self {
-            title: title.to_string(),
+            title: Title::new(title)?,
             number: cleaned,
         })
+    }
+    pub fn title(&self) -> Title {
+        self.title.clone()
+    }
+    pub fn number(&self) -> String {
+        self.number.clone()
     }
 }
 

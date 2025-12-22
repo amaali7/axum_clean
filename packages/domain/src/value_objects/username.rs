@@ -39,6 +39,10 @@ impl Username {
 
         Ok(Self(username.to_string()))
     }
+
+    pub fn username(&self) -> String {
+        self.0.clone()
+    }
 }
 
 impl Deref for Username {
@@ -58,5 +62,13 @@ impl DerefMut for Username {
 impl std::fmt::Display for Username {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl std::str::FromStr for Username {
+    type Err = DomainError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::new(s)
     }
 }
