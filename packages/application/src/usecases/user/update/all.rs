@@ -10,7 +10,7 @@ pub struct UpdateUserUseCase<R: UserRepository> {
 impl<R: UserRepository> UpdateUserUseCase<R> {
     pub async fn execute(&self, input: UpdateUserInput) -> AppResult<OwnerUserOutput> {
         let user = User::new(input.id).build()?;
-        self.repo.update(&user).await?;
+        self.repo.update(user.clone()).await?;
         Ok(OwnerUserOutput::from(user))
     }
 }

@@ -8,7 +8,7 @@ pub struct GetUserByUsernamePrivilegeUseCase<R: UserRepository> {
 
 impl<R: UserRepository> GetUserByUsernamePrivilegeUseCase<R> {
     pub async fn execute(&self, username: Username) -> AppResult<PrivilegeUserOutput> {
-        let result = self.repo.get_by_username(&username).await?;
+        let result = self.repo.get_by_username(username.clone()).await?;
         match result {
             Some(user) => Ok(PrivilegeUserOutput::from(user)),
             None => Err(ApplicationError::Repository(format!("User : {} not found", username))),

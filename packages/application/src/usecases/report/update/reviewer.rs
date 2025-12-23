@@ -9,7 +9,7 @@ pub struct AssignReviewerForReportUseCase<R: ReportRepository> {
 
 impl<R: ReportRepository> AssignReviewerForReportUseCase<R> {
     pub async fn execute(&self, report_id:ReportId, reviewer_id: UserId ) -> AppResult<()> {
-        self.repo.assign_reviewer(&report_id,&reviewer_id).await?;
+        self.repo.assign_reviewer(report_id.clone(),reviewer_id.clone()).await?;
         Ok(())
     }
 }

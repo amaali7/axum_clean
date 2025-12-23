@@ -10,7 +10,7 @@ pub struct GetReportByTitleGeneralUseCase<R: ReportRepository> {
 
 impl<R: ReportRepository> GetReportByTitleGeneralUseCase<R> {
     pub async fn execute(&self, title: Title) -> AppResult<GeneralReportOutput> {
-        let result = self.repo.get_by_title(&title).await?;
+        let result = self.repo.get_by_title(title.clone()).await?;
         match result {
             Some(report) => Ok(GeneralReportOutput::from(report)),
             None => Err(ApplicationError::Repository(format!("Report : title {} not found", title))),

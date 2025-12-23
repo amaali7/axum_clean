@@ -9,7 +9,7 @@ pub struct GetRoleByNamePrivilegeUseCase<R: RoleRepository> {
 
 impl<R: RoleRepository> GetRoleByNamePrivilegeUseCase<R> {
     pub async fn execute(&self, name: Name) -> AppResult<PrivilegeRoleOutput> {
-        let result = self.repo.get_by_name(&name).await?;
+        let result = self.repo.get_by_name(name.clone()).await?;
         match result {
             Some(role) => Ok(PrivilegeRoleOutput::from(role)),
             None => Err(ApplicationError::Repository(format!("Role : {} not found", name))),

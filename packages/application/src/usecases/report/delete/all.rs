@@ -9,6 +9,6 @@ pub struct DeleteReportUseCase<R: ReportRepository> {
 
 impl<R: ReportRepository> DeleteReportUseCase<R> {
     pub async fn execute(&self, report_id: ReportId) -> AppResult<()> {
-        self.repo.delete(&report_id).await
+        self.repo.delete(report_id.clone()).await
     }
 }

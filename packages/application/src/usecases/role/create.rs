@@ -9,7 +9,7 @@ pub struct CreateRoleUseCase<R: RoleRepository> {
 impl<R: RoleRepository> CreateRoleUseCase<R> {
     pub async fn execute(&self, input: CreateRoleInput) -> AppResult<PrivilegeRoleOutput> {
         let role = Role::try_from(input)?;
-        self.repo.save(&role).await?;
+        self.repo.save(role.clone()).await?;
         Ok(PrivilegeRoleOutput::from(role))
     }
 }

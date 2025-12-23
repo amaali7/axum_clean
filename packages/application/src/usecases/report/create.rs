@@ -15,7 +15,7 @@ pub struct CreateReportUseCase<R: ReportRepository> {
 impl<R: ReportRepository> CreateReportUseCase<R> {
     pub async fn execute(&self, input: CreateReportInput) -> AppResult<PreivilegeReportOutput> {
         let report = Report::try_from(input)?;
-        self.repo.save(&report).await?;
+        self.repo.save(report.clone()).await?;
         Ok(PreivilegeReportOutput::from(report))
     }
 }

@@ -4,15 +4,15 @@ pub mod role;
 use domain::RoleId;
 pub use permissions::SerializedPermission;
 pub use role::SerializedRole;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct SerializedRoleId(String);
 
 impl SerializedRoleId {
-    // Create a new SerializedRoleId with a UUID
-    pub fn new(id: RoleId) -> Self {
-        SerializedRoleId(id.id())
+    // Create a new SerializedReportId with a UUID
+    pub fn new(id: &str) -> Self {
+        Self(id.to_string())
     }
 
     // Get the inner String for database operations
@@ -31,19 +31,19 @@ impl Serialize for SerializedRoleId {
     }
 }
 
-impl<'de> Deserialize<'de> for SerializedRoleId {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let record_id = String::deserialize(deserializer)?;
-        Ok(SerializedRoleId(record_id))
-    }
-}
+// impl<'de> Deserialize<'de> for SerializedRoleId {
+//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+//     where
+//         D: serde::Deserializer<'de>,
+//     {
+//         let record_id = String::deserialize(deserializer)?;
+//         Ok(SerializedRoleId(record_id))
+//     }
+// }
 
 impl From<RoleId> for SerializedRoleId {
     fn from(value: RoleId) -> Self {
-        Self::new(value)
+        Self::new(&value.id())
     }
 }
 

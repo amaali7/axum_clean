@@ -9,6 +9,6 @@ pub struct DeleteUserUseCase<R: UserRepository> {
 
 impl<R: UserRepository> DeleteUserUseCase<R> {
     pub async fn execute(&self, user_id: UserId) -> AppResult<()> {
-        self.repo.delete(&user_id).await
+        self.repo.delete(user_id.clone()).await
     }
 }

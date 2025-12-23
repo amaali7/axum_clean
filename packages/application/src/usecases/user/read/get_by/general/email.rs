@@ -10,7 +10,7 @@ pub struct GetUserByEmailGeneralUseCase<R: UserRepository> {
 
 impl<R: UserRepository> GetUserByEmailGeneralUseCase<R> {
     pub async fn execute(&self, email: Email ) -> AppResult<GeneralUserOutput> {
-        let result = self.repo.get_by_email(&email).await?;
+        let result = self.repo.get_by_email(email.clone()).await?;
         match result {
             Some(user) => Ok(GeneralUserOutput::from(user)),
             None => Err(ApplicationError::Repository(format!("User : {} not found", email))),

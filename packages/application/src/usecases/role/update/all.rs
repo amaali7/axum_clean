@@ -10,7 +10,7 @@ pub struct UpdateRoleUseCase<R: RoleRepository> {
 impl<R: RoleRepository> UpdateRoleUseCase<R> {
     pub async fn execute(&self, input: UpdateRoleInput) -> AppResult<PrivilegeRoleOutput> {
         let role = Role::try_from(input)?;
-        self.repo.update(&role).await?;
+        self.repo.update(role.clone()).await?;
         Ok(PrivilegeRoleOutput::from(role))
     }
 }

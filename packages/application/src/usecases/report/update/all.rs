@@ -9,7 +9,7 @@ pub struct UpdateReportUseCase<R: ReportRepository> {
 impl<R: ReportRepository> UpdateReportUseCase<R> {
     pub async fn execute(&self, input: UpdateReportInput) -> AppResult<PreivilegeReportOutput> {
         let report = Report::try_from(input)?; 
-        self.repo.update(&report).await?;
+        self.repo.update(report.clone()).await?;
         Ok(PreivilegeReportOutput::from(report))
     }
 }

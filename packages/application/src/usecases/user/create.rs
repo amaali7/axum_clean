@@ -13,7 +13,8 @@ impl<R: UserRepository> CreateUserUseCase<R> {
         let user_builder = User::new(input.id);
                     let user = user_builder.build()?;
 
-        self.repo.save(&user).await?;
+        self.repo.save(user.clone()).await?;
         Ok(OwnerUserOutput::from(user))
     }
 }
+

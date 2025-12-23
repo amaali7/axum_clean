@@ -6,15 +6,15 @@ pub mod status;
 pub use status::SerializedReportStatus;
 
 use domain::ReportId;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct SerializedReportId(String);
 
 impl SerializedReportId {
     // Create a new SerializedReportId with a UUID
-    pub fn new(id: ReportId) -> Self {
-        SerializedReportId(id.id())
+    pub fn new(id: &str) -> Self {
+        Self(id.to_string())
     }
 
     // Get the inner String for database operations
@@ -33,19 +33,19 @@ impl Serialize for SerializedReportId {
     }
 }
 
-impl<'de> Deserialize<'de> for SerializedReportId {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let record_id = String::deserialize(deserializer)?;
-        Ok(SerializedReportId(record_id))
-    }
-}
+// impl<'de> Deserialize<'de> for SerializedReportId {
+//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+//     where
+//         D: serde::Deserializer<'de>,
+//     {
+//         let record_id = String::deserialize(deserializer)?;
+//         Ok(SerializedReportId(record_id))
+//     }
+// }
 
 impl From<ReportId> for SerializedReportId {
     fn from(value: ReportId) -> Self {
-        Self::new(value)
+        Self::new(&value.id())
     }
 }
 

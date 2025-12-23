@@ -24,7 +24,7 @@ pub struct SerializedRole {
 }
 
 impl SerializedRole {
-    pub fn new(id: SerializedRoleId) -> SerializedRoleBuilder {
+    pub fn new(id: &str) -> SerializedRoleBuilder {
         SerializedRoleBuilder::new(id)
     }
 
@@ -68,10 +68,10 @@ pub struct SerializedRoleBuilder {
 }
 
 impl SerializedRoleBuilder {
-    pub fn new(id: SerializedRoleId) -> Self {
+    pub fn new(id: &str) -> Self {
         let events: Vec<SerializedEventId> = Vec::new();
         Self {
-            id,
+            id: SerializedRoleId::new(id),
             name: None,
             description: None,
             permissions: HashSet::new(),
@@ -139,7 +139,7 @@ impl TryFrom<Role> for SerializedRole {
     type Error = InfrastructureError;
 
     fn try_from(value: Role) -> InfrastructureResult<Self> {
-        let mut role_builder = Self::new(value.id().into());
+        let mut role_builder = Self::new(&value.id().id());
         role_builder
             .set_name(value.name().try_into()?)
             .set_description(value.description().try_into()?)

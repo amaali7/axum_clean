@@ -8,7 +8,7 @@ pub struct GetUserByUsernameGeneralUseCase<R: UserRepository> {
 
 impl<R: UserRepository> GetUserByUsernameGeneralUseCase<R> {
     pub async fn execute(&self, username: Username) -> AppResult<GeneralUserOutput> {
-        let result = self.repo.get_by_username(&username).await?;
+        let result = self.repo.get_by_username(username.clone()).await?;
         match result {
             Some(user) => Ok(GeneralUserOutput::from(user)),
             None => Err(ApplicationError::Repository(format!("User : {} not found", username))),

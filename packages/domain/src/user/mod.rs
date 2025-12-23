@@ -43,7 +43,7 @@ impl std::fmt::Display for UserId {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct User {
     id: UserId,
     email: Email,

@@ -10,7 +10,7 @@ pub struct GetReportByAutherIdAutherUseCase<R: ReportRepository> {
 
 impl<R: ReportRepository> GetReportByAutherIdAutherUseCase<R> {
     pub async fn execute(&self, auther_id: UserId ) -> AppResult<AutherReportOutput> {
-        let result = self.repo.get_by_author_id(&auther_id).await?;
+        let result = self.repo.get_by_author_id(auther_id.clone()).await?;
         match result {
             Some(user) => Ok(AutherReportOutput::from(user)),
             None => Err(ApplicationError::Repository(format!("Report : not found"))),

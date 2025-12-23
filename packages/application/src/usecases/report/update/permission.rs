@@ -9,6 +9,6 @@ pub struct AssignPermissionForReportUseCase<R: ReportRepository> {
 
 impl<R: ReportRepository> AssignPermissionForReportUseCase<R> {
     pub async fn execute(&self, report_id: ReportId , permission:Permission) -> AppResult<()> {
-        self.repo.assign_permission(&report_id, &permission).await
+        self.repo.assign_permission(report_id.clone(), permission.clone()).await
     }
 }
