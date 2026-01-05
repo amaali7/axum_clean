@@ -1,0 +1,315 @@
+#+TITLE:     Surreal-SQL: Final Architecture & Code Layout
+#+AUTHOR:    Rust Builder Pattern Sub-chat
+#+DATE:      2025-01-05
+
+* Core principles (restated)
+1. AST is pure and engine-agnostic
+2. Builder only builds AST (no SQL, no engine logic)
+3. Compiler is separate from Builder
+4. Compiler is pluggable per engine (SurrealDB / SQLx)
+5. Transaction is a first-class AST
+6. Schema (fields, paths) is typed and reusable
+7. No =static=, no stringly-typed APIs
+8. QueryKind is explicit (Select / Update / Delete)
+
+* 🧱 FINAL MODULE LAYOUT
+#+begin_src text
+surreal_sql/
+├── schema/
+│   ├── engine.rs
+│   ├── path.rs
+│   ├── field.rs
+│   └── mod.rs
+├── ast/
+│   ├── expr.rs
+│   ├── join.rs
+│   ├── select.rs
+│   ├── update.rs
+│   ├── delete.rs
+│   ├── query.rs
+│   ├── transaction.rs
+│   └── mod.rs
+├── builder/
+│   ├── query_builder.rs
+│   └── mod.rs
+├── compiler/
+│   ├── ctx.rs
+│   ├── surreal.rs
+│   ├── sqlx.rs
+│   ├── compile.rs
+│   └── mod.rs
+└── lib.rs
+#+end_src
+
+* 1️⃣ SCHEMA LAYER (typed, reusable, no AST dependency)
+** schema/engine.rs
+#+begin_src rust
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DatabaseEngine {
+    SurrealDb,
+    Sqlx(SqlxEngine),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SqlxEngine {
+    Postgres,
+    Sqlite,
+    MySql,
+}
+#+end_src
+
+** schema/path.rs
+#+begin_src rust
+#[derive(Debug, Clone)]
+pub enum PathSegment {
+    Field(String),
+    Index(usize),
+    Wildcard,
+}
+
+pub type FieldPath = Vec<PathSegment>;
+#+end_src
+
+** schema/field.rs
+#+begin_src rust
+use super::{DatabaseEngine, FieldPath};
+
+pub trait QueryField: Clone {
+    fn path(&self) -> FieldPath;
+    fn table(&self) -> &str;
+
+    fn qualified(&self) -> FieldPath {
+        self.path()
+    }
+}
+#+end_src
+
+* 2️⃣ AST LAYER (pure query meaning)
+** ast/expr.rs
+#+begin_src rust
+use crate::schema::FieldPath;
+
+#[derive(Debug, Clone)]
+pub enum Expr {
+    Eq {
+        left: FieldPath,
+        bind: String,
+    },
+    In {
+        left: FieldPath,
+        bind: String,
+    },
+    And(Vec<Expr>),
+    Or(Vec<Expr>),
+}
+#+end_src
+
+** ast/join.rs
+#+begin_src rust
+use crate::schema::FieldPath;
+
+#[derive(Debug, Clone)]
+pub struct JoinAst {
+    pub table: String,
+    pub on_left: FieldPath,
+    pub on_right: FieldPath,
+}
+#+end_src
+
+** ast/select.rs
+#+begin_src rust
+use crate::schema::FieldPath;
+use super::{Expr, JoinAst};
+
+#[derive(Debug, Clone)]
+pub struct SelectAst {
+    pub table: String,
+    pub fields: Vec<FieldPath>,
+    pub joins: Vec<JoinAst>,
+    pub filter: Option<Expr>,
+    pub order_by: Vec<FieldPath>,
+    pub limit: Option<u64>,
+}
+#+end_src
+
+** ast/update.rs
+#+begin_src rust
+use crate::schema::FieldPath;
+use super::Expr;
+
+#[derive(Debug, Clone)]
+pub struct UpdateAst {
+    pub table: String,
+    pub assignments: Vec<(FieldPath, String)>,
+    pub filter: Option<Expr>,
+}
+#+end_src
+
+** ast/delete.rs
+#+begin_src rust
+use super::Expr;
+
+#[derive(Debug, Clone)]
+pub struct DeleteAst {
+    pub table: String,
+    pub filter: Option<Expr>,
+}
+#+end_src
+
+** ast/query.rs
+#+begin_src rust
+use super::{SelectAst, UpdateAst, DeleteAst};
+
+#[derive(Debug, Clone)]
+pub enum QueryAst {
+    Select(SelectAst),
+    Update(UpdateAst),
+    Delete(DeleteAst),
+}
+#+end_src
+
+** ast/transaction.rs
+#+begin_src rust
+use super::QueryAst;
+
+#[derive(Debug, Clone)]
+pub struct TransactionAst {
+    pub queries: Vec<QueryAst>,
+}
+#+end_src
+
+* 3️⃣ BUILDER LAYER (only builds AST)
+** builder/query_builder.rs
+#+begin_src rust
+use crate::ast::*;
+use crate::schema::QueryField;
+
+pub struct QueryBuilder {
+    query: QueryAst,
+}
+
+impl QueryBuilder {
+    pub fn select(table: &str) -> Self {
+        Self {
+            query: QueryAst::Select(SelectAst {
+                table: table.into(),
+                fields: vec![],
+                joins: vec![],
+                filter: None,
+                order_by: vec![],
+                limit: None,
+            }),
+        }
+    }
+
+    pub fn field(mut self, field: impl QueryField) -> Self {
+        if let QueryAst::Select(ref mut q) = self.query {
+            q.fields.push(field.path());
+        }
+        self
+    }
+
+    pub fn where_eq(
+        mut self,
+        field: impl QueryField,
+        bind: &str,
+    ) -> Self {
+        if let QueryAst::Select(ref mut q) = self.query {
+            q.filter = Some(Expr::Eq {
+                left: field.path(),
+                bind: bind.into(),
+            });
+        }
+        self
+    }
+
+    pub fn build(self) -> QueryAst {
+        self.query
+    }
+}
+#+end_src
+
+* 4️⃣ COMPILER LAYER (engine-specific)
+** compiler/ctx.rs
+#+begin_src rust
+use crate::schema::DatabaseEngine;
+
+pub struct CompileCtx {
+    pub engine: DatabaseEngine,
+    pub bind_index: usize,
+}
+#+end_src
+
+** compiler/compile.rs
+#+begin_src rust
+use crate::ast::QueryAst;
+use crate::schema::DatabaseEngine;
+
+pub trait Compiler {
+    fn compile(&self, query: &QueryAst) -> String;
+}
+#+end_src
+
+** compiler/surreal.rs
+#+begin_src rust
+use crate::ast::*;
+use crate::compiler::{Compiler, CompileCtx};
+
+pub struct SurrealCompiler;
+
+impl Compiler for SurrealCompiler {
+    fn compile(&self, query: &QueryAst) -> String {
+        match query {
+            QueryAst::Select(q) => {
+                let fields = q.fields.len();
+                format!("SELECT * FROM {}", q.table)
+            }
+            _ => unimplemented!(),
+        }
+    }
+}
+#+end_src
+
+** compiler/sqlx.rs
+#+begin_src rust
+use crate::ast::*;
+use crate::compiler::Compiler;
+
+pub struct SqlxCompiler;
+
+impl Compiler for SqlxCompiler {
+    fn compile(&self, query: &QueryAst) -> String {
+        match query {
+            QueryAst::Select(q) => {
+                format!("SELECT * FROM {}", q.table)
+            }
+            _ => unimplemented!(),
+        }
+    }
+}
+#+end_src
+
+* 🧠 Why this matches the sub-chat perfectly
+| Principle                  | Status |
+|----------------------------+--------|
+| AST separate from compiler | ✅     |
+| Builder produces AST only  | ✅     |
+| Engine-agnostic AST        | ✅     |
+| Compiler pluggable         | ✅     |
+| Transaction as AST         | ✅     |
+| Typed schema paths         | ✅     |
+| No =static=                | ✅     |
+| Future-proof               | ✅     |
+
+* ✅ WHERE WE GO NEXT (only when you say “next”)
+Next step options (your choice):
+
+1. Compile *full Expr tree*
+2. Add *bind collection*
+3. Implement *SurrealDB graph joins*
+4. Add *tests per module*
+5. Add *Executor abstraction*
+
+When you're satisfied, just say:
+
+=next=
