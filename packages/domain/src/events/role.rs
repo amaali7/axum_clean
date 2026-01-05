@@ -1,28 +1,24 @@
-use crate::{DateTime, Permission, RoleId, UserId};
+use crate::{Permission, RoleId, UserId};
 
 #[derive(Debug, Clone)]
 pub enum RoleEvent {
     Created {
         role_id: RoleId,
         created_by: UserId,
-        occurred_at: DateTime,
     },
     Removed {
         role_id: RoleId,
         removed_by: UserId,
-        occurred_at: DateTime,
     },
     PermissionAdded {
         role_id: RoleId,
         permissions_added: Vec<Permission>,
         added_by: UserId,
-        occurred_at: DateTime,
     },
     PermissionRemoved {
         role_id: RoleId,
         permissions_removed: Vec<Permission>,
         removed_by: UserId,
-        occurred_at: DateTime,
     },
 }
 
@@ -33,15 +29,6 @@ impl RoleEvent {
             RoleEvent::Removed { .. } => "role.removed",
             RoleEvent::PermissionAdded { .. } => "role.add-permissions",
             RoleEvent::PermissionRemoved { .. } => "role.remove-permissions",
-        }
-    }
-
-    fn occurred_at(&self) -> DateTime {
-        match self {
-            RoleEvent::Created { occurred_at, .. } => occurred_at.clone(),
-            RoleEvent::Removed { occurred_at, .. } => occurred_at.clone(),
-            RoleEvent::PermissionAdded { occurred_at, .. } => occurred_at.clone(),
-            RoleEvent::PermissionRemoved { occurred_at, .. } => occurred_at.clone(),
         }
     }
 }

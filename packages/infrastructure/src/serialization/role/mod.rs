@@ -4,9 +4,9 @@ pub mod role;
 use domain::RoleId;
 pub use permissions::SerializedPermission;
 pub use role::SerializedRole;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
 pub struct SerializedRoleId(String);
 
 impl SerializedRoleId {
@@ -18,6 +18,10 @@ impl SerializedRoleId {
     // Get the inner String for database operations
     pub fn id(&self) -> String {
         self.0.clone()
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 

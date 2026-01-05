@@ -8,7 +8,7 @@ pub struct RemovePermissionFromUserUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> RemovePermissionFromUserUseCase<R> {
-    pub async fn execute(&self, user_id: UserId , permission:Permission) -> AppResult<()> {
+    pub async fn execute(&self, user_id: UserId , permission:Permission) -> AppResult<bool> {
         self.repo.remove_permission(user_id, permission).await
     }
 }

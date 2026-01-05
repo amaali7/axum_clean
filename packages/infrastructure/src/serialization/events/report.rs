@@ -4,8 +4,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
     serialization::{
-        report::SerializedReportStatus, value_objects::date_time::SerializedDateTime,
-        SerializedDiff, SerializedReportId, SerializedUserId,
+        report::SerializedReportStatus, SerializedDiff, SerializedReportId, SerializedUserId,
     },
 };
 
@@ -14,25 +13,21 @@ pub enum SerializedReportEvent {
     ReportCreated {
         report_id: SerializedReportId,
         auther_id: SerializedUserId,
-        occurred_at: SerializedDateTime,
     },
     ReportRemoved {
         report_id: SerializedReportId,
-        auther_id: SerializedUserId,
-        occurred_at: SerializedDateTime,
+        removed_by: SerializedUserId,
     },
     ReportModified {
         report_id: SerializedReportId,
         auther_id: SerializedUserId,
         diff: SerializedDiff,
-        occurred_at: SerializedDateTime,
     },
     ReportStatusChanged {
         report_id: SerializedReportId,
         old_status: SerializedReportStatus,
         new_status: SerializedReportStatus,
         changed_by: SerializedUserId,
-        occurred_at: SerializedDateTime,
     },
 }
 
@@ -45,14 +40,6 @@ impl SerializedReportEvent {
             SerializedReportEvent::ReportStatusChanged { .. } => "report.status.changed",
         }
     }
-    pub fn occurred_at(&self) -> SerializedDateTime {
-        match self {
-            SerializedReportEvent::ReportCreated { occurred_at, .. } => occurred_at.clone(),
-            SerializedReportEvent::ReportRemoved { occurred_at, .. } => occurred_at.clone(),
-            SerializedReportEvent::ReportModified { occurred_at, .. } => occurred_at.clone(),
-            SerializedReportEvent::ReportStatusChanged { occurred_at, .. } => occurred_at.clone(),
-        }
-    }
 }
 
 impl TryFrom<ReportEvent> for SerializedReportEvent {
@@ -63,44 +50,36 @@ impl TryFrom<ReportEvent> for SerializedReportEvent {
             ReportEvent::ReportCreated {
                 report_id,
                 auther_id,
-                occurred_at,
             } => Self::ReportCreated {
                 report_id: report_id.into(),
                 auther_id: auther_id.into(),
-                occurred_at: occurred_at.try_into()?,
             },
             ReportEvent::ReportRemoved {
                 report_id,
-                auther_id,
-                occurred_at,
+                removed_by,
             } => Self::ReportRemoved {
                 report_id: report_id.into(),
-                auther_id: auther_id.into(),
-                occurred_at: occurred_at.try_into()?,
+                removed_by: removed_by.into(),
             },
             ReportEvent::ReportModified {
                 report_id,
                 auther_id,
                 diff,
-                occurred_at,
             } => Self::ReportModified {
                 report_id: report_id.into(),
                 auther_id: auther_id.into(),
                 diff: diff.into(),
-                occurred_at: occurred_at.try_into()?,
             },
             ReportEvent::ReportStatusChanged {
                 report_id,
                 old_status,
                 new_status,
                 changed_by,
-                occurred_at,
             } => Self::ReportStatusChanged {
                 report_id: report_id.into(),
                 old_status: old_status.into(),
                 new_status: new_status.into(),
                 changed_by: changed_by.into(),
-                occurred_at: occurred_at.try_into()?,
             },
         })
     }
@@ -114,44 +93,36 @@ impl TryFrom<SerializedReportEvent> for ReportEvent {
             SerializedReportEvent::ReportCreated {
                 report_id,
                 auther_id,
-                occurred_at,
             } => Self::ReportCreated {
                 report_id: report_id.into(),
                 auther_id: auther_id.into(),
-                occurred_at: occurred_at.try_into()?,
             },
             SerializedReportEvent::ReportRemoved {
                 report_id,
-                auther_id,
-                occurred_at,
+                removed_by,
             } => Self::ReportRemoved {
                 report_id: report_id.into(),
-                auther_id: auther_id.into(),
-                occurred_at: occurred_at.try_into()?,
+                removed_by: removed_by.into(),
             },
             SerializedReportEvent::ReportModified {
                 report_id,
                 auther_id,
                 diff,
-                occurred_at,
             } => Self::ReportModified {
                 report_id: report_id.into(),
                 auther_id: auther_id.into(),
                 diff: diff.into(),
-                occurred_at: occurred_at.try_into()?,
             },
             SerializedReportEvent::ReportStatusChanged {
                 report_id,
                 old_status,
                 new_status,
                 changed_by,
-                occurred_at,
             } => Self::ReportStatusChanged {
                 report_id: report_id.into(),
                 old_status: old_status.into(),
                 new_status: new_status.into(),
                 changed_by: changed_by.into(),
-                occurred_at: occurred_at.try_into()?,
             },
         })
     }

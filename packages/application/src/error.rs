@@ -12,6 +12,9 @@ pub enum ApplicationError {
     #[error("Permission denied")]
     Forbidden,
 
+    #[error("Application Validation failed: {0}")]
+    ValidationError(String),
+
     #[error("Unknown application error")]
     Unknown,
 }

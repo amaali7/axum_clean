@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use domain::User;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -158,5 +159,55 @@ impl SerializedUserBuilder {
             status: self.status,
             events: self.events,
         })
+    }
+}
+
+impl TryFrom<User> for SerializedUser {
+    type Error = InfrastructureError;
+
+    fn try_from(value: User) -> InfrastructureResult<Self> {
+        let mut user_builder = Self::new(value.id().into());
+        user_builder
+            .set_email(value.email().try_into()?)
+            .set_status(value.status().into())
+            .set_profile(value.profile().try_into()?)
+            .set_preferences(value.preferences().try_into()?)
+            .set_username(value.username().try_into()?);
+        for permission in value.permissions().into_iter() {
+            user_builder.add_permission(permission.into());
+        }
+        for role in value.roles().into_iter() {
+            user_builder.add_role(role.into());
+        }
+        for event in value.events().into_iter() {
+            user_builder.add_event(event.into());
+        }
+        user_builder.build()
+    }
+}
+
+impl TryFrom<SerializedUser> for User {
+    type Error = InfrastructureError;
+
+    fn try_from(value: SerializedUser) -> InfrastructureResult<Self> {
+        let mut user_builder = Self::new(value.id().into());
+        user_builder
+            .set_email(value.email().try_into()?)
+            .set_status(value.status().into())
+            .set_profile(value.profile().try_into()?)
+            .set_preferences(value.preferences().try_into()?)
+            .set_username(value.username().try_into()?);
+        for permission in value.permissions().into_iter() {
+            user_builder.add_permission(permission.into());
+        }
+        for role in value.roles().into_iter() {
+            user_builder.add_role(role.into());
+        }
+        for event in value.events().into_iter() {
+            user_builder.add_event(event.into());
+        }
+        user_builder
+            .build()
+            .map_err(|err| InfrastructureError::Domain(err))
     }
 }

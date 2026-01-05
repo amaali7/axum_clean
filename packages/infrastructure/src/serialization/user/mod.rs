@@ -8,9 +8,9 @@ pub use profile::SerializedUserProfile;
 pub use status::SerializedUserStatus;
 
 use domain::UserId;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Hash, Deserialize)]
 pub struct SerializedUserId(String);
 
 impl SerializedUserId {
@@ -22,6 +22,9 @@ impl SerializedUserId {
     // Get the inner String for database operations
     pub fn id(&self) -> String {
         self.0.clone()
+    }
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 

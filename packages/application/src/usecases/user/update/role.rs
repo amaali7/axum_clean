@@ -8,7 +8,7 @@ pub struct AssignRoleToUserUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> AssignRoleToUserUseCase<R> {
-    pub async fn execute(&self, user_id: UserId , role_id:RoleId) -> AppResult<()> {
+    pub async fn execute(&self, user_id: UserId , role_id:RoleId) -> AppResult<bool> {
         self.repo.assign_role(user_id, role_id).await
     }
 }

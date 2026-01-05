@@ -21,6 +21,10 @@ impl UserId {
     pub fn id(&self) -> String {
         self.0.clone()
     }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 impl std::ops::Deref for UserId {
@@ -178,7 +182,7 @@ impl UserBuilder {
         self.profile = Some(profile);
         self
     }
-    fn add_event(&mut self, event: DomainEventId) -> &mut Self {
+    pub fn add_event(&mut self, event: DomainEventId) -> &mut Self {
         self.events.push(event);
         self
     }

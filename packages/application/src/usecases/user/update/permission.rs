@@ -8,7 +8,7 @@ pub struct AssignPermissionToUserUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> AssignPermissionToUserUseCase<R> {
-    pub async fn execute(&self, user_id: UserId , permission:Permission) -> AppResult<()> {
+    pub async fn execute(&self, user_id: UserId , permission:Permission) -> AppResult<bool> {
         self.repo.assign_permission(user_id, permission).await
     }
 }

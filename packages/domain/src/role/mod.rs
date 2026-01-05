@@ -20,6 +20,10 @@ impl RoleId {
     pub fn id(&self) -> String {
         self.0.clone()
     }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 impl Deref for RoleId {

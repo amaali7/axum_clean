@@ -6,9 +6,9 @@ pub mod status;
 pub use status::SerializedReportStatus;
 
 use domain::ReportId;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
 pub struct SerializedReportId(String);
 
 impl SerializedReportId {
@@ -20,6 +20,10 @@ impl SerializedReportId {
     // Get the inner String for database operations
     pub fn id(&self) -> String {
         self.0.clone()
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 
