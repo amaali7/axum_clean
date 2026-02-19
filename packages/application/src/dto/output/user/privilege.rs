@@ -17,7 +17,6 @@ pub struct PrivilegeUserOutput {
     pub roles: HashSet<RoleId>,
     pub permissions: HashSet<Permission>, // Cached permissions for performance
     pub status: UserStatus,
-    pub events: Vec<DomainEventId>,
 }
 
 pub struct PrivilegeUserProfileOutput {
@@ -40,7 +39,6 @@ impl From<User> for PrivilegeUserOutput {
             roles: value.roles(),
             permissions: value.permissions(),
             status: value.status(),
-            events: value.events(),
         }
     }
 }

@@ -1,48 +1,31 @@
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum SerializedPermission {
     // User management
-    CreateUser,
-    ViewUsers,
-    ManageUsers,
-    DeleteUsers,
+    CreateUser = 1,
+    ViewUsers = 2,
+    ManageUsers = 4,
+    DeleteUsers = 8,
 
     // Report permissions
-    CreateReport,
-    ViewOwnReports,
-    ViewReports, // View all reports
-    EditOwnReports,
-    EditReports,    // Edit any report
-    ReviewReports,  // Review and add comments
-    ApproveReports, // Final approval
-    RejectReports,
-    ExportReports,
-    DeleteReports,
+    CreateReport = 200,
+    ViewOwnReports = 210,
+    ViewReports = 220, // View all reports
+    EditOwnReports = 230,
+    EditReports = 240,    // Edit any report
+    ReviewReports = 250,  // Review and add comments
+    ApproveReports = 260, // Final approval
+    RejectReports = 270,
+    ExportReports = 280,
+    DeleteReports = 290,
 
     // System permissions
-    ManageSystem,
-    ViewAuditLogs,
+    ManageSystem = 1100,
+    ViewAuditLogs = 1000,
 }
 
 impl SerializedPermission {
-    pub fn all() -> Vec<Self> {
-        vec![
-            Self::CreateUser,
-            Self::ViewUsers,
-            Self::ManageUsers,
-            Self::DeleteUsers,
-            Self::CreateReport,
-            Self::ViewOwnReports,
-            Self::ViewReports,
-            Self::EditOwnReports,
-            Self::EditReports,
-            Self::ReviewReports,
-            Self::ApproveReports,
-            Self::RejectReports,
-            Self::ExportReports,
-            Self::DeleteReports,
-            Self::ManageSystem,
-            Self::ViewAuditLogs,
-        ]
+    pub fn weight(&self) -> u16 {
+        self.clone() as u16
     }
 
     pub fn is_sensitive(&self) -> bool {

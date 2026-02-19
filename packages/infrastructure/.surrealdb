@@ -1,0 +1,10 @@
+[core]
+    path = "./app-database"
+    schema = "less"
+
+[db]
+    address = "ws://localhost:8000"
+    username = "root"
+    password = "root"
+    ns = "clean"
+    db = "clean"

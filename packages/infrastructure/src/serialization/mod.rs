@@ -1,6 +1,7 @@
 pub mod events;
 pub mod report;
 pub mod role;
+pub mod sessions;
 pub mod user;
 pub mod value_objects;
 

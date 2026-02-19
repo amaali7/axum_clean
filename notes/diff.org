@@ -1,0 +1,5 @@
+#+TITLE: Diff behavior
+#+DESCRIPTION: How to implement trait that perform diff and reverse it to create the item
+
+* General 
+Craete trait to commpare two entitys and result diff item and reverse the prossess to create the two items from the diff object

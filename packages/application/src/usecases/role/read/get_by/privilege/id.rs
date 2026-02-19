@@ -1,19 +1,15 @@
 
-use domain::UserId;
+use domain::RoleId;
 
-use crate::{dto::user_dto::output::PrivilegeUserOutput, error::{AppResult, ApplicationError}, ports::UserRepository};
+use crate::{RequestContex, dto::role_dto::output::PrivilegeRoleOutput, error::AppResult, ports::RoleRepository};
 
 
-pub struct GetRoleByIdPrivilegeUseCase<R: UserRepository> {
+pub struct GetRoleByIdPrivilegeUseCase<R: RoleRepository> {
     repo: R,
 }
 
-impl<R: UserRepository> GetRoleByIdPrivilegeUseCase<R> {
-    pub async fn execute(&self, id: UserId) -> AppResult<PrivilegeUserOutput> {
-        let result = self.repo.get_by_id(id.clone()).await?;
-        match result {
-            Some(user) => Ok(PrivilegeUserOutput::from(user)),
-            None => Err(ApplicationError::Repository(format!("User : {} not found", id))),
-        }
+impl<R: RoleRepository> GetRoleByIdPrivilegeUseCase<R> {
+    pub async fn execute(&self, ctx: RequestContex, id: RoleId) -> AppResult<PrivilegeRoleOutput> {
+        Ok(self.repo.get_by_id( ctx,id.clone()).await?.into())
     }
 }

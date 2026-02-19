@@ -9,7 +9,7 @@ impl DateTime {
     }
 
     pub fn datetime(&self) -> i64 {
-        self.0.clone()
+        self.0
     }
 }
 

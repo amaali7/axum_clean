@@ -1,7 +1,7 @@
 
 use domain::ReportId;
 
-use crate::{ dto::report_dto::output::AutherReportOutput, error::{AppResult, ApplicationError}, ports::ReportRepository};
+use crate::{ RequestContex, dto::report_dto::output::AutherReportOutput, error::AppResult, ports::ReportRepository};
 
 
 pub struct GetReportByIdAutherUseCase<R: ReportRepository> {
@@ -9,11 +9,6 @@ pub struct GetReportByIdAutherUseCase<R: ReportRepository> {
 }
 
 impl<R: ReportRepository> GetReportByIdAutherUseCase<R> {
-    pub async fn execute(&self, report_id: ReportId) -> AppResult<AutherReportOutput> {
-        let result = self.repo.get_by_id(report_id.clone()).await?;
-        match result {
-            Some(report) => Ok(AutherReportOutput::from(report)),
-            None => Err(ApplicationError::Repository(format!("Report : id {} not found", report_id))),
-        }
-    }
+    pub async fn execute(&self, ctx: RequestContex, report_id: ReportId) -> AppResult<AutherReportOutput> {
+        Ok(self.repo.get_by_id( ctx,report_id.clone()).await?.into())    }
 }

@@ -3,12 +3,17 @@ pub mod report;
 pub mod report_type;
 pub mod status;
 
+use application::ports::report::ReportQueryResult;
+use report::SerializedReport;
 pub use status::SerializedReportStatus;
 
-use domain::ReportId;
+use domain::{Event, Report, ReportId};
 use serde::{Deserialize, Serialize};
+use surrealdb::Response;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
+use crate::error::{InfrastructureError, InfrastructureResult};
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct SerializedReportId(String);
 
 impl SerializedReportId {
@@ -58,3 +63,102 @@ impl From<SerializedReportId> for ReportId {
         Self::new(&value.id())
     }
 }
+
+impl Event for SerializedReport {
+    fn get_type(&self) -> &str {
+        "REPORT"
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum SerializedReportQueryResult {
+    Single(SerializedReport),
+    Array(Vec<SerializedReport>),
+    None,
+}
+
+impl SerializedReportQueryResult {
+    pub fn get_array(&self) -> Option<Vec<SerializedReport>> {
+        match self {
+            SerializedReportQueryResult::Array(users) => Some(users.to_vec()),
+            _ => None,
+        }
+    }
+    pub fn get_value(&self) -> Option<SerializedReport> {
+        match self {
+            SerializedReportQueryResult::Single(user) => Some(user.clone()),
+            _ => None,
+        }
+    }
+}
+
+// Extension trait for SurrealDB Response
+pub trait SurrealReportResponseExt {
+    async fn into_report_result(self) -> Result<SerializedReportQueryResult, surrealdb::Error>;
+}
+
+impl SurrealReportResponseExt for Response {
+    async fn into_report_result(mut self) -> Result<SerializedReportQueryResult, surrealdb::Error> {
+        // Check if we have any results
+        let num_statements = self.num_statements();
+        
+        if num_statements == 0 {
+            return Ok(SerializedReportQueryResult::None);
+        }
+
+        // Try to take the first statement result as a single value
+        if let Ok(single) = self.take::<Option<SerializedReport>>(0) {
+            if let Some(user) = single {
+                return Ok(SerializedReportQueryResult::Single(user));
+            }
+        }
+
+        // Try as an array
+        if let Ok(array) = self.take::<Vec<SerializedReport>>(0) {
+            if array.is_empty() {
+                return Ok(SerializedReportQueryResult::None);
+            }
+            return Ok(SerializedReportQueryResult::Array(array));
+        }
+
+        Ok(SerializedReportQueryResult::None)
+    }
+}
+
+impl TryFrom<ReportQueryResult> for SerializedReportQueryResult {
+    type Error = InfrastructureError;
+
+    fn try_from(value: ReportQueryResult) -> InfrastructureResult<Self> {
+        Ok(match value {
+            ReportQueryResult::Single(report ) => Self::Single(report.try_into()?),
+            ReportQueryResult::Array(reports) => {
+                let mut vec_reports: Vec<SerializedReport> = Vec::new();
+                for report in reports {
+                    vec_reports.push(report.try_into()?);
+                }
+                Self::Array(vec_reports)
+            }
+            ReportQueryResult::None => Self::None,
+        })
+    }
+}
+
+impl TryFrom<SerializedReportQueryResult> for ReportQueryResult {
+    type Error = InfrastructureError;
+
+    fn try_from(value: SerializedReportQueryResult) -> InfrastructureResult<Self> {
+        Ok(match value {
+            SerializedReportQueryResult::Single(report) => Self::Single(report.try_into()?),
+            SerializedReportQueryResult::Array(reports) => {
+                let mut vec_reports: Vec<Report> = Vec::new();
+                for report in reports {
+                    vec_reports.push(report.try_into()?);
+                }
+                Self::Array(vec_reports)
+            }
+            SerializedReportQueryResult::None => Self::None,
+        })
+    }
+}
+

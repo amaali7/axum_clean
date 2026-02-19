@@ -1,22 +1,39 @@
-use domain::{Email, Permission, RoleId, User, UserId, Username, events::DomainEvent};
+use domain::{Email, User, UserId, Username};
 
-use crate::error::AppResult;
+use crate::{RequestContex, error::AppResult};
 
-use super::OrderBy;
+use super::{ SortBy};
 
+#[derive(Debug, Clone)]
+pub enum UserQueryResult {
+    Single(User),
+    Array(Vec<User>),
+    None,
+}
+
+impl UserQueryResult {
+    pub fn get_array(&self) -> Option<Vec<User>> {
+        match self {
+            UserQueryResult::Array(users) => Some(users.to_vec()),
+            _ => None,
+        }
+    }
+    pub fn get_value(&self) -> Option<User> {
+        match self {
+            UserQueryResult::Single(user) => Some(user.clone()),
+            _ => None,
+        }
+    }
+}
 
 #[async_trait::async_trait]
 pub trait UserRepository {
-    async fn save(&self, user: User) -> AppResult<Option<User>>;
-    async fn update(&self, user: User) -> AppResult<Option<User>>;
-    async fn get_by_id(&self, id: UserId) -> AppResult<Option<User>>;
-    async fn delete(&self, id: UserId) -> AppResult<bool>;
-    async fn get_by_email(&self, id: Email) -> AppResult<Option<User>>;
-    async fn get_by_username(&self, id: Username) -> AppResult<Option<User>>;
-    async fn get_events(&self,order_by: OrderBy, user_id: UserId) -> AppResult<Option<Vec<DomainEvent>>>;
-    async fn get_users_paginated(&self,order_by: OrderBy, page: u32, page_size: u32) -> AppResult<Vec<User>>;
-    async fn assign_permission(&self, user_id: UserId, permission: Permission) -> AppResult<bool>;
-    async fn remove_permission(&self,user_id: UserId, permission: Permission) -> AppResult<bool>;
-    async fn assign_role(&self, user_id: UserId, role_id: RoleId) -> AppResult<bool>;
-    async fn remove_role(&self, user_id: UserId, role_id: RoleId) -> AppResult<bool>;
+    async fn create(&self,ctx: RequestContex, user: User) -> AppResult<User>;
+    async fn update(&self,ctx: RequestContex, user: User) -> AppResult<User>;
+    async fn get_by_id(&self,ctx: RequestContex, id: UserId) -> AppResult<User>;
+    async fn delete(&self,ctx: RequestContex, id: UserId) -> AppResult<bool>;
+    async fn get_by_email(&self,ctx: RequestContex, email: Email) -> AppResult<User>;
+    async fn get_by_username(&self,ctx: RequestContex, username: Username) -> AppResult<User>;
+    async fn get_users_paginated(&self,ctx: RequestContex,sort_by: &[SortBy], page: u32, page_size: u32) -> AppResult<Vec<User>>;
+    async fn raw_query(&self,ctx: RequestContex, query: String) -> AppResult<UserQueryResult>;
 }

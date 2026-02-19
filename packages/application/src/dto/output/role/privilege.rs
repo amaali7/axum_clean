@@ -13,7 +13,6 @@ pub struct PrivilegeRoleOutput {
     pub permissions: HashSet<Permission>,
     pub is_system_role: bool,
     pub created_at: DateTime,
-    pub events: Vec<DomainEventId>,
 }
 
 impl From<Role> for PrivilegeRoleOutput {
@@ -25,7 +24,6 @@ impl From<Role> for PrivilegeRoleOutput {
             permissions: value.permissions(),
             is_system_role: value.is_system_role(),
             created_at: value.created_at(),
-            events: value.events(),
         }
     }
 }

@@ -112,7 +112,7 @@ impl SurrealUserRepository {
 
 #[async_trait]
 impl UserRepository for SurrealUserRepository {
-    async fn save(&self, user: &User) -> Result<(), ApplicationError> {
+    async fn create(&self, user: &User) -> Result<(), ApplicationError> {
         let dto = UserOutput::from(user.clone()); 
 
         self.client

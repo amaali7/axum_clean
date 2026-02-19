@@ -1,7 +1,7 @@
 
 use domain::Title;
 
-use crate::{dto::report_dto::output::GeneralReportOutput, error::{AppResult, ApplicationError}, ports::ReportRepository};
+use crate::{RequestContex, dto::report_dto::output::GeneralReportOutput, error::AppResult, ports::ReportRepository};
 
 
 pub struct GetReportByTitleGeneralUseCase<R: ReportRepository> {
@@ -9,11 +9,7 @@ pub struct GetReportByTitleGeneralUseCase<R: ReportRepository> {
 }
 
 impl<R: ReportRepository> GetReportByTitleGeneralUseCase<R> {
-    pub async fn execute(&self, title: Title) -> AppResult<GeneralReportOutput> {
-        let result = self.repo.get_by_title(title.clone()).await?;
-        match result {
-            Some(report) => Ok(GeneralReportOutput::from(report)),
-            None => Err(ApplicationError::Repository(format!("Report : title {} not found", title))),
-        }
+    pub async fn execute(&self, ctx: RequestContex, title: Title) -> AppResult<GeneralReportOutput> {
+        Ok(self.repo.get_by_title( ctx,title.clone()).await?.into())
     }
 }

@@ -23,7 +23,6 @@ pub struct AutherReportOutput {
     pub updated_at: DateTime,
     pub due_date: Option<DateTime>,
     pub version: u64,
-    pub events: Vec<DomainEventId>,
 }
 
 pub struct AutherReportContentOutput {
@@ -56,7 +55,6 @@ impl From<Report> for AutherReportOutput {
             updated_at: value.updated_at(),
             due_date: value.due_date(),
             version: value.version(),
-            events: value.events(),
         }
     }
 }
@@ -95,9 +93,6 @@ impl TryFrom<AutherReportOutput> for Report {
             .set_report_type(value.report_type)
             .set_due(value.due_date.unwrap_or_default())
             .set_content(ReportContent::try_from(value.content)?);
-        for event in value.events.into_iter() {
-            builder.add_event(event);
-        }
         for permission in value.permissions.into_iter() {
             builder.add_permission(permission);
         }

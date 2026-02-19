@@ -1,6 +1,6 @@
 use domain::User;
 
-use crate::{ dto::user_dto::{input::CreateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository};
+use crate::{ RequestContex, dto::user_dto::{input::CreateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository};
 
 
 pub struct CreateUserUseCase<R: UserRepository> {
@@ -8,12 +8,8 @@ pub struct CreateUserUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> CreateUserUseCase<R> {
-    pub async fn execute(&self, input: CreateUserInput) -> AppResult<OwnerUserOutput> {
-       
-        let user_builder = User::new(input.id);
-                    let user = user_builder.build()?;
-
-        self.repo.save(user.clone()).await?;
+    pub async fn execute(&self, ctx: RequestContex, input: CreateUserInput) -> AppResult<OwnerUserOutput> {
+        let user: User = self.repo.create(ctx, input.try_into()?).await?;
         Ok(OwnerUserOutput::from(user))
     }
 }

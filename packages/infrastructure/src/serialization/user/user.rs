@@ -6,8 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
     serialization::{
-        events::SerializedEventId,
-        value_objects::{SerializedEmail, SerializedUsername},
+        value_objects::{SerializedDateTime, SerializedEmail, SerializedUsername},
         SerializedPermission, SerializedRoleId,
     },
 };
@@ -16,7 +15,7 @@ use super::{
     SerializedUserId, SerializedUserPreferences, SerializedUserProfile, SerializedUserStatus,
 };
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SerializedUser {
     id: SerializedUserId,
     email: SerializedEmail,
@@ -26,7 +25,9 @@ pub struct SerializedUser {
     permissions: HashSet<SerializedPermission>, // Cached permissions for performance
     preferences: SerializedUserPreferences,
     status: SerializedUserStatus,
-    events: Vec<SerializedEventId>,
+    failed_logins: Option<u64>,
+    locked_until: Option<SerializedDateTime>,
+    last_login: Option<SerializedDateTime>,
 }
 
 impl SerializedUser {
@@ -65,9 +66,16 @@ impl SerializedUser {
     pub fn permissions(&self) -> HashSet<SerializedPermission> {
         self.permissions.clone()
     }
+    pub fn failed_logins(&self) -> Option<u64> {
+        self.failed_logins.clone()
+    }
 
-    pub fn events(&self) -> Vec<SerializedEventId> {
-        self.events.clone()
+    pub fn locked_until(&self) -> Option<SerializedDateTime> {
+        self.locked_until.clone()
+    }
+
+    pub fn last_login(&self) -> Option<SerializedDateTime> {
+        self.last_login.clone()
     }
 }
 
@@ -79,9 +87,11 @@ pub struct SerializedUserBuilder {
     profile: Option<SerializedUserProfile>,
     roles: HashSet<SerializedRoleId>,
     permissions: HashSet<SerializedPermission>, // Cached permissions for performance
-    events: Vec<SerializedEventId>,
     preferences: Option<SerializedUserPreferences>,
     status: SerializedUserStatus,
+    failed_logins: Option<u64>,
+    locked_until: Option<SerializedDateTime>,
+    last_login: Option<SerializedDateTime>,
 }
 
 impl SerializedUserBuilder {
@@ -92,10 +102,12 @@ impl SerializedUserBuilder {
             profile: None,
             roles: HashSet::new(),
             permissions: HashSet::new(),
-            events: Vec::new(),
             id,
             preferences: None,
             status: SerializedUserStatus::Inactive,
+            failed_logins: None,
+            locked_until: None,
+            last_login: None,
         }
     }
 
@@ -136,8 +148,19 @@ impl SerializedUserBuilder {
         self.profile = Some(profile);
         self
     }
-    pub fn add_event(&mut self, event: SerializedEventId) -> &mut Self {
-        self.events.push(event);
+
+    pub fn set_failed_logins(&mut self, failed_logins: u64) -> &mut Self {
+        self.failed_logins = Some(failed_logins);
+        self
+    }
+
+    pub fn set_locked_until(&mut self, datetime: SerializedDateTime) -> &mut Self {
+        self.locked_until = Some(datetime);
+        self
+    }
+
+    pub fn set_last_login(&mut self, datetime: SerializedDateTime) -> &mut Self {
+        self.last_login = Some(datetime);
         self
     }
 
@@ -157,7 +180,9 @@ impl SerializedUserBuilder {
             permissions: self.permissions,
             preferences: self.preferences.unwrap_or_default(),
             status: self.status,
-            events: self.events,
+            failed_logins: self.failed_logins,
+            locked_until: self.locked_until,
+            last_login: self.last_login,
         })
     }
 }
@@ -179,8 +204,24 @@ impl TryFrom<User> for SerializedUser {
         for role in value.roles().into_iter() {
             user_builder.add_role(role.into());
         }
-        for event in value.events().into_iter() {
-            user_builder.add_event(event.into());
+        match value.failed_logins() {
+            Some(failed_logins) => {
+                user_builder.set_failed_logins(failed_logins);
+            }
+            None => (),
+        }
+
+        match value.last_login() {
+            Some(last_login) => {
+                user_builder.set_last_login(last_login.try_into()?);
+            }
+            None => (),
+        }
+        match value.locked_until() {
+            Some(locked_until) => {
+                user_builder.set_locked_until(locked_until.try_into()?);
+            }
+            None => (),
         }
         user_builder.build()
     }
@@ -203,8 +244,24 @@ impl TryFrom<SerializedUser> for User {
         for role in value.roles().into_iter() {
             user_builder.add_role(role.into());
         }
-        for event in value.events().into_iter() {
-            user_builder.add_event(event.into());
+        match value.failed_logins() {
+            Some(failed_logins) => {
+                user_builder.set_failed_logins(failed_logins);
+            }
+            None => (),
+        }
+
+        match value.last_login() {
+            Some(last_login) => {
+                user_builder.set_last_login(last_login.try_into()?);
+            }
+            None => (),
+        }
+        match value.locked_until() {
+            Some(locked_until) => {
+                user_builder.set_locked_until(locked_until.try_into()?);
+            }
+            None => (),
         }
         user_builder
             .build()

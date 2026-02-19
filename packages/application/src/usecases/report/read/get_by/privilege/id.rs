@@ -1,7 +1,7 @@
 
 use domain::ReportId;
 
-use crate::{dto::report_dto::output::PreivilegeReportOutput, error::{AppResult, ApplicationError}, ports::ReportRepository};
+use crate::{RequestContex, dto::report_dto::output::PreivilegeReportOutput, error::AppResult, ports::ReportRepository};
 
 
 
@@ -10,11 +10,6 @@ pub struct GetReportByIdPrivilegeUseCase<R: ReportRepository> {
 }
 
 impl<R: ReportRepository> GetReportByIdPrivilegeUseCase<R> {
-    pub async fn execute(&self, report_id: ReportId) -> AppResult<PreivilegeReportOutput> {
-        let result = self.repo.get_by_id(report_id.clone()).await?;
-        match result {
-            Some(report) => Ok(PreivilegeReportOutput::from(report)),
-            None => Err(ApplicationError::Repository(format!("Report : id {} not found", report_id))),
-        }
-    }
+    pub async fn execute(&self, ctx: RequestContex, report_id: ReportId) -> AppResult<PreivilegeReportOutput> {
+        Ok(self.repo.get_by_id( ctx,report_id.clone()).await?.into())    }
 }

@@ -1,18 +1,16 @@
 use std::collections::HashSet;
 
 use domain::Role;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
-    serialization::{
-        events::SerializedEventId,
-        value_objects::{SerializedDateTime, SerializedDescription, SerializedName},
-    },
+    serialization::value_objects::{SerializedDateTime, SerializedDescription, SerializedName},
 };
 
 use super::{SerializedPermission, SerializedRoleId};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SerializedRole {
     id: SerializedRoleId,
     name: SerializedName,
@@ -20,7 +18,6 @@ pub struct SerializedRole {
     permissions: HashSet<SerializedPermission>,
     is_system_role: bool,
     created_at: SerializedDateTime,
-    events: Vec<SerializedEventId>,
 }
 
 impl SerializedRole {
@@ -50,10 +47,6 @@ impl SerializedRole {
     pub fn created_at(&self) -> SerializedDateTime {
         self.created_at.clone()
     }
-
-    pub fn events(&self) -> Vec<SerializedEventId> {
-        self.events.clone()
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -64,12 +57,10 @@ pub struct SerializedRoleBuilder {
     permissions: HashSet<SerializedPermission>,
     is_system_role: Option<bool>,
     created_at: Option<SerializedDateTime>,
-    events: Vec<SerializedEventId>,
 }
 
 impl SerializedRoleBuilder {
     pub fn new(id: &str) -> Self {
-        let events: Vec<SerializedEventId> = Vec::new();
         Self {
             id: SerializedRoleId::new(id),
             name: None,
@@ -77,7 +68,6 @@ impl SerializedRoleBuilder {
             permissions: HashSet::new(),
             is_system_role: None,
             created_at: None,
-            events,
         }
     }
 
@@ -105,11 +95,6 @@ impl SerializedRoleBuilder {
         self
     }
 
-    pub fn add_event(&mut self, event: SerializedEventId) -> &mut Self {
-        self.events.push(event);
-        self
-    }
-
     pub fn build(self) -> InfrastructureResult<SerializedRole> {
         Ok(SerializedRole {
             id: self.id,
@@ -130,7 +115,6 @@ impl SerializedRoleBuilder {
             created_at: self.created_at.ok_or(InfrastructureError::ValidationError(
                 "Created At not found".to_string(),
             ))?,
-            events: self.events,
         })
     }
 }

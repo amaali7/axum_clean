@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
 use domain::{
-    events::DomainEventId,
     report::content::ReviewComment,
     value_objects::{Body, Comment, DateTime, Title, Url},
     Permission, Report, ReportContent, ReportId, ReportStatus, ReportType, UserId,
@@ -22,7 +21,6 @@ pub struct CreateReportInput {
     pub updated_at: DateTime,
     pub due_date: Option<DateTime>,
     pub version: u64,
-    pub events: Vec<DomainEventId>,
 }
 
 pub struct CreateReportContentInput {
@@ -79,7 +77,6 @@ impl From<Report> for CreateReportInput {
             updated_at: value.updated_at(),
             due_date: value.due_date(),
             version: value.version(),
-            events: value.events(),
             id: value.id(),
         }
     }
@@ -99,9 +96,7 @@ impl TryFrom<CreateReportInput> for Report {
             .set_version(value.version)
             .set_created_at(value.created_at)
             .set_content(ReportContent::try_from(value.content)?);
-        for event in value.events.into_iter() {
-            builder.add_event(event);
-        }
+
         for permission in value.permissions.into_iter() {
             builder.add_permission(permission);
         }

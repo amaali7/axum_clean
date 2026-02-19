@@ -20,7 +20,6 @@ pub struct PreivilegeReportOutput {
     pub updated_at: DateTime,
     pub due_date: Option<DateTime>,
     pub version: u64,
-    pub events: Vec<DomainEventId>,
 }
 
 pub struct PreivilegeReportContentOutput {
@@ -51,7 +50,6 @@ impl From<Report> for PreivilegeReportOutput {
             updated_at: value.updated_at(),
             due_date: value.due_date(),
             version: value.version(),
-            events: value.events(),
         }
     }
 }

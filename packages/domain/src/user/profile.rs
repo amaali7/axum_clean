@@ -53,7 +53,7 @@ impl UserProfile {
         self.website.clone()
     }
     pub fn is_deleted(&self) -> bool {
-        self.is_deleted.clone()
+        self.is_deleted
     }
     pub fn created_at(&self) -> DateTime {
         self.created_at.clone()
@@ -76,6 +76,12 @@ pub struct UserProfileBuilder {
     website: Option<Url>,
     is_deleted: bool,
     phone_numbers: PhoneNumbers,
+}
+
+impl Default for UserProfileBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl UserProfileBuilder {
@@ -167,8 +173,8 @@ impl UserProfileBuilder {
             addressess: self.addressess,
             website: self.website,
             is_deleted: self.is_deleted,
-            created_at: created_at,
-            updated_at: updated_at,
+            created_at,
+            updated_at,
         })
     }
 }

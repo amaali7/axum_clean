@@ -9,6 +9,7 @@ pub mod value_objects;
 
 // Re-export main types
 pub use error::DomainError;
+pub use events::{DomainEvent, DomainEventId, Event, Table};
 pub use report::{Report, ReportContent, ReportId, ReportStatus, ReportType};
 pub use role::{Permission, Role, RoleId};
 pub use traits::{AndSpecification, Specification};

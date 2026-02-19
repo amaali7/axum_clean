@@ -1,11 +1,11 @@
 use std::collections::HashSet;
 
 use domain::Report;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
     serialization::{
-        events::SerializedEventId,
         value_objects::{SerializedDateTime, SerializedTitle},
         SerializedPermission, SerializedUserId,
     },
@@ -16,7 +16,7 @@ use super::{
     SerializedReportStatus,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SerializedReport {
     id: SerializedReportId,
     title: SerializedTitle,
@@ -30,7 +30,6 @@ pub struct SerializedReport {
     updated_at: SerializedDateTime,
     due_date: Option<SerializedDateTime>,
     version: u64,
-    events: Vec<SerializedEventId>,
 }
 
 impl SerializedReport {
@@ -82,10 +81,6 @@ impl SerializedReport {
         self.due_date.clone()
     }
 
-    pub fn events(&self) -> Vec<SerializedEventId> {
-        self.events.clone()
-    }
-
     pub fn version(&self) -> u64 {
         self.version.clone()
     }
@@ -102,7 +97,6 @@ pub struct SerializedReportBuilder {
     reviewer_id: HashSet<SerializedUserId>,
     created_at: Option<SerializedDateTime>,
     due: Option<SerializedDateTime>,
-    events: Vec<SerializedEventId>,
     version: u64,
 }
 
@@ -116,7 +110,6 @@ impl SerializedReportBuilder {
             reviewer_id: HashSet::new(),
             created_at: None,
             due: None,
-            events: Vec::new(),
             id,
             status: SerializedReportStatus::Draft,
             version: 1,
@@ -155,10 +148,7 @@ impl SerializedReportBuilder {
         self.reviewer_id.insert(reviewer);
         self
     }
-    pub fn add_event(&mut self, event: SerializedEventId) -> &mut Self {
-        self.events.push(event);
-        self
-    }
+
     pub fn build(
         self,
         title: &str,
@@ -177,7 +167,6 @@ impl SerializedReportBuilder {
             updated_at: updated_at,
             due_date: self.due,
             version: self.version,
-            events: self.events,
         })
     }
 }
@@ -203,9 +192,6 @@ impl TryFrom<Report> for SerializedReport {
         }
         for reviewer in value.assigned_reviewer_id().into_iter() {
             report_builder.add_reviewer(reviewer.into());
-        }
-        for event in value.events().into_iter() {
-            report_builder.add_event(event.into());
         }
 
         report_builder.build(&value.title().title(), value.updated_at().try_into()?)
@@ -233,9 +219,6 @@ impl TryFrom<SerializedReport> for Report {
         }
         for reviewer in value.assigned_reviewer_id().into_iter() {
             report_builder.add_reviewer(reviewer.into());
-        }
-        for event in value.events().into_iter() {
-            report_builder.add_event(event.into());
         }
 
         report_builder

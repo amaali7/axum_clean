@@ -1,6 +1,6 @@
 use domain::UserId;
 
-use crate::{ dto::user_dto::output::OwnerUserOutput, error::{AppResult, ApplicationError}, ports::UserRepository};
+use crate::{ RequestContex, dto::user_dto::output::OwnerUserOutput, error::AppResult, ports::UserRepository};
 
 
 pub struct GetUserByIdOwnerUseCase<R: UserRepository> {
@@ -8,12 +8,8 @@ pub struct GetUserByIdOwnerUseCase<R: UserRepository> {
 }
 
 impl<R: UserRepository> GetUserByIdOwnerUseCase<R> {
-    pub async fn execute(&self, id: UserId) -> AppResult<OwnerUserOutput> {
-        let result = self.repo.get_by_id(id.clone()).await?;
-        match result {
-            Some(user) => Ok(OwnerUserOutput::from(user)),
-            None => Err(ApplicationError::Repository(format!("User : {} not found", id))),
-        }
+    pub async fn execute(&self, ctx: RequestContex, id: UserId) -> AppResult<OwnerUserOutput> {
+            Ok(self.repo.get_by_id(ctx, id.clone()).await?.into())
     }
 }
 

@@ -3,7 +3,7 @@ members = [
     "packages/domain",
     "packages/application",
     "packages/infrastructure",
-    "packages/api"
+    # "packages/api"
 ]
 resolver = "3"
 
@@ -21,3 +21,4 @@ tracing = "0.1"
 chrono = "0.4.42"
 url = "2.5.7"
 surrealdb = "2.0.4"
+surrealdb-migrations = "2.4.0"

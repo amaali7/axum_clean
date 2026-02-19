@@ -1,6 +1,6 @@
 use domain::Name;
 
-use crate::{dto::role_dto::output::PrivilegeRoleOutput, error::{AppResult, ApplicationError}, ports::RoleRepository};
+use crate::{RequestContex, dto::role_dto::output::PrivilegeRoleOutput, error::AppResult, ports::RoleRepository};
 
 
 pub struct GetRoleByNamePrivilegeUseCase<R: RoleRepository> {
@@ -8,11 +8,7 @@ pub struct GetRoleByNamePrivilegeUseCase<R: RoleRepository> {
 }
 
 impl<R: RoleRepository> GetRoleByNamePrivilegeUseCase<R> {
-    pub async fn execute(&self, name: Name) -> AppResult<PrivilegeRoleOutput> {
-        let result = self.repo.get_by_name(name.clone()).await?;
-        match result {
-            Some(role) => Ok(PrivilegeRoleOutput::from(role)),
-            None => Err(ApplicationError::Repository(format!("Role : {} not found", name))),
-        }
+    pub async fn execute(&self, ctx: RequestContex, name: Name) -> AppResult<PrivilegeRoleOutput> {
+        Ok(self.repo.get_by_name(ctx, name.clone()).await?.into())
     }
 }

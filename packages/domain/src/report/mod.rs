@@ -10,6 +10,7 @@ pub use status::ReportStatus;
 use crate::error::DomainResult;
 use crate::value_objects::DateTime;
 use crate::value_objects::Title;
+use crate::Event;
 
 use super::events::DomainEventId;
 use super::role::Permission;
@@ -64,7 +65,6 @@ pub struct Report {
     updated_at: DateTime,
     due_date: Option<DateTime>,
     version: u64,
-    events: Vec<DomainEventId>,
 }
 
 impl Report {
@@ -85,7 +85,7 @@ impl Report {
     }
 
     pub fn report_type(&self) -> ReportType {
-        self.report_type.clone()
+        self.report_type
     }
 
     pub fn permissions(&self) -> HashSet<Permission> {
@@ -116,12 +116,8 @@ impl Report {
         self.due_date.clone()
     }
 
-    pub fn events(&self) -> Vec<DomainEventId> {
-        self.events.clone()
-    }
-
     pub fn version(&self) -> u64 {
-        self.version.clone()
+        self.version
     }
 }
 
@@ -136,7 +132,6 @@ pub struct ReportBuilder {
     reviewer_id: HashSet<UserId>,
     created_at: Option<DateTime>,
     due: Option<DateTime>,
-    events: Vec<DomainEventId>,
     version: u64,
 }
 
@@ -150,7 +145,6 @@ impl ReportBuilder {
             reviewer_id: HashSet::new(),
             created_at: None,
             due: None,
-            events: Vec::new(),
             id,
             status: ReportStatus::Draft,
             version: 1,
@@ -189,25 +183,26 @@ impl ReportBuilder {
         self.reviewer_id.insert(reviewer);
         self
     }
-    pub fn add_event(&mut self, event: DomainEventId) -> &mut Self {
-        self.events.push(event);
-        self
-    }
+
     pub fn build(self, title: &str, updated_at: DateTime) -> DomainResult<Report> {
         Ok(Report {
             id: self.id,
             title: Title::new(title)?,
-            content: self.content.unwrap_or(ReportContent::default()),
+            content: self.content.unwrap_or_default(),
             report_type: self.report_type.unwrap_or(ReportType::Other),
             permissions: self.permissions,
             status: self.status,
             author_id: self.author_id,
             assigned_reviewer_id: self.reviewer_id,
             created_at: self.created_at.unwrap_or(updated_at.clone()),
-            updated_at: updated_at,
+            updated_at,
             due_date: self.due,
             version: self.version,
-            events: self.events,
         })
+    }
+}
+impl Event for Report {
+    fn get_type(&self) -> &str {
+        "REPORT"
     }
 }

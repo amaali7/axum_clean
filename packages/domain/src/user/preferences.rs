@@ -23,15 +23,15 @@ impl UserPreferences {
         }
     }
     pub fn email_notifications(&self) -> bool {
-        self.email_notifications.clone()
+        self.email_notifications
     }
 
     pub fn push_notifications(&self) -> bool {
-        self.push_notifications.clone()
+        self.push_notifications
     }
 
     pub fn two_factor_auth(&self) -> bool {
-        self.two_factor_auth.clone()
+        self.two_factor_auth
     }
 
     pub fn language(&self) -> Language {

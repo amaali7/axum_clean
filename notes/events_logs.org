@@ -1,0 +1,32 @@
+#+TITLE: Events Logs
+#+DESCRIPTION: How to implementing the event logs?
+
+* Start
+Yes, Clean Architecture can absolutely use database tables for event logs, and it is a common practice for audit trails, data auditing, and implementing patterns like the
+Outbox Pattern. These logs are generally stored in the infrastructure layer—using a relational database—to ensure persistence and consistency with business data. 
+** Key implementation details for using database tables as event logs in Clean Architecture include:
+
+- Audit Tables: Databases like DynamoDB are frequently used to store audit tables that track stateful changes to entities over time, helping to reconstruct historical data.
+- The Outbox Pattern: To maintain atomicity, the business logic (Domain/Application layer) saves an event to an Outbox table in the same transaction as the business data change.
+- Infrastructure Responsibility: The persistence of these event logs is handled by the infrastructure layer, ensuring that the core business logic remains independent of the specific database technology.
+- Event Sourcing: In more advanced scenarios, an "Event Store" database table can serve as the primary source of truth for all changes to application state.
+- CDC Integration: Change Data Capture (CDC) can be used to monitor database transaction logs, automatically turning data modifications into event logs. 
+
+Using database tables for event logs ensures that data and events are updated together reliably.
+
+* Outbox Pattern
+
+The Outbox Pattern in Clean Architecture ensures atomic database updates and reliable event publishing by storing domain events in a local "outbox" table within the same transaction as business data changes. A separate background process then publishes these events to a message broker, preventing data inconsistency and message loss. 
+** Key Components & Implementation
+
+- Database Transaction: Within a single ACID transaction in the application layer, the domain entity is updated, and a new event is serialized and saved to an OutboxMessages table.
+- Outbox Table: Stores necessary message details, including Id, Type, Payload (often JSON), OccurredOn, and ProcessedOn timestamps.
+- Background Processor: A scheduler (e.g., Quartz.NET, Hangfire) or polling service asynchronously reads unprocessed messages from the table, publishes them to a broker (e.g., RabbitMQ, Kafka), and marks them as processed. 
+
+** Benefits in Clean Architecture
+
+- Consistency: Guarantees that events are published only if the database transaction commits successfully.
+- Reliability: Prevents data loss if the message broker is unavailable, as messages remain in the database until successfully sent.
+- Decoupling: Keeps business logic independent of specific messaging infrastructure, maintaining clean separation of concerns. 
+
+This pattern is highly effective in microservices and domain-driven design (DDD) scenarios to ensure that data changes and notifications stay in sync without requiring distributed transactions. 

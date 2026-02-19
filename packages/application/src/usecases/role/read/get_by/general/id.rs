@@ -1,19 +1,14 @@
-use domain::UserId;
+use domain::RoleId;
 
-use crate::{dto::user_dto::output::GeneralUserOutput, error::{AppResult, ApplicationError}, ports::UserRepository};
+use crate::{RequestContex, dto::role_dto::output::GeneralRoleOutput, error::AppResult, ports::RoleRepository};
 
-pub struct GetRoleByIdGenaralUseCase<R: UserRepository> {
+pub struct GetRoleByIdGenaralUseCase<R: RoleRepository> {
     repo: R,
 }
 
-impl<R: UserRepository> GetRoleByIdGenaralUseCase<R> {
-    pub async fn execute(&self, id: UserId) -> AppResult<GeneralUserOutput> {
-        let result = self.repo.get_by_id(id.clone()).await?;
-        match result {
-            Some(user) => {
-                Ok(GeneralUserOutput::from(user))
-            },
-            None => Err(ApplicationError::Repository(format!("User : {} not found", id))),
-        }
+impl<R: RoleRepository> GetRoleByIdGenaralUseCase<R> {
+    pub async fn execute(&self, ctx: RequestContex, id: RoleId) -> AppResult<GeneralRoleOutput> {
+        Ok(self.repo.get_by_id( ctx,id.clone()).await?.into())
+        
     }
 }

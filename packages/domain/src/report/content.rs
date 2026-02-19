@@ -71,6 +71,12 @@ pub struct ReportContentBuilder {
     rejection_reason: Option<Comment>,
 }
 
+impl Default for ReportContentBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ReportContentBuilder {
     pub fn new() -> Self {
         Self {

@@ -18,7 +18,6 @@ pub struct OwnerUserOutput {
     pub permissions: HashSet<Permission>, // Cached permissions for performance
     pub preferences: OwnerUserPreferencesOutput,
     pub status: UserStatus,
-    pub events: Vec<DomainEventId>,
 }
 
 pub struct OwnerUserPreferencesOutput {
@@ -50,7 +49,6 @@ impl From<User> for OwnerUserOutput {
             permissions: value.permissions().clone(),
             preferences: OwnerUserPreferencesOutput::from(value.preferences().clone()),
             status: value.status().clone(),
-            events: value.events(),
         }
     }
 }

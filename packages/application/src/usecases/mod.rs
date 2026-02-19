@@ -6,10 +6,7 @@ pub mod user_servies {
     use super::user;
     pub use user::{
         create::CreateUserUseCase,
-        delete::{
-            all::DeleteUserUseCase, permission::RemovePermissionFromUserUseCase,
-            role::RemoveRoleFromUserUseCase,
-        },
+        delete::DeleteUserUseCase,
         read::{
             get_by::{
                 general::{
@@ -27,10 +24,7 @@ pub mod user_servies {
             },
             list::{geneal::ListUserGeneralUseCase, privilege::ListUserPrivilegeUseCase},
         },
-        update::{
-            all::UpdateUserUseCase, permission::AssignPermissionToUserUseCase,
-            role::AssignRoleToUserUseCase,
-        },
+        update::UpdateUserUseCase,
     };
 }
 
@@ -38,12 +32,12 @@ pub mod role_servies {
     use super::role;
     pub use role::{
         create::CreateRoleUseCase,
-        delete::{all::DeleteRoleUseCase, permission::RemovePermissionFromRoleUseCase},
+        delete::DeleteRoleUseCase,
         read::get_by::{
             general::{id::GetRoleByIdGenaralUseCase, name::GetRoleByNameGeneralUseCase},
             privilege::{id::GetRoleByIdPrivilegeUseCase, name::GetRoleByNamePrivilegeUseCase},
         },
-        update::{all::UpdateRoleUseCase, permission::AssignPermissionForRoleUseCase},
+        update::UpdateRoleUseCase,
     };
 }
 
@@ -51,10 +45,7 @@ pub mod report_servies {
     use super::report;
     pub use report::{
         create::CreateReportUseCase,
-        delete::{
-            all::DeleteReportUseCase, permission::RemovePermissionFromReportUseCase,
-            reviewer::RemoveReviewerFromReportUseCase,
-        },
+        delete::DeleteReportUseCase,
         read::{
             get_by::{
                 auther::{
@@ -75,9 +66,6 @@ pub mod report_servies {
                 reviewer::ListOfReportRequestedByReviewerUseCase,
             },
         },
-        update::{
-            all::UpdateReportUseCase, permission::AssignPermissionForReportUseCase,
-            reviewer::AssignReviewerForReportUseCase,
-        },
+        update::UpdateReportUseCase,
     };
 }

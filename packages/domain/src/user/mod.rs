@@ -6,7 +6,7 @@ pub use profile::UserProfile;
 
 use crate::error::DomainResult;
 use crate::events::DomainEventId;
-use crate::{DomainError, Email, Permission, RoleId, Username};
+use crate::{DateTime, DomainError, Email, Event, Permission, RoleId, Username};
 
 use std::collections::HashSet;
 use std::ops::DerefMut;
@@ -57,7 +57,9 @@ pub struct User {
     permissions: HashSet<Permission>, // Cached permissions for performance
     preferences: UserPreferences,
     status: UserStatus,
-    events: Vec<DomainEventId>,
+    failed_logins: Option<u64>,
+    locked_until: Option<DateTime>,
+    last_login: Option<DateTime>,
 }
 
 impl User {
@@ -86,7 +88,7 @@ impl User {
     }
 
     pub fn status(&self) -> UserStatus {
-        self.status.clone()
+        self.status
     }
 
     // Collection getters - return references to avoid cloning
@@ -98,23 +100,26 @@ impl User {
         self.permissions.clone()
     }
 
-    pub fn events(&self) -> Vec<DomainEventId> {
-        self.events.clone()
+    pub fn failed_logins(&self) -> Option<u64> {
+        self.failed_logins.clone()
+    }
+
+    pub fn locked_until(&self) -> Option<DateTime> {
+        self.locked_until.clone()
+    }
+
+    pub fn last_login(&self) -> Option<DateTime> {
+        self.last_login.clone()
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum UserStatus {
     Active,
     Suspended,
+    #[default]
     Inactive,
     Banned,
-}
-
-impl Default for UserStatus {
-    fn default() -> Self {
-        UserStatus::Inactive
-    }
 }
 
 // Builder pattern for complex object creation
@@ -125,9 +130,11 @@ pub struct UserBuilder {
     profile: Option<UserProfile>,
     roles: HashSet<RoleId>,
     permissions: HashSet<Permission>, // Cached permissions for performance
-    events: Vec<DomainEventId>,
     preferences: Option<UserPreferences>,
     status: UserStatus,
+    failed_logins: Option<u64>,
+    locked_until: Option<DateTime>,
+    last_login: Option<DateTime>,
 }
 
 impl UserBuilder {
@@ -138,10 +145,12 @@ impl UserBuilder {
             profile: None,
             roles: HashSet::new(),
             permissions: HashSet::new(),
-            events: Vec::new(),
             id,
             preferences: None,
             status: UserStatus::Inactive,
+            failed_logins: None,
+            locked_until: None,
+            last_login: None,
         }
     }
 
@@ -182,8 +191,19 @@ impl UserBuilder {
         self.profile = Some(profile);
         self
     }
-    pub fn add_event(&mut self, event: DomainEventId) -> &mut Self {
-        self.events.push(event);
+
+    pub fn set_failed_logins(&mut self, failed_logins: u64) -> &mut Self {
+        self.failed_logins = Some(failed_logins);
+        self
+    }
+
+    pub fn set_locked_until(&mut self, datetime: DateTime) -> &mut Self {
+        self.locked_until = Some(datetime);
+        self
+    }
+
+    pub fn set_last_login(&mut self, datetime: DateTime) -> &mut Self {
+        self.last_login = Some(datetime);
         self
     }
 
@@ -203,7 +223,15 @@ impl UserBuilder {
             permissions: self.permissions,
             preferences: self.preferences.unwrap_or_default(),
             status: self.status,
-            events: self.events,
+            failed_logins: self.failed_logins,
+            locked_until: self.locked_until,
+            last_login: self.last_login,
         })
+    }
+}
+
+impl Event for User {
+    fn get_type(&self) -> &str {
+        "USER"
     }
 }

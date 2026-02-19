@@ -1,20 +1,42 @@
-use domain::{events::ReportEvent, value_objects::Title, Permission, Report, ReportId, UserId};
+use domain::{value_objects::Title, Report, ReportId, UserId};
 
-use crate::error::AppResult;
+use crate::{RequestContex, error::AppResult};
+
+use super::SortBy;
+
+
+#[derive(Debug, Clone)]
+pub enum ReportQueryResult {
+    Single(Report),
+    Array(Vec<Report>),
+    None,
+}
+
+impl ReportQueryResult {
+    pub fn get_array(&self) -> Option<Vec<Report>> {
+        match self {
+            ReportQueryResult::Array(reports) => Some(reports.to_vec()),
+            _ => None,
+        }
+    }
+    pub fn get_value(&self) -> Option<Report> {
+        match self {
+            ReportQueryResult::Single(report) => Some(report.clone()),
+            _ => None,
+        }
+    }
+}
+
 
 
 #[async_trait::async_trait]
 pub trait ReportRepository {
-    async fn save(&self, report: Report) -> AppResult<()>;
-    async fn delete(&self, report_id: ReportId) -> AppResult<()>;
-    async fn update(&self, report: Report) -> AppResult<Report>;
-    async fn get_by_id(&self, id: ReportId) -> AppResult<Option<Report>>;
-    async fn get_by_author_id(&self, id: UserId) -> AppResult<Option<Report>>;
-    async fn get_by_title(&self, title: Title) -> AppResult<Option<Report>>;
-    async fn get_events(&self, report_id: ReportId) -> AppResult<Option<Vec<ReportEvent>>>;
-    async fn list(&self) -> AppResult<Vec<Report>>;
-    async fn assign_permission(&self, report_id: ReportId, permission: Permission) -> AppResult<()>;
-    async fn remove_permission(&self, report_id: ReportId, permission: Permission) -> AppResult<()>;
-    async fn assign_reviewer(&self, report_id: ReportId, reviewer_id: UserId) -> AppResult<()>;
-    async fn remove_reviewer(&self, report_id: ReportId, reviewer_id: UserId) -> AppResult<()>;
+    async fn create(&self,ctx: RequestContex, report: Report) -> AppResult<Report>;
+    async fn delete(&self,ctx: RequestContex, report_id: ReportId) -> AppResult<bool>;
+    async fn update(&self,ctx: RequestContex, report: Report) -> AppResult<Report>;
+    async fn get_by_id(&self,ctx: RequestContex, id: ReportId) -> AppResult<Report>;
+    async fn get_by_author_id(&self,ctx: RequestContex,sort_by: &[SortBy], page: u32, page_size: u32, auther_id: UserId) -> AppResult<Vec<Report>>;
+    async fn get_by_title(&self,ctx: RequestContex, title: Title) -> AppResult<Report>;
+    async fn get_reports_paginated(&self,ctx: RequestContex,sort_by: &[SortBy], page: u32, page_size: u32) -> AppResult<Vec<Report>>;
+    async fn raw_query(&self,ctx: RequestContex, query: String) -> AppResult<ReportQueryResult>;
 }

@@ -8,7 +8,7 @@ use std::ops::{Deref, DerefMut};
 use crate::error::DomainResult;
 use crate::events::DomainEventId;
 use crate::value_objects::{DateTime, Description};
-use crate::{DomainError, Name};
+use crate::{DomainError, Event, Name};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct RoleId(String);
@@ -47,7 +47,6 @@ pub struct Role {
     permissions: HashSet<Permission>,
     is_system_role: bool,
     created_at: DateTime,
-    events: Vec<DomainEventId>,
 }
 
 impl Role {
@@ -71,15 +70,11 @@ impl Role {
     }
 
     pub fn is_system_role(&self) -> bool {
-        self.is_system_role.clone()
+        self.is_system_role
     }
 
     pub fn created_at(&self) -> DateTime {
         self.created_at.clone()
-    }
-
-    pub fn events(&self) -> Vec<DomainEventId> {
-        self.events.clone()
     }
 }
 
@@ -91,12 +86,10 @@ pub struct RoleBuilder {
     permissions: HashSet<Permission>,
     is_system_role: Option<bool>,
     created_at: Option<DateTime>,
-    events: Vec<DomainEventId>,
 }
 
 impl RoleBuilder {
     pub fn new(id: RoleId) -> Self {
-        let events: Vec<DomainEventId> = Vec::new();
         Self {
             id,
             name: None,
@@ -104,7 +97,6 @@ impl RoleBuilder {
             permissions: HashSet::new(),
             is_system_role: None,
             created_at: None,
-            events,
         }
     }
 
@@ -132,11 +124,6 @@ impl RoleBuilder {
         self
     }
 
-    pub fn add_event(&mut self, event: DomainEventId) -> &mut Self {
-        self.events.push(event);
-        self
-    }
-
     pub fn build(self) -> DomainResult<Role> {
         Ok(Role {
             id: self.id,
@@ -153,7 +140,12 @@ impl RoleBuilder {
             created_at: self.created_at.ok_or(DomainError::ValidationError(
                 "Created At not found".to_string(),
             ))?,
-            events: self.events,
         })
+    }
+}
+
+impl Event for Role {
+    fn get_type(&self) -> &str {
+        "ROLE"
     }
 }
