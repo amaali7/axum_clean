@@ -1,0 +1,470 @@
+#+TITLE: Adding Interface Layer to axum_clean
+#+AUTHOR: Architecture Guide
+
+* Goal
+Introduce an interface layer into the existing axum_clean workspace, separating HTTP logic from infrastructure and keeping domain/application pure.
+
+Current structure:
+  domain/
+  application/
+  infrastructure/
+
+Target structure:
+  domain/
+  application/
+  infrastructure/
+  interface/
+
+---
+
+* Step 1 — Create the Interface Crate
+
+** 1.1 Create new crate
+From workspace root:
+
+#+BEGIN_SRC bash
+cargo new interface --lib
+#+END_SRC
+
+** 1.2 Add to workspace
+Edit root Cargo.toml:
+
+#+BEGIN_SRC toml
+[workspace]
+members = [
+    "domain",
+    "application",
+    "infrastructure",
+    "interface"
+]
+#+END_SRC
+
+** 1.3 Add dependencies
+interface/Cargo.toml:
+
+#+BEGIN_SRC toml
+[dependencies]
+application = { path = "../application" }
+
+axum = "0.7"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+#+END_SRC
+
+Notes:
+- interface depends on application
+- interface does NOT depend on infrastructure or domain
+- tokio needed for async HTTP handlers
+
+---
+
+* Step 2 — Create HTTP Folder Structure
+
+Recommended interface/src structure:
+
+#+BEGIN_EXAMPLE
+interface/
+└── src/
+    ├── lib.rs
+    └── http/
+        ├── mod.rs
+        ├── routes.rs
+        ├── handlers/
+        │   ├── mod.rs
+        │   └── user_handler.rs
+        └── serializers/
+            ├── mod.rs
+            └── user_dto.rs
+#+END_EXAMPLE
+
+---
+
+* Step 3 — Define HTTP DTOs (Transport Models)
+
+** interface/http/serializers/user_dto.rs
+
+#+BEGIN_SRC rust
+use serde::{Deserialize, Serialize};
+
+#[derive(Deserialize)]
+pub struct CreateUserRequest {
+    pub name: String,
+    pub email: String,
+}
+
+#[derive(Serialize)]
+pub struct CreateUserResponse {
+    pub id: String,
+    pub email: String,
+}
+#+END_SRC
+
+Notes:
+- Separate from application DTOs
+- Allows API versioning or field hiding
+
+---
+
+* Step 4 — Map HTTP DTO → Application DTO
+
+Application layer DTO example:
+
+#+BEGIN_SRC rust
+pub struct CreateUserInput {
+    pub name: String,
+    pub email: String,
+}
+#+END_SRC
+
+Mapping happens in the handler (next step).
+
+---
+
+* Step 5 — Create HTTP Handler
+
+** interface/http/handlers/user_handler.rs
+
+#+BEGIN_SRC rust
+use axum::{Json, extract::State};
+use application::use_cases::create_user::CreateUserUseCase;
+use application::dto::CreateUserInput;
+
+use crate::http::serializers::user_dto::{
+    CreateUserRequest,
+    CreateUserResponse,
+};
+
+#[derive(Clone)]
+pub struct AppState {
+    pub create_user_use_case: CreateUserUseCase,
+}
+
+pub async fn create_user(
+    State(state): State<AppState>,
+    Json(request): Json<CreateUserRequest>,
+) -> Json<CreateUserResponse> {
+    // Map HTTP → Application DTO
+    let input = CreateUserInput {
+        name: request.name,
+        email: request.email,
+    };
+
+    let result = state.create_user_use_case.execute(input).await;
+
+    // Map Application → HTTP
+    Json(CreateUserResponse {
+        id: result.id,
+        email: result.email,
+    })
+}
+#+END_SRC
+
+Notes:
+- No DB or domain logic here
+- Only DTO mapping + calling use case
+
+---
+
+* Step 6 — Define Routes
+
+** interface/http/routes.rs
+
+#+BEGIN_SRC rust
+use axum::Router;
+use axum::routing::post;
+
+use crate::http::handlers::user_handler::{create_user, AppState};
+
+pub fn create_router(state: AppState) -> Router {
+    Router::new()
+        .route("/users", post(create_user))
+        .with_state(state)
+}
+#+END_SRC
+
+---
+
+* Step 7 — Connect Everything in Composition Root
+
+Example bootstrap/main.rs:
+
+#+BEGIN_SRC rust
+use infrastructure::database::user_repository::SurrealUserRepository;
+use application::use_cases::create_user::CreateUserUseCase;
+use interface::http::routes::create_router;
+use interface::http::handlers::AppState;
+
+#[tokio::main]
+async fn main() {
+    // 1. Create DB client
+    let db = SurrealUserRepository::new().await;
+
+    // 2. Create use case
+    let create_user_use_case = CreateUserUseCase::new(db);
+
+    // 3. Create state
+    let state = AppState {
+        create_user_use_case,
+    };
+
+    // 4. Build router
+    let app = create_router(state);
+
+    // 5. Run server
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+#+END_SRC
+
+Notes:
+- bootstrap depends on everything
+- interface does not know about DB
+- infrastructure does not know about HTTP
+
+---
+
+* Step 8 — Clean Dependency Graph
+
+After refactor:
+
+#+BEGIN_EXAMPLE
+interface --> application --> domain
+infrastructure --> application --> domain
+bootstrap --> everything
+domain --> nothing
+#+END_EXAMPLE
+
+This ensures strict Clean Architecture.
+
+---
+
+* Step 9 — Remove HTTP From Infrastructure
+
+Move any previous infrastructure/http/ code into interface:
+
+- infrastructure now only has:
+  - database/
+  - repositories/
+  - external/
+  - config/
+  - logging/
+
+No Axum types in infrastructure.
+
+---
+
+* Step 10 — Benefits of Interface Layer
+
+- HTTP logic is isolated
+- Domain remains pure
+- Application remains framework-agnostic
+- Can add gRPC, CLI, or another transport later
+- Easier testing of use cases
+- Clear mapping boundaries between transport ↔ application ↔ domain
+
+---
+
+* Step 11 — Recommended Final Workspace Structure
+
+#+BEGIN_EXAMPLE
+workspace/
+├── domain/
+├── application/
+├── infrastructure/
+│   ├── database/
+│   ├── external/
+│   ├── config/
+│   └── logging/
+├── interface/
+│   └── http/
+│       ├── handlers/
+│       ├── routes.rs
+│       └── serializers/
+└── bootstrap/
+#+END_EXAMPLE
+
+---
+
+* Step 12 — Next Steps
+
+- Move existing Axum code from infrastructure to interface
+- Create mappings for all existing DTOs
+- Ensure repository traits are fully implemented in infrastructure
+- Verify dependency flow
+- Write tests for handlers using mock application layer
+
+
+* State Management
+
+
+** 1. Why AppState Needs Multiple Use Cases
+
+In the previous example, `AppState` only contained `CreateUserUseCase`.  
+In a real system, it should aggregate all use cases required by the interface layer:
+
+#+BEGIN_SRC rust
+#[derive(Clone)]
+pub struct AppState {
+    pub create_user: CreateUserUseCase,
+    pub list_users: ListUsersUseCase,
+    pub create_report: CreateReportUseCase,
+    pub list_reports: ListReportsUseCase,
+}
+#+END_SRC
+
+- Each field corresponds to one use case exposed through HTTP.
+- This keeps handlers lightweight; they just call the relevant use case.
+
+---
+
+** 2. Per-Route or Sub-Router State
+
+Axum allows:
+
+- Global state: shared for all routes
+- Layered/sub-router state: attach a separate state to a specific sub-router
+
+This means `/users` can have `UserAppState`, and `/reports` can have `ReportAppState`.
+
+---
+
+** 3. Example: Separate State per Concern
+
+## 3.1 Define per-concern states
+
+#+BEGIN_SRC rust
+#[derive(Clone)]
+pub struct UserAppState {
+    pub create_user: CreateUserUseCase,
+    pub list_users: ListUsersUseCase,
+}
+
+#[derive(Clone)]
+pub struct ReportAppState {
+    pub create_report: CreateReportUseCase,
+    pub list_reports: ListReportsUseCase,
+}
+#+END_SRC
+
+---
+
+## 3.2 Define sub-routers
+
+#+BEGIN_SRC rust
+use axum::{Router, routing::post};
+
+pub fn user_router(state: UserAppState) -> Router {
+    Router::new()
+        .route("/users", post(create_user_handler))
+        .with_state(state)
+}
+
+pub fn report_router(state: ReportAppState) -> Router {
+    Router::new()
+        .route("/reports", post(create_report_handler))
+        .with_state(state)
+}
+#+END_SRC
+
+---
+
+## 3.3 Combine routers in the main app
+
+#+BEGIN_SRC rust
+let user_state = UserAppState {
+    create_user,
+    list_users,
+};
+
+let report_state = ReportAppState {
+    create_report,
+    list_reports,
+};
+
+let app = Router::new()
+    .nest("/users", user_router(user_state))
+    .nest("/reports", report_router(report_state));
+#+END_SRC
+
+Notes:
+
+- `nest` attaches a sub-router under a path.
+- Each sub-router can have its **own state type**.
+- Axum will automatically extract the correct state in handlers.
+
+---
+
+** 4. Handler Extraction Example
+
+For a user handler:
+
+#+BEGIN_SRC rust
+use axum::{Json, extract::State};
+
+pub async fn create_user_handler(
+    State(state): State<UserAppState>,
+    Json(request): Json<CreateUserRequest>,
+) -> Json<CreateUserResponse> {
+    let input = CreateUserInput {
+        name: request.name,
+        email: request.email,
+    };
+    let result = state.create_user.execute(input).await;
+
+    Json(CreateUserResponse {
+        id: result.id,
+        email: result.email,
+    })
+}
+#+END_SRC
+
+- The handler only sees `UserAppState`.
+- Report handlers would receive `ReportAppState`.
+
+---
+
+** 5. Benefits of Per-Concern State
+
+1. Separation of concerns:
+   - User handlers only see user-related use cases
+   - Report handlers only see report-related use cases
+
+2. Smaller AppState structs:
+   - Easier to maintain
+   - Easier to clone (Axum requires `Clone` for state)
+
+3. Avoid accidental coupling:
+   - Handlers can’t access unrelated use cases
+
+---
+
+** 6. Notes on Cloning State
+
+- Axum requires that the `State` type implements `Clone`.
+- Typically, use `Arc` to wrap shared use cases if they hold expensive resources:
+
+#+BEGIN_SRC rust
+use std::sync::Arc;
+
+#[derive(Clone)]
+pub struct UserAppState {
+    pub create_user: Arc<CreateUserUseCase>,
+    pub list_users: Arc<ListUsersUseCase>,
+}
+#+END_SRC
+
+- Handlers now clone `Arc`, which is cheap.
+- Allows safe multi-threaded usage.
+
+---
+
+** 7. Summary
+
+- AppState can hold multiple use cases.
+- Axum supports per-sub-router state.
+- Use per-concern state for `/users`, `/reports`, `/auth`, etc.
+- Wrap use cases in `Arc` to satisfy `Clone` and optimize memory.
+- This approach keeps Clean Architecture principles intact.

@@ -1,0 +1,154 @@
+#+TITLE: Infrastructure Layer - Detailed Explanation
+#+AUTHOR: Architecture Notes
+
+* What Infrastructure Really Means
+
+Infrastructure is the outer technical layer of the system.
+
+It contains all technical mechanisms required to run the application,
+but it does NOT contain business rules.
+
+Infrastructure answers:
+
+- How do we store data?
+- How do we expose HTTP?
+- How do we authenticate?
+- How do we log?
+- How do we load configuration?
+- How do we call external services?
+
+It does NOT answer:
+
+- What is a User?
+- What rules define expiration?
+- What is valid business behavior?
+
+Those belong to domain and application.
+
+* Typical Infrastructure Structure
+
+** database/
+
+Purpose: Concrete database implementation.
+
+Contains:
+- SurrealDB client initialization
+- Database record structs
+- Repository implementations
+- Mapping between DB models and domain entities
+- Query logic
+- DB error handling
+
+Important:
+Depends on domain.
+Domain must NOT depend on it.
+
+** http/
+
+Purpose: Expose application via HTTP.
+
+Contains:
+
+*** handlers/
+- Receive HTTP requests
+- Extract JSON/params
+- Call use cases
+- Convert result to response
+
+*** routes/
+- Register endpoints
+- Wire framework (Axum/Actix)
+
+*** serializers/
+- HTTP request DTOs
+- HTTP response DTOs
+- Mapping between HTTP DTOs and application DTOs
+
+Important:
+HTTP depends on application.
+Application must NOT depend on HTTP.
+
+** auth/
+
+Purpose: Technical security implementation.
+
+Contains:
+- JWT encoding/decoding
+- Password hashing
+- Middleware
+- Token validation
+
+Business authorization rules belong in domain/application.
+Technical implementation belongs here.
+
+** config/
+
+Purpose: Load configuration.
+
+Contains:
+- Environment variables
+- Database URLs
+- Secrets
+- App settings
+
+Domain should not know config exists.
+
+** logging/
+
+Purpose: Observability.
+
+Contains:
+- Tracing setup
+- Structured logging
+- Log formatting
+
+Domain must not directly depend on logging implementation.
+
+* Adapter Types
+
+Infrastructure contains two kinds of adapters:
+
+** Driving Adapters
+- HTTP
+- CLI
+- gRPC
+
+They drive the application.
+
+** Driven Adapters
+- Database
+- Email service
+- Redis
+- External APIs
+
+Application drives them via traits.
+
+* Dependency Rule
+
+Correct:
+
+infrastructure → application → domain
+
+Incorrect:
+
+domain → infrastructure
+application → infrastructure
+
+If that happens, architecture collapses.
+
+* Clean Workspace Example
+
+workspace/
+├── domain/
+├── application/
+├── infrastructure/
+│   ├── database/
+│   ├── http/
+│   ├── auth/
+│   ├── config/
+│   ├── logging/
+│   └── external/
+└── bootstrap/
+
+Infrastructure = all concrete technical implementations
+of abstract contracts defined in domain/application.
