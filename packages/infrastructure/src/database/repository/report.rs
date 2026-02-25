@@ -5,7 +5,7 @@ use domain::{Title,user::UserId, report::{Report, ReportId}};
 use crate::{
     database::client::SurrealDBClient, error::InfrastructureError,
     serialization::{
-        SerializedReportId,SerializedUserId, report::{SurrealReportResponseExt, report::SerializedReport}, value_objects::{SerializedName, SerializedTitle},
+        InfrastructureReportId,InfrastructureUserId, report::{SurrealReportResponseExt, report::InfrastructureReport}, value_objects::{InfrastructureName, InfrastructureTitle},
         
     }
 };
@@ -24,8 +24,8 @@ impl SurrealReportRepository {
 #[async_trait]
 impl ReportRepository for SurrealReportRepository {
     async fn create(&self,ctx: RequestContex, report: Report) -> AppResult<Report>{
-        let record: SerializedReport = report.try_into().map_err(|_| ApplicationError::Repository("Report Error ".to_string()))?;
-        let result: Option<SerializedReport> =  self
+        let record: InfrastructureReport = report.try_into().map_err(|_| ApplicationError::Repository("Report Error ".to_string()))?;
+        let result: Option<InfrastructureReport> =  self
             .client
             .db
             .query("LET $report_id = $uid;
@@ -41,7 +41,7 @@ impl ReportRepository for SurrealReportRepository {
         
     }
     async fn delete(&self,ctx: RequestContex, id: ReportId) -> AppResult<bool>{
-        let result: Option<SerializedReport> =  self
+        let result: Option<InfrastructureReport> =  self
             .client
             .db
             .query("LET $report_id = $uid;
@@ -56,8 +56,8 @@ impl ReportRepository for SurrealReportRepository {
         }
     }
     async fn update(&self,ctx: RequestContex, report: Report) -> AppResult<Report>{
-        let record: SerializedReport = report.try_into().map_err(|err: InfrastructureError| ApplicationError::Domain(err.into()))?;
-        let result: Option<SerializedReport> =  self
+        let record: InfrastructureReport = report.try_into().map_err(|err: InfrastructureError| ApplicationError::Domain(err.into()))?;
+        let result: Option<InfrastructureReport> =  self
             .client
             .db
             .query("LET $report_id = $uid;
@@ -73,8 +73,8 @@ impl ReportRepository for SurrealReportRepository {
         }
     }
     async fn get_by_id(&self, _request_contex: RequestContex, id: ReportId) -> AppResult<Report>{
-        let id: SerializedReportId = id.into();
-        let result: Option<SerializedReport> =  self
+        let id: InfrastructureReportId = id.into();
+        let result: Option<InfrastructureReport> =  self
             .client
             .db
             .query("SELECT * FROM ONLY report:$id")
@@ -88,7 +88,7 @@ impl ReportRepository for SurrealReportRepository {
     }
 
     async fn get_by_author_id(&self,ctx: RequestContex,sort_by: &[SortBy], page: u32, page_size: u32, auther_id: UserId) -> AppResult<Vec<Report>>{
-        let auther_id: SerializedUserId = auther_id.into();
+        let auther_id: InfrastructureUserId = auther_id.into();
         let mut order = String::new();
         
         for ord in sort_by{
@@ -99,7 +99,7 @@ impl ReportRepository for SurrealReportRepository {
             order.truncate(order.len() -1);
         }
         
-        let result: Vec<SerializedReport> =  self
+        let result: Vec<InfrastructureReport> =  self
             .client
             .db
             .query("SELECT * FROM report WHERE auther_id = $auther_id  $order LIMIT $page_size START $start_at")
@@ -116,8 +116,8 @@ impl ReportRepository for SurrealReportRepository {
     }
     
     async fn get_by_title(&self, _request_contex:RequestContex, title: Title) -> AppResult<Report>{
-        let title: SerializedTitle = title.try_into()?;
-        let result: Option<SerializedReport> =  self
+        let title: InfrastructureTitle = title.try_into()?;
+        let result: Option<InfrastructureReport> =  self
             .client
             .db
             .query("SELECT * FROM report WHERE title = $title LIMIT 1")
@@ -142,7 +142,7 @@ impl ReportRepository for SurrealReportRepository {
             order.truncate(order.len() -1);
         }
         
-        let result: Vec<SerializedReport> =  self
+        let result: Vec<InfrastructureReport> =  self
             .client
             .db
             .query("SELECT * FROM report $order LIMIT $page_size START $start_at")

@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
 use domain::{
-    events::DomainEventId,
     value_objects::{DateTime, Description},
     Name, Permission, Role, RoleId,
 };
@@ -10,21 +9,19 @@ use crate::error::ApplicationError;
 
 pub struct UpdateRoleInput {
     pub id: RoleId,
-    pub name: Name,
-    pub description: Description,
+    pub name: Option<Name>,
+    pub description: Option<Description>,
     pub permissions: HashSet<Permission>,
-    pub is_system_role: bool,
-    pub created_at: DateTime,
+    pub is_system_role: Option<bool>,
 }
 
 impl From<Role> for UpdateRoleInput {
     fn from(value: Role) -> Self {
         Self {
-            name: value.name(),
-            description: value.description(),
+            name: Some(value.name()),
+            description: Some(value.description()),
             permissions: value.permissions(),
-            is_system_role: value.is_system_role(),
-            created_at: value.created_at(),
+            is_system_role: Some(value.is_system_role()),
             id: value.id(),
         }
     }
@@ -37,10 +34,10 @@ impl TryFrom<UpdateRoleInput> for Role {
     fn try_from(value: UpdateRoleInput) -> Result<Self, Self::Error> {
         let mut builder = Self::new(value.id);
         builder
-            .set_name(value.name)
-            .set_description(value.description)
-            .set_created_at(value.created_at)
-            .set_is_system_role(value.is_system_role);
+            .set_name(value.name.unwrap_or_default())
+            .set_description(value.description.unwrap_or_default())
+            .set_created_at(DateTime::new(0))
+            .set_is_system_role(value.is_system_role.unwrap_or_default());
         for permission in value.permissions.into_iter() {
             builder.add_permission(permission);
         }

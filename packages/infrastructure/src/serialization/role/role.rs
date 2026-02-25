@@ -5,38 +5,38 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
-    serialization::value_objects::{SerializedDateTime, SerializedDescription, SerializedName},
+    serialization::value_objects::{InfrastructureDateTime, InfrastructureDescription, InfrastructureName},
 };
 
-use super::{SerializedPermission, SerializedRoleId};
+use super::{InfrastructurePermission, InfrastructureRoleId};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SerializedRole {
-    id: SerializedRoleId,
-    name: SerializedName,
-    description: SerializedDescription,
-    permissions: HashSet<SerializedPermission>,
+pub struct InfrastructureRole {
+    id: InfrastructureRoleId,
+    name: InfrastructureName,
+    description: InfrastructureDescription,
+    permissions: HashSet<InfrastructurePermission>,
     is_system_role: bool,
-    created_at: SerializedDateTime,
+    created_at: InfrastructureDateTime,
 }
 
-impl SerializedRole {
-    pub fn new(id: &str) -> SerializedRoleBuilder {
-        SerializedRoleBuilder::new(id)
+impl InfrastructureRole {
+    pub fn new(id: &str) -> InfrastructureRoleBuilder {
+        InfrastructureRoleBuilder::new(id)
     }
 
-    pub fn id(&self) -> SerializedRoleId {
+    pub fn id(&self) -> InfrastructureRoleId {
         self.id.clone()
     }
 
-    pub fn name(&self) -> SerializedName {
+    pub fn name(&self) -> InfrastructureName {
         self.name.clone()
     }
-    pub fn description(&self) -> SerializedDescription {
+    pub fn description(&self) -> InfrastructureDescription {
         self.description.clone()
     }
 
-    pub fn permissions(&self) -> HashSet<SerializedPermission> {
+    pub fn permissions(&self) -> HashSet<InfrastructurePermission> {
         self.permissions.clone()
     }
 
@@ -44,25 +44,25 @@ impl SerializedRole {
         self.is_system_role.clone()
     }
 
-    pub fn created_at(&self) -> SerializedDateTime {
+    pub fn created_at(&self) -> InfrastructureDateTime {
         self.created_at.clone()
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct SerializedRoleBuilder {
-    id: SerializedRoleId,
-    name: Option<SerializedName>,
-    description: Option<SerializedDescription>,
-    permissions: HashSet<SerializedPermission>,
+pub struct InfrastructureRoleBuilder {
+    id: InfrastructureRoleId,
+    name: Option<InfrastructureName>,
+    description: Option<InfrastructureDescription>,
+    permissions: HashSet<InfrastructurePermission>,
     is_system_role: Option<bool>,
-    created_at: Option<SerializedDateTime>,
+    created_at: Option<InfrastructureDateTime>,
 }
 
-impl SerializedRoleBuilder {
+impl InfrastructureRoleBuilder {
     pub fn new(id: &str) -> Self {
         Self {
-            id: SerializedRoleId::new(id),
+            id: InfrastructureRoleId::new(id),
             name: None,
             description: None,
             permissions: HashSet::new(),
@@ -71,16 +71,16 @@ impl SerializedRoleBuilder {
         }
     }
 
-    pub fn set_name(&mut self, name: SerializedName) -> &mut Self {
+    pub fn set_name(&mut self, name: InfrastructureName) -> &mut Self {
         self.name = Some(name);
         self
     }
-    pub fn set_description(&mut self, description: SerializedDescription) -> &mut Self {
+    pub fn set_description(&mut self, description: InfrastructureDescription) -> &mut Self {
         self.description = Some(description);
         self
     }
 
-    pub fn add_permission(&mut self, permission: SerializedPermission) -> &mut Self {
+    pub fn add_permission(&mut self, permission: InfrastructurePermission) -> &mut Self {
         self.permissions.insert(permission);
         self
     }
@@ -90,13 +90,13 @@ impl SerializedRoleBuilder {
         self
     }
 
-    pub fn set_created_at(&mut self, created_at: SerializedDateTime) -> &mut Self {
+    pub fn set_created_at(&mut self, created_at: InfrastructureDateTime) -> &mut Self {
         self.created_at = Some(created_at);
         self
     }
 
-    pub fn build(self) -> InfrastructureResult<SerializedRole> {
-        Ok(SerializedRole {
+    pub fn build(self) -> InfrastructureResult<InfrastructureRole> {
+        Ok(InfrastructureRole {
             id: self.id,
             name: self.name.ok_or(InfrastructureError::ValidationError(
                 "Name not found".to_string(),
@@ -104,13 +104,13 @@ impl SerializedRoleBuilder {
             description: self
                 .description
                 .ok_or(InfrastructureError::ValidationError(
-                    "SerializedDescription not found".to_string(),
+                    "InfrastructureDescription not found".to_string(),
                 ))?,
             permissions: self.permissions,
             is_system_role: self
                 .is_system_role
                 .ok_or(InfrastructureError::ValidationError(
-                    "Is System SerializedRole not found".to_string(),
+                    "Is System InfrastructureRole not found".to_string(),
                 ))?,
             created_at: self.created_at.ok_or(InfrastructureError::ValidationError(
                 "Created At not found".to_string(),
@@ -119,7 +119,7 @@ impl SerializedRoleBuilder {
     }
 }
 
-impl TryFrom<Role> for SerializedRole {
+impl TryFrom<Role> for InfrastructureRole {
     type Error = InfrastructureError;
 
     fn try_from(value: Role) -> InfrastructureResult<Self> {
@@ -137,10 +137,10 @@ impl TryFrom<Role> for SerializedRole {
     }
 }
 
-impl TryFrom<SerializedRole> for Role {
+impl TryFrom<InfrastructureRole> for Role {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedRole) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureRole) -> InfrastructureResult<Self> {
         let mut role_builder = Self::new(value.id().into());
         role_builder
             .set_name(value.name().try_into()?)

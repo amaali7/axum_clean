@@ -5,13 +5,13 @@ use domain::{Email, Username, user::{User, UserId}};
 use crate::{
     database::client::SurrealDBClient, error::InfrastructureError,
     serialization::{
-        SerializedUserId,
+        InfrastructureUserId,
         user::{
-            SurrealUserResponseExt ,SerializedUserQueryResult,
-            user::SerializedUser
+            SurrealUserResponseExt ,InfrastructureUserQueryResult,
+            user::InfrastructureUser
         },
         value_objects::{
-            SerializedEmail, SerializedUsername
+            InfrastructureEmail, InfrastructureUsername
         }
     }
 };
@@ -31,8 +31,8 @@ impl SurrealUserRepository {
 #[async_trait]
 impl UserRepository for SurrealUserRepository {
     async fn create(&self,ctx: RequestContex, user: User) -> AppResult<User>{
-        let record: SerializedUser = user.try_into().map_err(|_| ApplicationError::Repository("User Error ".to_string()))?;
-        let result: Option<SerializedUser> =  self
+        let record: InfrastructureUser = user.try_into().map_err(|_| ApplicationError::Repository("User Error ".to_string()))?;
+        let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("LET $user_id = $uid;
@@ -48,8 +48,8 @@ impl UserRepository for SurrealUserRepository {
         
     }
     async fn update(&self,ctx: RequestContex, user: User) -> AppResult<User>{
-        let record: SerializedUser = user.try_into().map_err(|err: InfrastructureError| ApplicationError::Domain(err.into()))?;
-        let result: Option<SerializedUser> =  self
+        let record: InfrastructureUser = user.try_into().map_err(|err: InfrastructureError| ApplicationError::Domain(err.into()))?;
+        let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("LET $user_id = $uid;
@@ -65,8 +65,8 @@ impl UserRepository for SurrealUserRepository {
         }
     }
     async fn get_by_id(&self, _request_contex: RequestContex, id: UserId) -> AppResult<User>{
-        let id: SerializedUserId = id.into();
-        let result: Option<SerializedUser> =  self
+        let id: InfrastructureUserId = id.into();
+        let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("SELECT * FROM ONLY user:$id")
@@ -79,7 +79,7 @@ impl UserRepository for SurrealUserRepository {
         }
     }
     async fn delete(&self,ctx: RequestContex, id: UserId) -> AppResult<bool>{
-        let result: Option<SerializedUser> =  self
+        let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("LET $user_id = $uid;
@@ -94,8 +94,8 @@ impl UserRepository for SurrealUserRepository {
         }
     }
     async fn get_by_email(&self, _request_contex:RequestContex, email: Email) -> AppResult<User>{
-        let email: SerializedEmail = email.try_into()?;
-        let result: Option<SerializedUser> =  self
+        let email: InfrastructureEmail = email.try_into()?;
+        let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("SELECT * FROM user WHERE email = $email LIMIT 1")
@@ -108,8 +108,8 @@ impl UserRepository for SurrealUserRepository {
         }
     }
     async fn get_by_username(&self,_request_contex:RequestContex,  username: Username) -> AppResult<User>{
-        let username: SerializedUsername = username.try_into()?;
-        let result: Option<SerializedUser> =  self
+        let username: InfrastructureUsername = username.try_into()?;
+        let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("SELECT * FROM user WHERE username = $username LIMIT 1")
@@ -134,7 +134,7 @@ impl UserRepository for SurrealUserRepository {
             order.truncate(order.len() -1);
         }
         
-        let result: Vec<SerializedUser> =  self
+        let result: Vec<InfrastructureUser> =  self
             .client
             .db
             .query("SELECT * FROM user $order LIMIT $page_size START $start_at")

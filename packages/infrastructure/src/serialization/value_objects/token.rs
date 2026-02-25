@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedToken(String);
+pub struct InfrastructureToken(String);
 
-impl SerializedToken {
+impl InfrastructureToken {
     pub fn new(token: &str) -> Self {
         let token = token.trim();
 
@@ -22,7 +22,7 @@ impl SerializedToken {
     }
 }
 
-impl Deref for SerializedToken {
+impl Deref for InfrastructureToken {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -30,19 +30,19 @@ impl Deref for SerializedToken {
     }
 }
 
-impl DerefMut for SerializedToken {
+impl DerefMut for InfrastructureToken {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedToken {
+impl std::fmt::Display for InfrastructureToken {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl FromStr for SerializedToken {
+impl FromStr for InfrastructureToken {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {

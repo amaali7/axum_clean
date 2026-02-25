@@ -5,99 +5,99 @@ use crate::{
     error::{InfrastructureError, InfrastructureResult},
     serialization::{
         value_objects::{
-            date_time::SerializedDateTime, SerializedBio, SerializedName, SerializedUrl,
+            date_time::InfrastructureDateTime, InfrastructureBio, InfrastructureName, InfrastructureUrl,
         },
-        SerializedAddressess, SerializedPassword, SerializedPhoneNumbers,
+        InfrastructureAddressess, InfrastructurePassword, InfrastructurePhoneNumbers,
     },
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SerializedUserProfile {
-    first_name: SerializedName,
-    last_name: SerializedName,
-    password: SerializedPassword,
-    bio: Option<SerializedBio>,
-    phone_numbers: SerializedPhoneNumbers,
-    avatar_url: Option<SerializedUrl>,
-    date_of_birth: Option<SerializedDateTime>,
-    addresses: SerializedAddressess,
-    website: Option<SerializedUrl>,
+pub struct InfrastructureUserProfile {
+    first_name: InfrastructureName,
+    last_name: InfrastructureName,
+    password: InfrastructurePassword,
+    bio: Option<InfrastructureBio>,
+    phone_numbers: InfrastructurePhoneNumbers,
+    avatar_url: Option<InfrastructureUrl>,
+    date_of_birth: Option<InfrastructureDateTime>,
+    addresses: InfrastructureAddressess,
+    website: Option<InfrastructureUrl>,
     is_deleted: bool,
-    created_at: SerializedDateTime,
-    updated_at: SerializedDateTime,
+    created_at: InfrastructureDateTime,
+    updated_at: InfrastructureDateTime,
 }
-impl SerializedUserProfile {
-    pub fn first_name(&self) -> SerializedName {
+impl InfrastructureUserProfile {
+    pub fn first_name(&self) -> InfrastructureName {
         self.first_name.clone()
     }
-    pub fn last_name(&self) -> SerializedName {
+    pub fn last_name(&self) -> InfrastructureName {
         self.last_name.clone()
     }
-    pub fn password(&self) -> SerializedPassword {
+    pub fn password(&self) -> InfrastructurePassword {
         self.password.clone()
     }
-    pub fn bio(&self) -> Option<SerializedBio> {
+    pub fn bio(&self) -> Option<InfrastructureBio> {
         self.bio.clone()
     }
-    pub fn phone_numbers(&self) -> SerializedPhoneNumbers {
+    pub fn phone_numbers(&self) -> InfrastructurePhoneNumbers {
         self.phone_numbers.clone()
     }
-    pub fn avatar_url(&self) -> Option<SerializedUrl> {
+    pub fn avatar_url(&self) -> Option<InfrastructureUrl> {
         self.avatar_url.clone()
     }
-    pub fn date_of_birth(&self) -> Option<SerializedDateTime> {
+    pub fn date_of_birth(&self) -> Option<InfrastructureDateTime> {
         self.date_of_birth.clone()
     }
-    pub fn addresses(&self) -> SerializedAddressess {
+    pub fn addresses(&self) -> InfrastructureAddressess {
         self.addresses.clone()
     }
-    pub fn website(&self) -> Option<SerializedUrl> {
+    pub fn website(&self) -> Option<InfrastructureUrl> {
         self.website.clone()
     }
     pub fn is_deleted(&self) -> bool {
         self.is_deleted.clone()
     }
-    pub fn created_at(&self) -> SerializedDateTime {
+    pub fn created_at(&self) -> InfrastructureDateTime {
         self.created_at.clone()
     }
 
-    pub fn updated_at(&self) -> SerializedDateTime {
+    pub fn updated_at(&self) -> InfrastructureDateTime {
         self.updated_at.clone()
     }
 }
 
-impl TryFrom<UserProfile> for SerializedUserProfile {
+impl TryFrom<UserProfile> for InfrastructureUserProfile {
     fn try_from(profile: UserProfile) -> InfrastructureResult<Self> {
         Ok(Self {
             first_name: profile.first_name().try_into()?,
             last_name: profile.last_name().try_into()?,
-            password: SerializedPassword::try_from(profile.password())?,
+            password: InfrastructurePassword::try_from(profile.password())?,
             bio: profile.bio().map_or(None, |value| value.try_into().ok()),
-            phone_numbers: SerializedPhoneNumbers::try_from(profile.phone_numbers())?,
+            phone_numbers: InfrastructurePhoneNumbers::try_from(profile.phone_numbers())?,
             avatar_url: profile
                 .avatar_url()
                 .map_or(None, |value| value.try_into().ok()),
             date_of_birth: {
                 match profile.date_of_birth() {
-                    Some(datetime) => Some(SerializedDateTime::new(datetime)?),
+                    Some(datetime) => Some(InfrastructureDateTime::new(datetime)?),
                     None => None,
                 }
             },
-            addresses: SerializedAddressess::try_from(profile.addresses())?,
+            addresses: InfrastructureAddressess::try_from(profile.addresses())?,
             website: profile
                 .website()
                 .map_or(None, |value| value.try_into().ok()),
             is_deleted: profile.is_deleted(),
-            created_at: SerializedDateTime::new(profile.created_at())?,
-            updated_at: SerializedDateTime::new(profile.updated_at())?,
+            created_at: InfrastructureDateTime::new(profile.created_at())?,
+            updated_at: InfrastructureDateTime::new(profile.updated_at())?,
         })
     }
 
     type Error = InfrastructureError;
 }
 
-impl TryFrom<SerializedUserProfile> for UserProfile {
-    fn try_from(profile: SerializedUserProfile) -> InfrastructureResult<Self> {
+impl TryFrom<InfrastructureUserProfile> for UserProfile {
+    fn try_from(profile: InfrastructureUserProfile) -> InfrastructureResult<Self> {
         let is_deleted = profile.is_deleted();
         let created_at = DateTime::try_from(profile.created_at())?;
         let updated_at = DateTime::try_from(profile.updated_at())?;

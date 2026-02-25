@@ -5,25 +5,25 @@ use crate::{
     error::{InfrastructureError, InfrastructureResult},
     serialization::{
         value_objects::{
-            comment::SerializedComment, date_time::SerializedDateTime, SerializedBody,
-            SerializedUrl,
+            comment::InfrastructureComment, date_time::InfrastructureDateTime, InfrastructureBody,
+            InfrastructureUrl,
         },
-        SerializedUserId,
+        InfrastructureUserId,
     },
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedReviewComment {
-    reviewer_id: SerializedUserId,
-    comment: SerializedComment,
-    created_at: SerializedDateTime,
+pub struct InfrastructureReviewComment {
+    reviewer_id: InfrastructureUserId,
+    comment: InfrastructureComment,
+    created_at: InfrastructureDateTime,
 }
 
-impl SerializedReviewComment {
+impl InfrastructureReviewComment {
     pub fn new(
-        reviewer_id: SerializedUserId,
-        comment: SerializedComment,
-        created_at: SerializedDateTime,
+        reviewer_id: InfrastructureUserId,
+        comment: InfrastructureComment,
+        created_at: InfrastructureDateTime,
     ) -> Self {
         Self {
             reviewer_id,
@@ -31,20 +31,20 @@ impl SerializedReviewComment {
             created_at,
         }
     }
-    pub fn reviewer_id(&self) -> SerializedUserId {
+    pub fn reviewer_id(&self) -> InfrastructureUserId {
         self.reviewer_id.clone()
     }
 
-    pub fn comment(&self) -> SerializedComment {
+    pub fn comment(&self) -> InfrastructureComment {
         self.comment.clone()
     }
 
-    pub fn created_at(&self) -> SerializedDateTime {
+    pub fn created_at(&self) -> InfrastructureDateTime {
         self.created_at.clone()
     }
 }
 
-impl TryFrom<ReviewComment> for SerializedReviewComment {
+impl TryFrom<ReviewComment> for InfrastructureReviewComment {
     type Error = InfrastructureError;
 
     fn try_from(value: ReviewComment) -> InfrastructureResult<Self> {
@@ -56,10 +56,10 @@ impl TryFrom<ReviewComment> for SerializedReviewComment {
     }
 }
 
-impl TryFrom<SerializedReviewComment> for ReviewComment {
+impl TryFrom<InfrastructureReviewComment> for ReviewComment {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedReviewComment) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureReviewComment) -> InfrastructureResult<Self> {
         Ok(Self::new(
             value.reviewer_id().into(),
             value.comment().try_into()?,
@@ -69,45 +69,45 @@ impl TryFrom<SerializedReviewComment> for ReviewComment {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedReportContent {
-    body: SerializedBody,
-    attachments: Vec<SerializedUrl>, // URLs or paths to attachments
-    review_comments: Vec<SerializedReviewComment>,
-    rejection_reason: Option<SerializedComment>,
+pub struct InfrastructureReportContent {
+    body: InfrastructureBody,
+    attachments: Vec<InfrastructureUrl>, // URLs or paths to attachments
+    review_comments: Vec<InfrastructureReviewComment>,
+    rejection_reason: Option<InfrastructureComment>,
 }
 
-impl SerializedReportContent {
-    /// Creates a new [`SerializedReportContent`].
-    pub fn new() -> SerializedReportContentBuilder {
-        SerializedReportContentBuilder::new()
+impl InfrastructureReportContent {
+    /// Creates a new [`InfrastructureReportContent`].
+    pub fn new() -> InfrastructureReportContentBuilder {
+        InfrastructureReportContentBuilder::new()
     }
 
-    pub fn body(&self) -> SerializedBody {
+    pub fn body(&self) -> InfrastructureBody {
         self.body.clone()
     }
 
-    pub fn attachments(&self) -> Vec<SerializedUrl> {
+    pub fn attachments(&self) -> Vec<InfrastructureUrl> {
         self.attachments.clone()
     }
 
-    pub fn review_comments(&self) -> Vec<SerializedReviewComment> {
+    pub fn review_comments(&self) -> Vec<InfrastructureReviewComment> {
         self.review_comments.clone()
     }
 
-    pub fn rejection_reason(&self) -> Option<SerializedComment> {
+    pub fn rejection_reason(&self) -> Option<InfrastructureComment> {
         self.rejection_reason.clone()
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct SerializedReportContentBuilder {
-    body: Option<SerializedBody>,
-    attachments: Vec<SerializedUrl>, // URLs or paths to attachments
-    review_comments: Vec<SerializedReviewComment>,
-    rejection_reason: Option<SerializedComment>,
+pub struct InfrastructureReportContentBuilder {
+    body: Option<InfrastructureBody>,
+    attachments: Vec<InfrastructureUrl>, // URLs or paths to attachments
+    review_comments: Vec<InfrastructureReviewComment>,
+    rejection_reason: Option<InfrastructureComment>,
 }
 
-impl SerializedReportContentBuilder {
+impl InfrastructureReportContentBuilder {
     pub fn new() -> Self {
         Self {
             body: None,
@@ -117,28 +117,28 @@ impl SerializedReportContentBuilder {
         }
     }
 
-    pub fn add_attachment(&mut self, attachment: SerializedUrl) -> &mut Self {
+    pub fn add_attachment(&mut self, attachment: InfrastructureUrl) -> &mut Self {
         self.attachments.push(attachment);
         self
     }
 
-    pub fn add_review_comment(&mut self, review_comment: SerializedReviewComment) -> &mut Self {
+    pub fn add_review_comment(&mut self, review_comment: InfrastructureReviewComment) -> &mut Self {
         self.review_comments.push(review_comment);
         self
     }
 
-    pub fn set_rejection_reason(&mut self, rejection_reason: SerializedComment) -> &mut Self {
+    pub fn set_rejection_reason(&mut self, rejection_reason: InfrastructureComment) -> &mut Self {
         self.rejection_reason = Some(rejection_reason);
         self
     }
 
-    pub fn set_body(&mut self, body: SerializedBody) -> &mut Self {
+    pub fn set_body(&mut self, body: InfrastructureBody) -> &mut Self {
         self.body = Some(body);
         self
     }
 
-    pub fn build(self) -> InfrastructureResult<SerializedReportContent> {
-        Ok(SerializedReportContent {
+    pub fn build(self) -> InfrastructureResult<InfrastructureReportContent> {
+        Ok(InfrastructureReportContent {
             body: self
                 .body
                 .ok_or(DomainError::ReportError(ReportError::BodyEmpty))?,
@@ -149,7 +149,7 @@ impl SerializedReportContentBuilder {
     }
 }
 
-impl TryFrom<ReportContent> for SerializedReportContent {
+impl TryFrom<ReportContent> for InfrastructureReportContent {
     type Error = InfrastructureError;
 
     fn try_from(value: ReportContent) -> InfrastructureResult<Self> {
@@ -171,10 +171,10 @@ impl TryFrom<ReportContent> for SerializedReportContent {
     }
 }
 
-impl TryFrom<SerializedReportContent> for ReportContent {
+impl TryFrom<InfrastructureReportContent> for ReportContent {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedReportContent) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureReportContent) -> InfrastructureResult<Self> {
         let mut report_content_builder = Self::new();
         report_content_builder.set_body(value.body().try_into()?);
         match value.rejection_reason() {

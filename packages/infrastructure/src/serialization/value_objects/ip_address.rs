@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedIpAddress(String);
+pub struct InfrastructureIpAddress(String);
 
-impl SerializedIpAddress {
+impl InfrastructureIpAddress {
     pub fn new(ip_address: &str) -> Self {
         let ip_address = ip_address.trim();
 
@@ -22,7 +22,7 @@ impl SerializedIpAddress {
     }
 }
 
-impl Deref for SerializedIpAddress {
+impl Deref for InfrastructureIpAddress {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -30,19 +30,19 @@ impl Deref for SerializedIpAddress {
     }
 }
 
-impl DerefMut for SerializedIpAddress {
+impl DerefMut for InfrastructureIpAddress {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedIpAddress {
+impl std::fmt::Display for InfrastructureIpAddress {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl FromStr for SerializedIpAddress {
+impl FromStr for InfrastructureIpAddress {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {

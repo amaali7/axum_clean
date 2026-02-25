@@ -4,7 +4,7 @@ use domain::ReportStatus;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum SerializedReportStatus {
+pub enum InfrastructureReportStatus {
     Draft,
     Submitted,
     InReview,
@@ -13,20 +13,20 @@ pub enum SerializedReportStatus {
     Archived,
 }
 
-impl fmt::Display for SerializedReportStatus {
+impl fmt::Display for InfrastructureReportStatus {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            SerializedReportStatus::Draft => write!(f, "draft"),
-            SerializedReportStatus::Submitted => write!(f, "submitted"),
-            SerializedReportStatus::InReview => write!(f, "in_review"),
-            SerializedReportStatus::Approved => write!(f, "approved"),
-            SerializedReportStatus::Rejected => write!(f, "rejected"),
-            SerializedReportStatus::Archived => write!(f, "archived"),
+            InfrastructureReportStatus::Draft => write!(f, "draft"),
+            InfrastructureReportStatus::Submitted => write!(f, "submitted"),
+            InfrastructureReportStatus::InReview => write!(f, "in_review"),
+            InfrastructureReportStatus::Approved => write!(f, "approved"),
+            InfrastructureReportStatus::Rejected => write!(f, "rejected"),
+            InfrastructureReportStatus::Archived => write!(f, "archived"),
         }
     }
 }
 
-impl From<ReportStatus> for SerializedReportStatus {
+impl From<ReportStatus> for InfrastructureReportStatus {
     fn from(value: ReportStatus) -> Self {
         match value {
             ReportStatus::Draft => Self::Draft,
@@ -39,15 +39,15 @@ impl From<ReportStatus> for SerializedReportStatus {
     }
 }
 
-impl From<SerializedReportStatus> for ReportStatus {
-    fn from(value: SerializedReportStatus) -> Self {
+impl From<InfrastructureReportStatus> for ReportStatus {
+    fn from(value: InfrastructureReportStatus) -> Self {
         match value {
-            SerializedReportStatus::Draft => Self::Draft,
-            SerializedReportStatus::Submitted => Self::Submitted,
-            SerializedReportStatus::InReview => Self::InReview,
-            SerializedReportStatus::Approved => Self::Approved,
-            SerializedReportStatus::Rejected => Self::Rejected,
-            SerializedReportStatus::Archived => Self::Archived,
+            InfrastructureReportStatus::Draft => Self::Draft,
+            InfrastructureReportStatus::Submitted => Self::Submitted,
+            InfrastructureReportStatus::InReview => Self::InReview,
+            InfrastructureReportStatus::Approved => Self::Approved,
+            InfrastructureReportStatus::Rejected => Self::Rejected,
+            InfrastructureReportStatus::Archived => Self::Archived,
         }
     }
 }

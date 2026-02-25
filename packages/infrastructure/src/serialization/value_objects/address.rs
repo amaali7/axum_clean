@@ -6,38 +6,38 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SerializedAddressess(Vec<SerializedAddress>);
+pub struct InfrastructureAddressess(Vec<InfrastructureAddress>);
 
-impl SerializedAddressess {
+impl InfrastructureAddressess {
     pub fn new() -> Self {
-        SerializedAddressess(Vec::new())
+        InfrastructureAddressess(Vec::new())
     }
 
     pub fn add_addressess(&mut self, address: Self) {
         self.0.extend(address.0);
     }
-    pub fn add_address(&mut self, address: SerializedAddress) {
+    pub fn add_address(&mut self, address: InfrastructureAddress) {
         self.0.push(address);
     }
 
-    pub fn addressess(&self) -> Vec<SerializedAddress> {
+    pub fn addressess(&self) -> Vec<InfrastructureAddress> {
         self.0.clone()
     }
 }
 
-impl TryFrom<Addressess> for SerializedAddressess {
+impl TryFrom<Addressess> for InfrastructureAddressess {
     fn try_from(value: Addressess) -> InfrastructureResult<Self> {
         let mut addressess = Self::new();
         for address in value.addressess().into_iter() {
-            addressess.add_address(SerializedAddress::try_from(address)?);
+            addressess.add_address(InfrastructureAddress::try_from(address)?);
         }
         Ok(addressess)
     }
 
     type Error = InfrastructureError;
 }
-impl TryFrom<SerializedAddressess> for Addressess {
-    fn try_from(value: SerializedAddressess) -> InfrastructureResult<Self> {
+impl TryFrom<InfrastructureAddressess> for Addressess {
+    fn try_from(value: InfrastructureAddressess) -> InfrastructureResult<Self> {
         let mut addressess = Self::new();
         for address in value.addressess().into_iter() {
             addressess.add_address(Address::try_from(address)?);
@@ -48,22 +48,22 @@ impl TryFrom<SerializedAddressess> for Addressess {
     type Error = InfrastructureError;
 }
 
-impl Deref for SerializedAddressess {
-    type Target = Vec<SerializedAddress>;
+impl Deref for InfrastructureAddressess {
+    type Target = Vec<InfrastructureAddress>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
-impl DerefMut for SerializedAddressess {
+impl DerefMut for InfrastructureAddressess {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SerializedAddress {
+pub struct InfrastructureAddress {
     title: String,
     street: String,
     city: String,
@@ -73,7 +73,7 @@ pub struct SerializedAddress {
 }
 
 #[derive(Debug, Default, Clone)]
-pub struct SerializedAddressBuilder {
+pub struct InfrastructureAddressBuilder {
     title: Option<String>,
     street: Option<String>,
     city: Option<String>,
@@ -82,9 +82,9 @@ pub struct SerializedAddressBuilder {
     country: Option<String>,
 }
 
-impl TryFrom<Address> for SerializedAddress {
+impl TryFrom<Address> for InfrastructureAddress {
     fn try_from(value: Address) -> InfrastructureResult<Self> {
-        let mut address_builder = SerializedAddress::new();
+        let mut address_builder = InfrastructureAddress::new();
         address_builder
             .set_title(value.title().as_str())
             .set_city(value.city().as_str())
@@ -98,8 +98,8 @@ impl TryFrom<Address> for SerializedAddress {
     type Error = InfrastructureError;
 }
 
-impl TryFrom<SerializedAddress> for Address {
-    fn try_from(value: SerializedAddress) -> InfrastructureResult<Self> {
+impl TryFrom<InfrastructureAddress> for Address {
+    fn try_from(value: InfrastructureAddress) -> InfrastructureResult<Self> {
         let mut address_builder = Address::new();
         address_builder
             .set_title(value.title().as_str())
@@ -116,9 +116,9 @@ impl TryFrom<SerializedAddress> for Address {
     type Error = InfrastructureError;
 }
 
-impl SerializedAddress {
-    pub fn new() -> SerializedAddressBuilder {
-        SerializedAddressBuilder::default()
+impl InfrastructureAddress {
+    pub fn new() -> InfrastructureAddressBuilder {
+        InfrastructureAddressBuilder::default()
     }
     pub fn title(&self) -> String {
         self.title.clone()
@@ -141,7 +141,7 @@ impl SerializedAddress {
     }
 }
 
-impl SerializedAddressBuilder {
+impl InfrastructureAddressBuilder {
     pub fn set_title(&mut self, value: &str) -> &mut Self {
         self.title = Some(value.to_string());
         self
@@ -166,18 +166,18 @@ impl SerializedAddressBuilder {
         self.country = Some(value.to_string());
         self
     }
-    pub fn build(self) -> InfrastructureResult<SerializedAddress> {
+    pub fn build(self) -> InfrastructureResult<InfrastructureAddress> {
         let title = self.title.clone();
         if title.is_none() {
             return Err(InfrastructureError::ValidationError(
-                "Title of Serializedaddress is empty".to_string(),
+                "Title of Infrastructureaddress is empty".to_string(),
             ));
         } else if title.unwrap().len() > 60 {
             return Err(InfrastructureError::ValidationError(
-                "Title of Serializedaddress must be < 30 char".to_string(),
+                "Title of Infrastructureaddress must be < 30 char".to_string(),
             ));
         }
-        Ok(SerializedAddress {
+        Ok(InfrastructureAddress {
             title: self.title.unwrap().trim().to_string(),
             street: self.street.unwrap_or("".to_string()),
             city: self.city.unwrap_or("".to_string()),

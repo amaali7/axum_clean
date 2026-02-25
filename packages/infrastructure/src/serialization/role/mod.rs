@@ -3,18 +3,18 @@ pub mod role;
 
 use application::ports::role::RoleQueryResult;
 use domain::{Event, Role, RoleId};
-pub use permissions::SerializedPermission;
-pub use role::SerializedRole;
+pub use permissions::InfrastructurePermission;
+pub use role::InfrastructureRole;
 use serde::{Deserialize, Serialize};
 use surrealdb::Response;
 
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct SerializedRoleId(String);
+pub struct InfrastructureRoleId(String);
 
-impl SerializedRoleId {
-    // Create a new SerializedReportId with a UUID
+impl InfrastructureRoleId {
+    // Create a new InfrastructureReportId with a UUID
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
@@ -30,7 +30,7 @@ impl SerializedRoleId {
 }
 
 // Implement Serialize and Deserialize for your type
-impl Serialize for SerializedRoleId {
+impl Serialize for InfrastructureRoleId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -39,29 +39,29 @@ impl Serialize for SerializedRoleId {
     }
 }
 
-// impl<'de> Deserialize<'de> for SerializedRoleId {
+// impl<'de> Deserialize<'de> for InfrastructureRoleId {
 //     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
 //     where
 //         D: serde::Deserializer<'de>,
 //     {
 //         let record_id = String::deserialize(deserializer)?;
-//         Ok(SerializedRoleId(record_id))
+//         Ok(InfrastructureRoleId(record_id))
 //     }
 // }
 
-impl From<RoleId> for SerializedRoleId {
+impl From<RoleId> for InfrastructureRoleId {
     fn from(value: RoleId) -> Self {
         Self::new(&value.id())
     }
 }
 
-impl From<SerializedRoleId> for RoleId {
-    fn from(value: SerializedRoleId) -> Self {
+impl From<InfrastructureRoleId> for RoleId {
+    fn from(value: InfrastructureRoleId) -> Self {
         Self::new(&value.id())
     }
 }
 
-impl Event for SerializedRole {
+impl Event for InfrastructureRole {
     fn get_type(&self) -> &str {
         "ROLE"
     }
@@ -69,22 +69,22 @@ impl Event for SerializedRole {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum SerializedRoleQueryResult {
-    Single(SerializedRole),
-    Array(Vec<SerializedRole>),
+pub enum InfrastructureRoleQueryResult {
+    Single(InfrastructureRole),
+    Array(Vec<InfrastructureRole>),
     None,
 }
 
-impl SerializedRoleQueryResult {
-    pub fn get_array(&self) -> Option<Vec<SerializedRole>> {
+impl InfrastructureRoleQueryResult {
+    pub fn get_array(&self) -> Option<Vec<InfrastructureRole>> {
         match self {
-            SerializedRoleQueryResult::Array(users) => Some(users.to_vec()),
+            InfrastructureRoleQueryResult::Array(users) => Some(users.to_vec()),
             _ => None,
         }
     }
-    pub fn get_value(&self) -> Option<SerializedRole> {
+    pub fn get_value(&self) -> Option<InfrastructureRole> {
         match self {
-            SerializedRoleQueryResult::Single(user) => Some(user.clone()),
+            InfrastructureRoleQueryResult::Single(user) => Some(user.clone()),
             _ => None,
         }
     }
@@ -92,45 +92,45 @@ impl SerializedRoleQueryResult {
 
 // Extension trait for SurrealDB Response
 pub trait SurrealRoleResponseExt {
-    async fn into_role_result(self) -> Result<SerializedRoleQueryResult, surrealdb::Error>;
+    async fn into_role_result(self) -> Result<InfrastructureRoleQueryResult, surrealdb::Error>;
 }
 
 impl SurrealRoleResponseExt for Response {
-    async fn into_role_result(mut self) -> Result<SerializedRoleQueryResult, surrealdb::Error> {
+    async fn into_role_result(mut self) -> Result<InfrastructureRoleQueryResult, surrealdb::Error> {
         // Check if we have any results
         let num_statements = self.num_statements();
         
         if num_statements == 0 {
-            return Ok(SerializedRoleQueryResult::None);
+            return Ok(InfrastructureRoleQueryResult::None);
         }
 
         // Try to take the first statement result as a single value
-        if let Ok(single) = self.take::<Option<SerializedRole>>(0) {
+        if let Ok(single) = self.take::<Option<InfrastructureRole>>(0) {
             if let Some(user) = single {
-                return Ok(SerializedRoleQueryResult::Single(user));
+                return Ok(InfrastructureRoleQueryResult::Single(user));
             }
         }
 
         // Try as an array
-        if let Ok(array) = self.take::<Vec<SerializedRole>>(0) {
+        if let Ok(array) = self.take::<Vec<InfrastructureRole>>(0) {
             if array.is_empty() {
-                return Ok(SerializedRoleQueryResult::None);
+                return Ok(InfrastructureRoleQueryResult::None);
             }
-            return Ok(SerializedRoleQueryResult::Array(array));
+            return Ok(InfrastructureRoleQueryResult::Array(array));
         }
 
-        Ok(SerializedRoleQueryResult::None)
+        Ok(InfrastructureRoleQueryResult::None)
     }
 }
 
-impl TryFrom<RoleQueryResult> for SerializedRoleQueryResult {
+impl TryFrom<RoleQueryResult> for InfrastructureRoleQueryResult {
     type Error = InfrastructureError;
 
     fn try_from(value: RoleQueryResult) -> InfrastructureResult<Self> {
         Ok(match value {
             RoleQueryResult::Single(role ) => Self::Single(role.try_into()?),
             RoleQueryResult::Array(roles) => {
-                let mut vec_roles: Vec<SerializedRole> = Vec::new();
+                let mut vec_roles: Vec<InfrastructureRole> = Vec::new();
                 for role in roles {
                     vec_roles.push(role.try_into()?);
                 }
@@ -141,20 +141,20 @@ impl TryFrom<RoleQueryResult> for SerializedRoleQueryResult {
     }
 }
 
-impl TryFrom<SerializedRoleQueryResult> for RoleQueryResult {
+impl TryFrom<InfrastructureRoleQueryResult> for RoleQueryResult {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedRoleQueryResult) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureRoleQueryResult) -> InfrastructureResult<Self> {
         Ok(match value {
-            SerializedRoleQueryResult::Single(role) => Self::Single(role.try_into()?),
-            SerializedRoleQueryResult::Array(roles) => {
+            InfrastructureRoleQueryResult::Single(role) => Self::Single(role.try_into()?),
+            InfrastructureRoleQueryResult::Array(roles) => {
                 let mut vec_roles: Vec<Role> = Vec::new();
                 for role in roles {
                     vec_roles.push(role.try_into()?);
                 }
                 Self::Array(vec_roles)
             }
-            SerializedRoleQueryResult::None => Self::None,
+            InfrastructureRoleQueryResult::None => Self::None,
         })
     }
 }

@@ -14,7 +14,6 @@ pub struct CreateRoleInput {
     pub description: Description,
     pub permissions: HashSet<Permission>,
     pub is_system_role: bool,
-    pub created_at: DateTime,
 }
 
 /// Mapper from Domain
@@ -26,7 +25,6 @@ impl From<Role> for CreateRoleInput {
             description: value.description(),
             permissions: value.permissions(),
             is_system_role: value.is_system_role(),
-            created_at: value.created_at(),
             id: value.id(),
         }
     }
@@ -41,7 +39,6 @@ impl TryFrom<CreateRoleInput> for Role {
         builder
             .set_name(value.name)
             .set_description(value.description)
-            .set_created_at(value.created_at)
             .set_is_system_role(value.is_system_role);
         for permission in value.permissions.into_iter() {
             builder.add_permission(permission);

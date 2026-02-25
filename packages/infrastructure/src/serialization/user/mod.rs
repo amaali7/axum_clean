@@ -4,22 +4,22 @@ pub mod status;
 pub mod user;
 
 use application::ports::user::UserQueryResult;
-pub use preferences::SerializedUserPreferences;
-pub use profile::SerializedUserProfile;
-pub use status::SerializedUserStatus;
+pub use preferences::InfrastructureUserPreferences;
+pub use profile::InfrastructureUserProfile;
+pub use status::InfrastructureUserStatus;
 use surrealdb::Response;
 
 use domain::{Event, User, UserId};
 use serde::{Deserialize, Serialize};
-use user::SerializedUser;
+use user::InfrastructureUser;
 
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
-pub struct SerializedUserId(String);
+pub struct InfrastructureUserId(String);
 
-impl SerializedUserId {
-    // Create a new SerializedReportId with a UUID
+impl InfrastructureUserId {
+    // Create a new InfrastructureReportId with a UUID
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
@@ -34,7 +34,7 @@ impl SerializedUserId {
 }
 
 // Implement Serialize and Deserialize for your type
-impl Serialize for SerializedUserId {
+impl Serialize for InfrastructureUserId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -43,28 +43,28 @@ impl Serialize for SerializedUserId {
     }
 }
 
-// impl<'de> Deserialize<'de> for SerializedUserId {
+// impl<'de> Deserialize<'de> for InfrastructureUserId {
 //     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
 //     where
 //         D: serde::Deserializer<'de>,
 //     {
 //         let record_id = String::deserialize(deserializer)?;
-//         Ok(SerializedUserId(record_id))
+//         Ok(InfrastructureUserId(record_id))
 //     }
 // }
 
-impl From<SerializedUserId> for UserId {
-    fn from(value: SerializedUserId) -> Self {
+impl From<InfrastructureUserId> for UserId {
+    fn from(value: InfrastructureUserId) -> Self {
         Self::new(&value.id())
     }
 }
 
-impl From<UserId> for SerializedUserId {
+impl From<UserId> for InfrastructureUserId {
     fn from(value: UserId) -> Self {
         Self::new(&value.id())
     }
 }
-impl Event for SerializedUser {
+impl Event for InfrastructureUser {
     fn get_type(&self) -> &str {
         "USER"
     }
@@ -72,22 +72,22 @@ impl Event for SerializedUser {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum SerializedUserQueryResult {
-    Single(SerializedUser),
-    Array(Vec<SerializedUser>),
+pub enum InfrastructureUserQueryResult {
+    Single(InfrastructureUser),
+    Array(Vec<InfrastructureUser>),
     None,
 }
 
-impl SerializedUserQueryResult {
-    pub fn get_array(&self) -> Option<Vec<SerializedUser>> {
+impl InfrastructureUserQueryResult {
+    pub fn get_array(&self) -> Option<Vec<InfrastructureUser>> {
         match self {
-            SerializedUserQueryResult::Array(users) => Some(users.to_vec()),
+            InfrastructureUserQueryResult::Array(users) => Some(users.to_vec()),
             _ => None,
         }
     }
-    pub fn get_value(&self) -> Option<SerializedUser> {
+    pub fn get_value(&self) -> Option<InfrastructureUser> {
         match self {
-            SerializedUserQueryResult::Single(user) => Some(user.clone()),
+            InfrastructureUserQueryResult::Single(user) => Some(user.clone()),
             _ => None,
         }
     }
@@ -95,45 +95,45 @@ impl SerializedUserQueryResult {
 
 // Extension trait for SurrealDB Response
 pub trait SurrealUserResponseExt {
-    async fn into_user_result(self) -> Result<SerializedUserQueryResult, surrealdb::Error>;
+    async fn into_user_result(self) -> Result<InfrastructureUserQueryResult, surrealdb::Error>;
 }
 
 impl SurrealUserResponseExt for Response {
-    async fn into_user_result(mut self) -> Result<SerializedUserQueryResult, surrealdb::Error> {
+    async fn into_user_result(mut self) -> Result<InfrastructureUserQueryResult, surrealdb::Error> {
         // Check if we have any results
         let num_statements = self.num_statements();
         
         if num_statements == 0 {
-            return Ok(SerializedUserQueryResult::None);
+            return Ok(InfrastructureUserQueryResult::None);
         }
 
         // Try to take the first statement result as a single value
-        if let Ok(single) = self.take::<Option<SerializedUser>>(0) {
+        if let Ok(single) = self.take::<Option<InfrastructureUser>>(0) {
             if let Some(user) = single {
-                return Ok(SerializedUserQueryResult::Single(user));
+                return Ok(InfrastructureUserQueryResult::Single(user));
             }
         }
 
         // Try as an array
-        if let Ok(array) = self.take::<Vec<SerializedUser>>(0) {
+        if let Ok(array) = self.take::<Vec<InfrastructureUser>>(0) {
             if array.is_empty() {
-                return Ok(SerializedUserQueryResult::None);
+                return Ok(InfrastructureUserQueryResult::None);
             }
-            return Ok(SerializedUserQueryResult::Array(array));
+            return Ok(InfrastructureUserQueryResult::Array(array));
         }
 
-        Ok(SerializedUserQueryResult::None)
+        Ok(InfrastructureUserQueryResult::None)
     }
 }
 
-impl TryFrom<UserQueryResult> for SerializedUserQueryResult {
+impl TryFrom<UserQueryResult> for InfrastructureUserQueryResult {
     type Error = InfrastructureError;
 
     fn try_from(value: UserQueryResult) -> InfrastructureResult<Self> {
         Ok(match value {
             UserQueryResult::Single(user) => Self::Single(user.try_into()?),
             UserQueryResult::Array(users) => {
-                let mut vec_users: Vec<SerializedUser> = Vec::new();
+                let mut vec_users: Vec<InfrastructureUser> = Vec::new();
                 for user in users {
                     vec_users.push(user.try_into()?);
                 }
@@ -144,20 +144,20 @@ impl TryFrom<UserQueryResult> for SerializedUserQueryResult {
     }
 }
 
-impl TryFrom<SerializedUserQueryResult> for UserQueryResult {
+impl TryFrom<InfrastructureUserQueryResult> for UserQueryResult {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedUserQueryResult) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureUserQueryResult) -> InfrastructureResult<Self> {
         Ok(match value {
-            SerializedUserQueryResult::Single(user) => Self::Single(user.try_into()?),
-            SerializedUserQueryResult::Array(users) => {
+            InfrastructureUserQueryResult::Single(user) => Self::Single(user.try_into()?),
+            InfrastructureUserQueryResult::Array(users) => {
                 let mut vec_users: Vec<User> = Vec::new();
                 for user in users {
                     vec_users.push(user.try_into()?);
                 }
                 Self::Array(vec_users)
             }
-            SerializedUserQueryResult::None => Self::None,
+            InfrastructureUserQueryResult::None => Self::None,
         })
     }
 }

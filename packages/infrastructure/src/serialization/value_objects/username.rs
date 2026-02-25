@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, Hash)]
-pub struct SerializedUsername(String);
+pub struct InfrastructureUsername(String);
 
-impl SerializedUsername {
+impl InfrastructureUsername {
     pub fn new(username: &str) -> InfrastructureResult<Self> {
         let username = username.trim();
 
@@ -48,7 +48,7 @@ impl SerializedUsername {
     }
 }
 
-impl Deref for SerializedUsername {
+impl Deref for InfrastructureUsername {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -56,19 +56,19 @@ impl Deref for SerializedUsername {
     }
 }
 
-impl DerefMut for SerializedUsername {
+impl DerefMut for InfrastructureUsername {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedUsername {
+impl std::fmt::Display for InfrastructureUsername {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl std::str::FromStr for SerializedUsername {
+impl std::str::FromStr for InfrastructureUsername {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -76,7 +76,7 @@ impl std::str::FromStr for SerializedUsername {
     }
 }
 
-impl TryFrom<Username> for SerializedUsername {
+impl TryFrom<Username> for InfrastructureUsername {
     type Error = InfrastructureError;
 
     fn try_from(value: Username) -> InfrastructureResult<Self> {
@@ -84,10 +84,10 @@ impl TryFrom<Username> for SerializedUsername {
     }
 }
 
-impl TryFrom<SerializedUsername> for Username {
+impl TryFrom<InfrastructureUsername> for Username {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedUsername) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureUsername) -> InfrastructureResult<Self> {
         Self::new(&value.username()).map_err(|err| InfrastructureError::Domain(err))
     }
 }

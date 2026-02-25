@@ -3,16 +3,16 @@ use serde::Serialize;
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
     serialization::{
-        value_objects::{SerializedDateTime, SerializedToken},
-        SerializedUserId,
+        value_objects::{InfrastructureDateTime, InfrastructureToken},
+        InfrastructureUserId,
     },
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct SerializedSessionId(String);
+pub struct InfrastructureSessionId(String);
 
-impl SerializedSessionId {
-    // Create a new SerializedReportId with a UUID
+impl InfrastructureSessionId {
+    // Create a new InfrastructureReportId with a UUID
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
@@ -28,7 +28,7 @@ impl SerializedSessionId {
 }
 
 // Implement Serialize and Deserialize for your type
-impl Serialize for SerializedSessionId {
+impl Serialize for InfrastructureSessionId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -38,67 +38,67 @@ impl Serialize for SerializedSessionId {
 }
 
 #[derive(Debug, Clone)]
-pub enum SerializedSessionType {
+pub enum InfrastructureSessionType {
     Start,
 }
 
 #[derive(Debug, Clone)]
-pub struct SerializedSession {
-    id: SerializedSessionId,
-    user: SerializedUserId,
-    session_type: SerializedSessionType,
-    created_at: SerializedDateTime,
-    expires_at: SerializedDateTime,
-    refresh_token: Option<SerializedToken>,
-    access_token: Option<SerializedToken>,
+pub struct InfrastructureSession {
+    id: InfrastructureSessionId,
+    user: InfrastructureUserId,
+    session_type: InfrastructureSessionType,
+    created_at: InfrastructureDateTime,
+    expires_at: InfrastructureDateTime,
+    refresh_token: Option<InfrastructureToken>,
+    access_token: Option<InfrastructureToken>,
 }
 
-impl SerializedSession {
-    pub fn new(id: &str) -> SerializedSessionBuilder {
-        SerializedSessionBuilder::new(id)
+impl InfrastructureSession {
+    pub fn new(id: &str) -> InfrastructureSessionBuilder {
+        InfrastructureSessionBuilder::new(id)
     }
 
-    pub fn id(&self) -> SerializedSessionId {
+    pub fn id(&self) -> InfrastructureSessionId {
         self.id.clone()
     }
 
-    pub fn user(&self) -> SerializedUserId {
+    pub fn user(&self) -> InfrastructureUserId {
         self.user.clone()
     }
-    pub fn session_type(&self) -> SerializedSessionType {
+    pub fn session_type(&self) -> InfrastructureSessionType {
         self.session_type.clone()
     }
 
-    pub fn created_at(&self) -> SerializedDateTime {
+    pub fn created_at(&self) -> InfrastructureDateTime {
         self.created_at.clone()
     }
-    pub fn expires_at(&self) -> SerializedDateTime {
+    pub fn expires_at(&self) -> InfrastructureDateTime {
         self.expires_at.clone()
     }
 
-    pub fn refresh_token(&self) -> Option<SerializedToken> {
+    pub fn refresh_token(&self) -> Option<InfrastructureToken> {
         self.refresh_token.clone()
     }
-    pub fn access_token(&self) -> Option<SerializedToken> {
+    pub fn access_token(&self) -> Option<InfrastructureToken> {
         self.access_token.clone()
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct SerializedSessionBuilder {
-    id: SerializedSessionId,
-    user: Option<SerializedUserId>,
-    session_type: Option<SerializedSessionType>,
-    created_at: Option<SerializedDateTime>,
-    expires_at: Option<SerializedDateTime>,
-    refresh_token: Option<SerializedToken>,
-    access_token: Option<SerializedToken>,
+pub struct InfrastructureSessionBuilder {
+    id: InfrastructureSessionId,
+    user: Option<InfrastructureUserId>,
+    session_type: Option<InfrastructureSessionType>,
+    created_at: Option<InfrastructureDateTime>,
+    expires_at: Option<InfrastructureDateTime>,
+    refresh_token: Option<InfrastructureToken>,
+    access_token: Option<InfrastructureToken>,
 }
 
-impl SerializedSessionBuilder {
+impl InfrastructureSessionBuilder {
     pub fn new(id: &str) -> Self {
         Self {
-            id: SerializedSessionId::new(id),
+            id: InfrastructureSessionId::new(id),
             user: None,
             session_type: None,
             created_at: None,
@@ -108,34 +108,34 @@ impl SerializedSessionBuilder {
         }
     }
 
-    pub fn set_user(&mut self, user: SerializedUserId) -> &mut Self {
+    pub fn set_user(&mut self, user: InfrastructureUserId) -> &mut Self {
         self.user = Some(user);
         self
     }
-    pub fn set_session_type(&mut self, session_type: SerializedSessionType) -> &mut Self {
+    pub fn set_session_type(&mut self, session_type: InfrastructureSessionType) -> &mut Self {
         self.session_type = Some(session_type);
         self
     }
 
-    pub fn set_created_at(&mut self, created_at: SerializedDateTime) -> &mut Self {
+    pub fn set_created_at(&mut self, created_at: InfrastructureDateTime) -> &mut Self {
         self.created_at = Some(created_at);
         self
     }
-    pub fn set_expires_at(&mut self, expires_at: SerializedDateTime) -> &mut Self {
+    pub fn set_expires_at(&mut self, expires_at: InfrastructureDateTime) -> &mut Self {
         self.expires_at = Some(expires_at);
         self
     }
-    pub fn set_refresh_token(&mut self, refresh_token: SerializedToken) -> &mut Self {
+    pub fn set_refresh_token(&mut self, refresh_token: InfrastructureToken) -> &mut Self {
         self.refresh_token = Some(refresh_token);
         self
     }
-    pub fn set_access_token(&mut self, access_token: SerializedToken) -> &mut Self {
+    pub fn set_access_token(&mut self, access_token: InfrastructureToken) -> &mut Self {
         self.access_token = Some(access_token);
         self
     }
 
-    pub fn build(self) -> InfrastructureResult<SerializedSession> {
-        Ok(SerializedSession {
+    pub fn build(self) -> InfrastructureResult<InfrastructureSession> {
+        Ok(InfrastructureSession {
             id: self.id,
             created_at: self.created_at.ok_or(InfrastructureError::ValidationError(
                 "Created At not found".to_string(),

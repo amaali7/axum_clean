@@ -6,14 +6,14 @@ pub mod user;
 pub mod value_objects;
 
 pub use user::{
-    preferences::SerializedUserPreferences, profile::SerializedUserProfile, SerializedUserId,
+    preferences::InfrastructureUserPreferences, profile::InfrastructureUserProfile, InfrastructureUserId,
 };
 
-pub use report::SerializedReportId;
-pub use role::{permissions::SerializedPermission, SerializedRoleId};
+pub use report::InfrastructureReportId;
+pub use role::{permissions::InfrastructurePermission, InfrastructureRoleId};
 pub use value_objects::{
-    address::{SerializedAddress, SerializedAddressBuilder, SerializedAddressess},
-    diff::SerializedDiff,
-    password::{SerializedHashedPassword, SerializedNoneHashedPassword, SerializedPassword},
-    phone_number::{SerializedPhoneNumber, SerializedPhoneNumbers},
+    address::{InfrastructureAddress, InfrastructureAddressBuilder, InfrastructureAddressess},
+    diff::InfrastructureDiff,
+    password::{InfrastructureHashedPassword, InfrastructureNoneHashedPassword, InfrastructurePassword},
+    phone_number::{InfrastructurePhoneNumber, InfrastructurePhoneNumbers},
 };

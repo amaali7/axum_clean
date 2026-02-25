@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SerializedPermission {
+pub enum InfrastructurePermission {
     // User management
     CreateUser = 1,
     ViewUsers = 2,
@@ -23,7 +23,7 @@ pub enum SerializedPermission {
     ViewAuditLogs = 1000,
 }
 
-impl SerializedPermission {
+impl InfrastructurePermission {
     pub fn weight(&self) -> u16 {
         self.clone() as u16
     }
@@ -62,33 +62,33 @@ use std::fmt;
 use domain::Permission;
 use serde::{Deserialize, Serialize};
 
-impl fmt::Display for SerializedPermission {
+impl fmt::Display for InfrastructurePermission {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let s = match self {
-            SerializedPermission::CreateUser => "create_user",
-            SerializedPermission::ViewUsers => "view_users",
-            SerializedPermission::ManageUsers => "manage_users",
-            SerializedPermission::DeleteUsers => "delete_users",
+            InfrastructurePermission::CreateUser => "create_user",
+            InfrastructurePermission::ViewUsers => "view_users",
+            InfrastructurePermission::ManageUsers => "manage_users",
+            InfrastructurePermission::DeleteUsers => "delete_users",
 
-            SerializedPermission::CreateReport => "create_report",
-            SerializedPermission::ViewOwnReports => "view_own_reports",
-            SerializedPermission::ViewReports => "view_reports",
-            SerializedPermission::EditOwnReports => "edit_own_reports",
-            SerializedPermission::EditReports => "edit_reports",
-            SerializedPermission::ReviewReports => "review_reports",
-            SerializedPermission::ApproveReports => "approve_reports",
-            SerializedPermission::RejectReports => "reject_reports",
-            SerializedPermission::ExportReports => "export_reports",
-            SerializedPermission::DeleteReports => "delete_reports",
+            InfrastructurePermission::CreateReport => "create_report",
+            InfrastructurePermission::ViewOwnReports => "view_own_reports",
+            InfrastructurePermission::ViewReports => "view_reports",
+            InfrastructurePermission::EditOwnReports => "edit_own_reports",
+            InfrastructurePermission::EditReports => "edit_reports",
+            InfrastructurePermission::ReviewReports => "review_reports",
+            InfrastructurePermission::ApproveReports => "approve_reports",
+            InfrastructurePermission::RejectReports => "reject_reports",
+            InfrastructurePermission::ExportReports => "export_reports",
+            InfrastructurePermission::DeleteReports => "delete_reports",
 
-            SerializedPermission::ManageSystem => "manage_system",
-            SerializedPermission::ViewAuditLogs => "view_audit_logs",
+            InfrastructurePermission::ManageSystem => "manage_system",
+            InfrastructurePermission::ViewAuditLogs => "view_audit_logs",
         };
         write!(f, "{}", s)
     }
 }
 
-impl From<Permission> for SerializedPermission {
+impl From<Permission> for InfrastructurePermission {
     fn from(value: Permission) -> Self {
         match value {
             Permission::CreateUser => Self::CreateUser,
@@ -111,25 +111,25 @@ impl From<Permission> for SerializedPermission {
     }
 }
 
-impl From<SerializedPermission> for Permission {
-    fn from(value: SerializedPermission) -> Self {
+impl From<InfrastructurePermission> for Permission {
+    fn from(value: InfrastructurePermission) -> Self {
         match value {
-            SerializedPermission::CreateUser => Self::CreateUser,
-            SerializedPermission::ViewUsers => Self::ViewUsers,
-            SerializedPermission::ManageUsers => Self::ManageUsers,
-            SerializedPermission::DeleteUsers => Self::DeleteUsers,
-            SerializedPermission::CreateReport => Self::CreateReport,
-            SerializedPermission::ViewOwnReports => Self::ViewOwnReports,
-            SerializedPermission::ViewReports => Self::ViewReports,
-            SerializedPermission::EditOwnReports => Self::EditOwnReports,
-            SerializedPermission::EditReports => Self::EditReports,
-            SerializedPermission::ReviewReports => Self::ReviewReports,
-            SerializedPermission::ApproveReports => Self::ApproveReports,
-            SerializedPermission::RejectReports => Self::RejectReports,
-            SerializedPermission::ExportReports => Self::ExportReports,
-            SerializedPermission::DeleteReports => Self::DeleteReports,
-            SerializedPermission::ManageSystem => Self::ManageSystem,
-            SerializedPermission::ViewAuditLogs => Self::ViewAuditLogs,
+            InfrastructurePermission::CreateUser => Self::CreateUser,
+            InfrastructurePermission::ViewUsers => Self::ViewUsers,
+            InfrastructurePermission::ManageUsers => Self::ManageUsers,
+            InfrastructurePermission::DeleteUsers => Self::DeleteUsers,
+            InfrastructurePermission::CreateReport => Self::CreateReport,
+            InfrastructurePermission::ViewOwnReports => Self::ViewOwnReports,
+            InfrastructurePermission::ViewReports => Self::ViewReports,
+            InfrastructurePermission::EditOwnReports => Self::EditOwnReports,
+            InfrastructurePermission::EditReports => Self::EditReports,
+            InfrastructurePermission::ReviewReports => Self::ReviewReports,
+            InfrastructurePermission::ApproveReports => Self::ApproveReports,
+            InfrastructurePermission::RejectReports => Self::RejectReports,
+            InfrastructurePermission::ExportReports => Self::ExportReports,
+            InfrastructurePermission::DeleteReports => Self::DeleteReports,
+            InfrastructurePermission::ManageSystem => Self::ManageSystem,
+            InfrastructurePermission::ViewAuditLogs => Self::ViewAuditLogs,
         }
     }
 }

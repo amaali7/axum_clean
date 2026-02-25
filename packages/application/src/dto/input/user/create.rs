@@ -38,8 +38,6 @@ pub struct CreateUserProfileInput {
     pub date_of_birth: Option<DateTime>,
     pub addresses: Addressess,
     pub website: Option<Url>,
-    pub created_at: DateTime,
-    pub updated_at: DateTime,
 }
 
 /// Mapper from Domain
@@ -70,8 +68,6 @@ impl From<UserProfile> for CreateUserProfileInput {
             addresses: value.addresses(),
             website: value.website(),
             password: value.password(),
-            created_at: value.created_at(),
-            updated_at: value.updated_at(),
         }
     }
 }
@@ -121,7 +117,7 @@ impl TryFrom<CreateUserProfileInput> for UserProfile {
             .set_first_name(value.first_name)
             .set_last_name(value.last_name)
             .set_password(value.password);
-        let user_profile = builder.build(value.created_at, value.updated_at)?;
+        let user_profile = builder.build(DateTime::new(0_i64), DateTime::new(0_i64))?;
         Ok(user_profile)
     }
 }

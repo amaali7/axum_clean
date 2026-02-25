@@ -17,8 +17,6 @@ pub struct CreateReportInput {
     pub status: ReportStatus,
     pub author_id: UserId,
     pub assigned_reviewer_id: HashSet<UserId>,
-    pub created_at: DateTime,
-    pub updated_at: DateTime,
     pub due_date: Option<DateTime>,
     pub version: u64,
 }
@@ -33,7 +31,6 @@ pub struct CreateReportContentInput {
 pub struct CreateReviewCommentInput {
     pub reviewer_id: UserId,
     pub comment: Comment,
-    pub created_at: DateTime,
 }
 
 /// Mapper from Domain
@@ -43,7 +40,6 @@ impl From<ReviewComment> for CreateReviewCommentInput {
         Self {
             reviewer_id: value.reviewer_id(),
             comment: value.comment(),
-            created_at: value.created_at(),
         }
     }
 }
@@ -73,8 +69,6 @@ impl From<Report> for CreateReportInput {
             status: value.status(),
             author_id: value.author_id(),
             assigned_reviewer_id: value.assigned_reviewer_id(),
-            created_at: value.created_at(),
-            updated_at: value.updated_at(),
             due_date: value.due_date(),
             version: value.version(),
             id: value.id(),
@@ -94,7 +88,6 @@ impl TryFrom<CreateReportInput> for Report {
             .set_due(value.due_date.unwrap_or_default())
             .set_status(value.status)
             .set_version(value.version)
-            .set_created_at(value.created_at)
             .set_content(ReportContent::try_from(value.content)?);
 
         for permission in value.permissions.into_iter() {
@@ -103,7 +96,7 @@ impl TryFrom<CreateReportInput> for Report {
         for reviewer in value.assigned_reviewer_id.into_iter() {
             builder.add_reviewer(reviewer);
         }
-        let report = builder.build(&value.title, value.updated_at)?;
+        let report = builder.build(&value.title, DateTime::new(0))?;
         Ok(report)
     }
 }
@@ -129,6 +122,6 @@ impl TryFrom<CreateReportContentInput> for ReportContent {
 
 impl From<CreateReviewCommentInput> for ReviewComment {
     fn from(value: CreateReviewCommentInput) -> Self {
-        Self::new(value.reviewer_id, value.comment, value.created_at)
+        Self::new(value.reviewer_id, value.comment, DateTime::new(0))
     }
 }

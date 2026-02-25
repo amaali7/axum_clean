@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq, Hash)]
-pub struct SerializedEmail(String);
+pub struct InfrastructureEmail(String);
 
-impl SerializedEmail {
+impl InfrastructureEmail {
     pub fn new(email: &str) -> InfrastructureResult<Self> {
         let email = email.trim().to_lowercase();
 
@@ -59,7 +59,7 @@ impl SerializedEmail {
     // }
 }
 
-impl Deref for SerializedEmail {
+impl Deref for InfrastructureEmail {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -67,19 +67,19 @@ impl Deref for SerializedEmail {
     }
 }
 
-impl DerefMut for SerializedEmail {
+impl DerefMut for InfrastructureEmail {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedEmail {
+impl std::fmt::Display for InfrastructureEmail {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl FromStr for SerializedEmail {
+impl FromStr for InfrastructureEmail {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -87,7 +87,7 @@ impl FromStr for SerializedEmail {
     }
 }
 
-impl TryFrom<Email> for SerializedEmail {
+impl TryFrom<Email> for InfrastructureEmail {
     type Error = InfrastructureError;
 
     fn try_from(value: Email) -> InfrastructureResult<Self> {
@@ -95,10 +95,10 @@ impl TryFrom<Email> for SerializedEmail {
     }
 }
 
-impl TryFrom<SerializedEmail> for Email {
+impl TryFrom<InfrastructureEmail> for Email {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedEmail) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureEmail) -> InfrastructureResult<Self> {
         Self::new(&value.email()).map_err(|err| InfrastructureError::Domain(err))
     }
 }

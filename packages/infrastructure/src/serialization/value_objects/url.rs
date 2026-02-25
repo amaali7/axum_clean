@@ -9,16 +9,16 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedUrl(String);
+pub struct InfrastructureUrl(String);
 
-impl SerializedUrl {
+impl InfrastructureUrl {
     pub fn new(url: &str) -> InfrastructureResult<Self> {
         let url = url.trim();
 
         // Empty check
         if url.is_empty() {
             return Err(InfrastructureError::ValidationError(
-                "SerializedURL cannot be empty".into(),
+                "InfrastructureURL cannot be empty".into(),
             ));
         }
 
@@ -37,7 +37,7 @@ impl SerializedUrl {
     }
 }
 
-impl Deref for SerializedUrl {
+impl Deref for InfrastructureUrl {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -45,19 +45,19 @@ impl Deref for SerializedUrl {
     }
 }
 
-impl DerefMut for SerializedUrl {
+impl DerefMut for InfrastructureUrl {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedUrl {
+impl std::fmt::Display for InfrastructureUrl {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl std::str::FromStr for SerializedUrl {
+impl std::str::FromStr for InfrastructureUrl {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {
@@ -65,7 +65,7 @@ impl std::str::FromStr for SerializedUrl {
     }
 }
 
-impl TryFrom<Url> for SerializedUrl {
+impl TryFrom<Url> for InfrastructureUrl {
     type Error = InfrastructureError;
 
     fn try_from(value: Url) -> InfrastructureResult<Self> {
@@ -73,10 +73,10 @@ impl TryFrom<Url> for SerializedUrl {
     }
 }
 
-impl TryFrom<SerializedUrl> for Url {
+impl TryFrom<InfrastructureUrl> for Url {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedUrl) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureUrl) -> InfrastructureResult<Self> {
         Self::new(&value.url()).map_err(|err| InfrastructureError::Domain(err))
     }
 }

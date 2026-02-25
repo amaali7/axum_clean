@@ -1,14 +1,11 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+pub mod common_objects;
+pub mod error;
+pub mod http;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub mod value_objects;
+pub use value_objects::{
+    address::{InterfaceAddress, InterfaceAddressBuilder, InterfaceAddressess},
+    diff::InterfaceDiff,
+    password::{InterfaceHashedPassword, InterfaceNoneHashedPassword, InterfacePassword},
+    phone_number::{InterfacePhoneNumber, InterfacePhoneNumbers},
+};

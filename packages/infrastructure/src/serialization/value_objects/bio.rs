@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedBio(String);
+pub struct InfrastructureBio(String);
 
-impl SerializedBio {
+impl InfrastructureBio {
     pub fn new(bio: &str) -> InfrastructureResult<Self> {
         let bio = bio.trim();
 
@@ -35,7 +35,7 @@ impl SerializedBio {
     }
 }
 
-impl Deref for SerializedBio {
+impl Deref for InfrastructureBio {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -43,19 +43,19 @@ impl Deref for SerializedBio {
     }
 }
 
-impl DerefMut for SerializedBio {
+impl DerefMut for InfrastructureBio {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedBio {
+impl std::fmt::Display for InfrastructureBio {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl FromStr for SerializedBio {
+impl FromStr for InfrastructureBio {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {
@@ -63,15 +63,15 @@ impl FromStr for SerializedBio {
     }
 }
 
-impl TryFrom<SerializedBio> for Bio {
+impl TryFrom<InfrastructureBio> for Bio {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedBio) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureBio) -> InfrastructureResult<Self> {
         Self::new(&value.bio()).map_err(|err| InfrastructureError::Domain(err))
     }
 }
 
-impl TryFrom<Bio> for SerializedBio {
+impl TryFrom<Bio> for InfrastructureBio {
     type Error = InfrastructureError;
 
     fn try_from(value: Bio) -> InfrastructureResult<Self> {

@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedDescription(String);
+pub struct InfrastructureDescription(String);
 
-impl SerializedDescription {
+impl InfrastructureDescription {
     pub fn new(description: &str) -> InfrastructureResult<Self> {
         let description = description.trim();
 
@@ -27,7 +27,7 @@ impl SerializedDescription {
     }
 }
 
-impl Deref for SerializedDescription {
+impl Deref for InfrastructureDescription {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -35,19 +35,19 @@ impl Deref for SerializedDescription {
     }
 }
 
-impl DerefMut for SerializedDescription {
+impl DerefMut for InfrastructureDescription {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedDescription {
+impl std::fmt::Display for InfrastructureDescription {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl FromStr for SerializedDescription {
+impl FromStr for InfrastructureDescription {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {
@@ -55,7 +55,7 @@ impl FromStr for SerializedDescription {
     }
 }
 
-impl TryFrom<Description> for SerializedDescription {
+impl TryFrom<Description> for InfrastructureDescription {
     type Error = InfrastructureError;
 
     fn try_from(value: Description) -> InfrastructureResult<Self> {
@@ -63,10 +63,10 @@ impl TryFrom<Description> for SerializedDescription {
     }
 }
 
-impl TryFrom<SerializedDescription> for Description {
+impl TryFrom<InfrastructureDescription> for Description {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedDescription) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureDescription) -> InfrastructureResult<Self> {
         Self::new(&value.description()).map_err(|err| InfrastructureError::Domain(err))
     }
 }

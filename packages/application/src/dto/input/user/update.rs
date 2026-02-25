@@ -41,8 +41,6 @@ pub struct UpdateUserProfileInput {
     pub date_of_birth: Option<DateTime>,
     pub addresses: Addressess,
     pub website: Option<Url>,
-    pub created_at: Option<DateTime>,
-    pub updated_at: DateTime,
 }
 
 impl From<User> for UpdateUserInput {
@@ -72,8 +70,6 @@ impl From<UserProfile> for UpdateUserProfileInput {
             addresses: value.addresses(),
             website: value.website(),
             password: Some(value.password()),
-            created_at: Some(value.created_at()),
-            updated_at: value.updated_at(),
         }
     }
 }
@@ -124,7 +120,7 @@ impl TryFrom<UpdateUserProfileInput> for UserProfile {
             .set_first_name(value.first_name.unwrap_or_default())
             .set_last_name(value.last_name.unwrap_or_default())
             .set_password(value.password.unwrap_or_default());
-        let user_profile = builder.build(value.created_at.unwrap_or_default(), value.updated_at)?;
+        let user_profile = builder.build(DateTime::new(0), DateTime::new(0))?;
         Ok(user_profile)
     }
 }

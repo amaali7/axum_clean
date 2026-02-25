@@ -5,7 +5,7 @@ use domain::{Name, role::{Role, RoleId}};
 use crate::{
     database::client::SurrealDBClient, error::InfrastructureError,
     serialization::{
-        SerializedRoleId, role::{role::SerializedRole, SurrealRoleResponseExt}, value_objects::SerializedName,
+        InfrastructureRoleId, role::{role::InfrastructureRole, SurrealRoleResponseExt}, value_objects::InfrastructureName,
         
     }
 };
@@ -24,8 +24,8 @@ impl SurrealRoleRepository {
 #[async_trait]
 impl RoleRepository for SurrealRoleRepository {
     async fn create(&self,ctx: RequestContex, role: Role) -> AppResult<Role>{
-        let record: SerializedRole = role.try_into().map_err(|_| ApplicationError::Repository("Role Error ".to_string()))?;
-        let result: Option<SerializedRole> =  self
+        let record: InfrastructureRole = role.try_into().map_err(|_| ApplicationError::Repository("Role Error ".to_string()))?;
+        let result: Option<InfrastructureRole> =  self
             .client
             .db
             .query("LET $role_id = $uid;
@@ -41,8 +41,8 @@ impl RoleRepository for SurrealRoleRepository {
         
     }
     async fn update(&self,ctx: RequestContex, role: Role) -> AppResult<Role>{
-        let record: SerializedRole = role.try_into().map_err(|err: InfrastructureError| ApplicationError::Domain(err.into()))?;
-        let result: Option<SerializedRole> =  self
+        let record: InfrastructureRole = role.try_into().map_err(|err: InfrastructureError| ApplicationError::Domain(err.into()))?;
+        let result: Option<InfrastructureRole> =  self
             .client
             .db
             .query("LET $role_id = $uid;
@@ -58,8 +58,8 @@ impl RoleRepository for SurrealRoleRepository {
         }
     }
     async fn get_by_id(&self, _request_contex: RequestContex, id: RoleId) -> AppResult<Role>{
-        let id: SerializedRoleId = id.into();
-        let result: Option<SerializedRole> =  self
+        let id: InfrastructureRoleId = id.into();
+        let result: Option<InfrastructureRole> =  self
             .client
             .db
             .query("SELECT * FROM ONLY role:$id")
@@ -72,7 +72,7 @@ impl RoleRepository for SurrealRoleRepository {
         }
     }
     async fn delete(&self,ctx: RequestContex, id: RoleId) -> AppResult<bool>{
-        let result: Option<SerializedRole> =  self
+        let result: Option<InfrastructureRole> =  self
             .client
             .db
             .query("LET $role_id = $uid;
@@ -87,8 +87,8 @@ impl RoleRepository for SurrealRoleRepository {
         }
     }
     async fn get_by_name(&self, _request_contex:RequestContex, name: Name) -> AppResult<Role>{
-        let name: SerializedName = name.try_into()?;
-        let result: Option<SerializedRole> =  self
+        let name: InfrastructureName = name.try_into()?;
+        let result: Option<InfrastructureRole> =  self
             .client
             .db
             .query("SELECT * FROM role WHERE name = $name LIMIT 1")
@@ -114,7 +114,7 @@ impl RoleRepository for SurrealRoleRepository {
             order.truncate(order.len() -1);
         }
         
-        let result: Vec<SerializedRole> =  self
+        let result: Vec<InfrastructureRole> =  self
             .client
             .db
             .query("SELECT * FROM role $order LIMIT $page_size START $start_at")

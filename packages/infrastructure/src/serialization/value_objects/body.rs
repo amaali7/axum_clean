@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedBody(String);
+pub struct InfrastructureBody(String);
 
-impl SerializedBody {
+impl InfrastructureBody {
     pub fn new(body: &str) -> InfrastructureResult<Self> {
         let body = body.trim();
 
@@ -28,7 +28,7 @@ impl SerializedBody {
     }
 }
 
-impl Deref for SerializedBody {
+impl Deref for InfrastructureBody {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -36,19 +36,19 @@ impl Deref for SerializedBody {
     }
 }
 
-impl DerefMut for SerializedBody {
+impl DerefMut for InfrastructureBody {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedBody {
+impl std::fmt::Display for InfrastructureBody {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl FromStr for SerializedBody {
+impl FromStr for InfrastructureBody {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {
@@ -56,7 +56,7 @@ impl FromStr for SerializedBody {
     }
 }
 
-impl TryFrom<Body> for SerializedBody {
+impl TryFrom<Body> for InfrastructureBody {
     type Error = InfrastructureError;
 
     fn try_from(value: Body) -> InfrastructureResult<Self> {
@@ -64,10 +64,10 @@ impl TryFrom<Body> for SerializedBody {
     }
 }
 
-impl TryFrom<SerializedBody> for Body {
+impl TryFrom<InfrastructureBody> for Body {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedBody) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureBody) -> InfrastructureResult<Self> {
         Self::new(&value.body()).map_err(|err| InfrastructureError::Domain(err))
     }
 }

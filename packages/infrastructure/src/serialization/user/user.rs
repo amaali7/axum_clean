@@ -6,96 +6,96 @@ use serde::{Deserialize, Serialize};
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
     serialization::{
-        value_objects::{SerializedDateTime, SerializedEmail, SerializedUsername},
-        SerializedPermission, SerializedRoleId,
+        value_objects::{InfrastructureDateTime, InfrastructureEmail, InfrastructureUsername},
+        InfrastructurePermission, InfrastructureRoleId,
     },
 };
 
 use super::{
-    SerializedUserId, SerializedUserPreferences, SerializedUserProfile, SerializedUserStatus,
+    InfrastructureUserId, InfrastructureUserPreferences, InfrastructureUserProfile, InfrastructureUserStatus,
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SerializedUser {
-    id: SerializedUserId,
-    email: SerializedEmail,
-    username: SerializedUsername,
-    profile: SerializedUserProfile,
-    roles: HashSet<SerializedRoleId>,
-    permissions: HashSet<SerializedPermission>, // Cached permissions for performance
-    preferences: SerializedUserPreferences,
-    status: SerializedUserStatus,
+pub struct InfrastructureUser {
+    id: InfrastructureUserId,
+    email: InfrastructureEmail,
+    username: InfrastructureUsername,
+    profile: InfrastructureUserProfile,
+    roles: HashSet<InfrastructureRoleId>,
+    permissions: HashSet<InfrastructurePermission>, // Cached permissions for performance
+    preferences: InfrastructureUserPreferences,
+    status: InfrastructureUserStatus,
     failed_logins: Option<u64>,
-    locked_until: Option<SerializedDateTime>,
-    last_login: Option<SerializedDateTime>,
+    locked_until: Option<InfrastructureDateTime>,
+    last_login: Option<InfrastructureDateTime>,
 }
 
-impl SerializedUser {
-    pub fn new(id: SerializedUserId) -> SerializedUserBuilder {
-        SerializedUserBuilder::new(id)
+impl InfrastructureUser {
+    pub fn new(id: InfrastructureUserId) -> InfrastructureUserBuilder {
+        InfrastructureUserBuilder::new(id)
     }
     // Basic getters - return references to avoid cloning
-    pub fn id(&self) -> SerializedUserId {
+    pub fn id(&self) -> InfrastructureUserId {
         self.id.clone()
     }
 
-    pub fn email(&self) -> SerializedEmail {
+    pub fn email(&self) -> InfrastructureEmail {
         self.email.clone()
     }
 
-    pub fn username(&self) -> SerializedUsername {
+    pub fn username(&self) -> InfrastructureUsername {
         self.username.clone()
     }
 
-    pub fn profile(&self) -> SerializedUserProfile {
+    pub fn profile(&self) -> InfrastructureUserProfile {
         self.profile.clone()
     }
 
-    pub fn preferences(&self) -> SerializedUserPreferences {
+    pub fn preferences(&self) -> InfrastructureUserPreferences {
         self.preferences.clone()
     }
 
-    pub fn status(&self) -> SerializedUserStatus {
+    pub fn status(&self) -> InfrastructureUserStatus {
         self.status.clone()
     }
 
-    pub fn roles(&self) -> HashSet<SerializedRoleId> {
+    pub fn roles(&self) -> HashSet<InfrastructureRoleId> {
         self.roles.clone()
     }
 
-    pub fn permissions(&self) -> HashSet<SerializedPermission> {
+    pub fn permissions(&self) -> HashSet<InfrastructurePermission> {
         self.permissions.clone()
     }
     pub fn failed_logins(&self) -> Option<u64> {
         self.failed_logins.clone()
     }
 
-    pub fn locked_until(&self) -> Option<SerializedDateTime> {
+    pub fn locked_until(&self) -> Option<InfrastructureDateTime> {
         self.locked_until.clone()
     }
 
-    pub fn last_login(&self) -> Option<SerializedDateTime> {
+    pub fn last_login(&self) -> Option<InfrastructureDateTime> {
         self.last_login.clone()
     }
 }
 
 // Builder pattern for complex object creation
-pub struct SerializedUserBuilder {
-    id: SerializedUserId,
-    email: Option<SerializedEmail>,
-    username: Option<SerializedUsername>,
-    profile: Option<SerializedUserProfile>,
-    roles: HashSet<SerializedRoleId>,
-    permissions: HashSet<SerializedPermission>, // Cached permissions for performance
-    preferences: Option<SerializedUserPreferences>,
-    status: SerializedUserStatus,
+pub struct InfrastructureUserBuilder {
+    id: InfrastructureUserId,
+    email: Option<InfrastructureEmail>,
+    username: Option<InfrastructureUsername>,
+    profile: Option<InfrastructureUserProfile>,
+    roles: HashSet<InfrastructureRoleId>,
+    permissions: HashSet<InfrastructurePermission>, // Cached permissions for performance
+    preferences: Option<InfrastructureUserPreferences>,
+    status: InfrastructureUserStatus,
     failed_logins: Option<u64>,
-    locked_until: Option<SerializedDateTime>,
-    last_login: Option<SerializedDateTime>,
+    locked_until: Option<InfrastructureDateTime>,
+    last_login: Option<InfrastructureDateTime>,
 }
 
-impl SerializedUserBuilder {
-    pub fn new(id: SerializedUserId) -> Self {
+impl InfrastructureUserBuilder {
+    pub fn new(id: InfrastructureUserId) -> Self {
         Self {
             email: None,
             username: None,
@@ -104,47 +104,47 @@ impl SerializedUserBuilder {
             permissions: HashSet::new(),
             id,
             preferences: None,
-            status: SerializedUserStatus::Inactive,
+            status: InfrastructureUserStatus::Inactive,
             failed_logins: None,
             locked_until: None,
             last_login: None,
         }
     }
 
-    pub fn set_preferences(&mut self, preferences: SerializedUserPreferences) -> &mut Self {
+    pub fn set_preferences(&mut self, preferences: InfrastructureUserPreferences) -> &mut Self {
         self.preferences = Some(preferences);
         self
     }
-    pub fn set_status(&mut self, status: SerializedUserStatus) -> &mut Self {
+    pub fn set_status(&mut self, status: InfrastructureUserStatus) -> &mut Self {
         self.status = status;
         self
     }
-    pub fn set_email(&mut self, email: SerializedEmail) -> &mut Self {
+    pub fn set_email(&mut self, email: InfrastructureEmail) -> &mut Self {
         self.email = Some(email);
         self
     }
-    pub fn add_roles(&mut self, roles: HashSet<SerializedRoleId>) -> &mut Self {
+    pub fn add_roles(&mut self, roles: HashSet<InfrastructureRoleId>) -> &mut Self {
         self.roles.extend(roles);
         self
     }
-    pub fn add_permissions(&mut self, permissions: HashSet<SerializedPermission>) -> &mut Self {
+    pub fn add_permissions(&mut self, permissions: HashSet<InfrastructurePermission>) -> &mut Self {
         self.permissions.extend(permissions);
         self
     }
-    pub fn add_role(&mut self, role: SerializedRoleId) -> &mut Self {
+    pub fn add_role(&mut self, role: InfrastructureRoleId) -> &mut Self {
         self.roles.insert(role);
         self
     }
-    pub fn add_permission(&mut self, permission: SerializedPermission) -> &mut Self {
+    pub fn add_permission(&mut self, permission: InfrastructurePermission) -> &mut Self {
         self.permissions.insert(permission);
         self
     }
-    pub fn set_username(&mut self, username: SerializedUsername) -> &mut Self {
+    pub fn set_username(&mut self, username: InfrastructureUsername) -> &mut Self {
         self.username = Some(username);
         self
     }
 
-    pub fn set_profile(&mut self, profile: SerializedUserProfile) -> &mut Self {
+    pub fn set_profile(&mut self, profile: InfrastructureUserProfile) -> &mut Self {
         self.profile = Some(profile);
         self
     }
@@ -154,18 +154,18 @@ impl SerializedUserBuilder {
         self
     }
 
-    pub fn set_locked_until(&mut self, datetime: SerializedDateTime) -> &mut Self {
+    pub fn set_locked_until(&mut self, datetime: InfrastructureDateTime) -> &mut Self {
         self.locked_until = Some(datetime);
         self
     }
 
-    pub fn set_last_login(&mut self, datetime: SerializedDateTime) -> &mut Self {
+    pub fn set_last_login(&mut self, datetime: InfrastructureDateTime) -> &mut Self {
         self.last_login = Some(datetime);
         self
     }
 
-    pub fn build(self) -> InfrastructureResult<SerializedUser> {
-        Ok(SerializedUser {
+    pub fn build(self) -> InfrastructureResult<InfrastructureUser> {
+        Ok(InfrastructureUser {
             id: self.id,
             email: self.email.ok_or(InfrastructureError::ValidationError(
                 "Email not found".to_string(),
@@ -187,7 +187,7 @@ impl SerializedUserBuilder {
     }
 }
 
-impl TryFrom<User> for SerializedUser {
+impl TryFrom<User> for InfrastructureUser {
     type Error = InfrastructureError;
 
     fn try_from(value: User) -> InfrastructureResult<Self> {
@@ -227,10 +227,10 @@ impl TryFrom<User> for SerializedUser {
     }
 }
 
-impl TryFrom<SerializedUser> for User {
+impl TryFrom<InfrastructureUser> for User {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedUser) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureUser) -> InfrastructureResult<Self> {
         let mut user_builder = Self::new(value.id().into());
         user_builder
             .set_email(value.email().try_into()?)

@@ -6,36 +6,36 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum SerializedPassword {
-    Hashed(SerializedHashedPassword),
-    NoneHashed(SerializedNoneHashedPassword),
+pub enum InfrastructurePassword {
+    Hashed(InfrastructureHashedPassword),
+    NoneHashed(InfrastructureNoneHashedPassword),
 }
 
-impl fmt::Display for SerializedPassword {
+impl fmt::Display for InfrastructurePassword {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            SerializedPassword::Hashed(hashed_password) => write!(f, "{}", hashed_password),
-            SerializedPassword::NoneHashed(none_hashed_password) => {
+            InfrastructurePassword::Hashed(hashed_password) => write!(f, "{}", hashed_password),
+            InfrastructurePassword::NoneHashed(none_hashed_password) => {
                 write!(f, "{}", none_hashed_password)
             }
         }
     }
 }
 
-impl Default for SerializedPassword {
+impl Default for InfrastructurePassword {
     fn default() -> Self {
-        SerializedPassword::NoneHashed(SerializedNoneHashedPassword::default())
+        InfrastructurePassword::NoneHashed(InfrastructureNoneHashedPassword::default())
     }
 }
 
-impl TryFrom<Password> for SerializedPassword {
+impl TryFrom<Password> for InfrastructurePassword {
     fn try_from(value: Password) -> InfrastructureResult<Self> {
         match value {
             Password::Hashed(hashed_password) => Ok(Self::Hashed(
-                SerializedHashedPassword::try_from(hashed_password)?,
+                InfrastructureHashedPassword::try_from(hashed_password)?,
             )),
             Password::NoneHashed(none_hashed_password) => Ok(Self::NoneHashed(
-                SerializedNoneHashedPassword::try_from(none_hashed_password)?,
+                InfrastructureNoneHashedPassword::try_from(none_hashed_password)?,
             )),
         }
     }
@@ -43,13 +43,13 @@ impl TryFrom<Password> for SerializedPassword {
     type Error = InfrastructureError;
 }
 
-impl TryFrom<SerializedPassword> for Password {
-    fn try_from(value: SerializedPassword) -> InfrastructureResult<Self> {
+impl TryFrom<InfrastructurePassword> for Password {
+    fn try_from(value: InfrastructurePassword) -> InfrastructureResult<Self> {
         match value {
-            SerializedPassword::Hashed(hashed_password) => {
+            InfrastructurePassword::Hashed(hashed_password) => {
                 Ok(Self::Hashed(HashedPassword::try_from(hashed_password)?))
             }
-            SerializedPassword::NoneHashed(none_hashed_password) => Ok(Self::NoneHashed(
+            InfrastructurePassword::NoneHashed(none_hashed_password) => Ok(Self::NoneHashed(
                 NoneHashedPassword::try_from(none_hashed_password)?,
             )),
         }
@@ -58,15 +58,15 @@ impl TryFrom<SerializedPassword> for Password {
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct SerializedNoneHashedPassword(String);
+pub struct InfrastructureNoneHashedPassword(String);
 
-impl fmt::Display for SerializedNoneHashedPassword {
+impl fmt::Display for InfrastructureNoneHashedPassword {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl SerializedNoneHashedPassword {
+impl InfrastructureNoneHashedPassword {
     pub fn new(password: &str) -> InfrastructureResult<Self> {
         if password.len() < 8 {
             return Err(InfrastructureError::ValidationError(
@@ -89,7 +89,7 @@ impl SerializedNoneHashedPassword {
     }
 }
 
-impl FromStr for SerializedNoneHashedPassword {
+impl FromStr for InfrastructureNoneHashedPassword {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -97,7 +97,7 @@ impl FromStr for SerializedNoneHashedPassword {
     }
 }
 
-impl TryFrom<NoneHashedPassword> for SerializedNoneHashedPassword {
+impl TryFrom<NoneHashedPassword> for InfrastructureNoneHashedPassword {
     fn try_from(value: NoneHashedPassword) -> InfrastructureResult<Self> {
         Self::new(&value.none_hashed_password())
     }
@@ -105,8 +105,8 @@ impl TryFrom<NoneHashedPassword> for SerializedNoneHashedPassword {
     type Error = InfrastructureError;
 }
 
-impl TryFrom<SerializedNoneHashedPassword> for NoneHashedPassword {
-    fn try_from(value: SerializedNoneHashedPassword) -> InfrastructureResult<Self> {
+impl TryFrom<InfrastructureNoneHashedPassword> for NoneHashedPassword {
+    fn try_from(value: InfrastructureNoneHashedPassword) -> InfrastructureResult<Self> {
         Self::new(&value.none_hashed_password()).map_err(|err| InfrastructureError::Domain(err))
     }
 
@@ -114,15 +114,15 @@ impl TryFrom<SerializedNoneHashedPassword> for NoneHashedPassword {
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct SerializedHashedPassword(String);
+pub struct InfrastructureHashedPassword(String);
 
-impl fmt::Display for SerializedHashedPassword {
+impl fmt::Display for InfrastructureHashedPassword {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl SerializedHashedPassword {
+impl InfrastructureHashedPassword {
     pub fn new(hashed_password: &str) -> InfrastructureResult<Self> {
         if hashed_password.len() < 43 || hashed_password.len() > 128 {
             return Err(InfrastructureError::ValidationError(
@@ -139,7 +139,7 @@ impl SerializedHashedPassword {
     }
 }
 
-impl FromStr for SerializedHashedPassword {
+impl FromStr for InfrastructureHashedPassword {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -147,7 +147,7 @@ impl FromStr for SerializedHashedPassword {
     }
 }
 
-impl TryFrom<HashedPassword> for SerializedHashedPassword {
+impl TryFrom<HashedPassword> for InfrastructureHashedPassword {
     fn try_from(value: HashedPassword) -> InfrastructureResult<Self> {
         Self::new(&value.hashed_password())
     }
@@ -155,8 +155,8 @@ impl TryFrom<HashedPassword> for SerializedHashedPassword {
     type Error = InfrastructureError;
 }
 
-impl TryFrom<SerializedHashedPassword> for HashedPassword {
-    fn try_from(value: SerializedHashedPassword) -> InfrastructureResult<Self> {
+impl TryFrom<InfrastructureHashedPassword> for HashedPassword {
+    fn try_from(value: InfrastructureHashedPassword) -> InfrastructureResult<Self> {
         Self::new(&value.hashed_password()).map_err(|err| InfrastructureError::Domain(err))
     }
     type Error = InfrastructureError;

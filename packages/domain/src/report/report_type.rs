@@ -1,10 +1,11 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub enum ReportType {
     Financial,
     Technical,
     Progress,
     Incident,
     Audit,
+    #[default]
     Other,
 }
 

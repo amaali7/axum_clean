@@ -6,78 +6,78 @@ use serde::{Deserialize, Serialize};
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
     serialization::{
-        value_objects::{SerializedDateTime, SerializedTitle},
-        SerializedPermission, SerializedUserId,
+        value_objects::{InfrastructureDateTime, InfrastructureTitle},
+        InfrastructurePermission, InfrastructureUserId,
     },
 };
 
 use super::{
-    content::SerializedReportContent, report_type::SerializedReportType, SerializedReportId,
-    SerializedReportStatus,
+    content::InfrastructureReportContent, report_type::InfrastructureReportType, InfrastructureReportId,
+    InfrastructureReportStatus,
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SerializedReport {
-    id: SerializedReportId,
-    title: SerializedTitle,
-    content: SerializedReportContent,
-    report_type: SerializedReportType,
-    permissions: HashSet<SerializedPermission>,
-    status: SerializedReportStatus,
-    author_id: SerializedUserId,
-    assigned_reviewer_id: HashSet<SerializedUserId>,
-    created_at: SerializedDateTime,
-    updated_at: SerializedDateTime,
-    due_date: Option<SerializedDateTime>,
+pub struct InfrastructureReport {
+    id: InfrastructureReportId,
+    title: InfrastructureTitle,
+    content: InfrastructureReportContent,
+    report_type: InfrastructureReportType,
+    permissions: HashSet<InfrastructurePermission>,
+    status: InfrastructureReportStatus,
+    author_id: InfrastructureUserId,
+    assigned_reviewer_id: HashSet<InfrastructureUserId>,
+    created_at: InfrastructureDateTime,
+    updated_at: InfrastructureDateTime,
+    due_date: Option<InfrastructureDateTime>,
     version: u64,
 }
 
-impl SerializedReport {
-    pub fn new(id: SerializedReportId, author_id: SerializedUserId) -> SerializedReportBuilder {
-        SerializedReportBuilder::new(id, author_id)
+impl InfrastructureReport {
+    pub fn new(id: InfrastructureReportId, author_id: InfrastructureUserId) -> InfrastructureReportBuilder {
+        InfrastructureReportBuilder::new(id, author_id)
     }
 
-    pub fn id(&self) -> SerializedReportId {
+    pub fn id(&self) -> InfrastructureReportId {
         self.id.clone()
     }
 
-    pub fn title(&self) -> SerializedTitle {
+    pub fn title(&self) -> InfrastructureTitle {
         self.title.clone()
     }
 
-    pub fn content(&self) -> SerializedReportContent {
+    pub fn content(&self) -> InfrastructureReportContent {
         self.content.clone()
     }
 
-    pub fn report_type(&self) -> SerializedReportType {
+    pub fn report_type(&self) -> InfrastructureReportType {
         self.report_type.clone()
     }
 
-    pub fn permissions(&self) -> HashSet<SerializedPermission> {
+    pub fn permissions(&self) -> HashSet<InfrastructurePermission> {
         self.permissions.clone()
     }
 
-    pub fn status(&self) -> SerializedReportStatus {
+    pub fn status(&self) -> InfrastructureReportStatus {
         self.status.clone()
     }
 
-    pub fn author_id(&self) -> SerializedUserId {
+    pub fn author_id(&self) -> InfrastructureUserId {
         self.author_id.clone()
     }
 
-    pub fn assigned_reviewer_id(&self) -> HashSet<SerializedUserId> {
+    pub fn assigned_reviewer_id(&self) -> HashSet<InfrastructureUserId> {
         self.assigned_reviewer_id.clone()
     }
 
-    pub fn created_at(&self) -> SerializedDateTime {
+    pub fn created_at(&self) -> InfrastructureDateTime {
         self.created_at.clone()
     }
 
-    pub fn updated_at(&self) -> SerializedDateTime {
+    pub fn updated_at(&self) -> InfrastructureDateTime {
         self.updated_at.clone()
     }
 
-    pub fn due_date(&self) -> Option<SerializedDateTime> {
+    pub fn due_date(&self) -> Option<InfrastructureDateTime> {
         self.due_date.clone()
     }
 
@@ -87,21 +87,21 @@ impl SerializedReport {
 }
 
 #[derive(Debug, Clone)]
-pub struct SerializedReportBuilder {
-    id: SerializedReportId,
-    permissions: HashSet<SerializedPermission>,
-    content: Option<SerializedReportContent>,
-    report_type: Option<SerializedReportType>,
-    author_id: SerializedUserId,
-    status: SerializedReportStatus,
-    reviewer_id: HashSet<SerializedUserId>,
-    created_at: Option<SerializedDateTime>,
-    due: Option<SerializedDateTime>,
+pub struct InfrastructureReportBuilder {
+    id: InfrastructureReportId,
+    permissions: HashSet<InfrastructurePermission>,
+    content: Option<InfrastructureReportContent>,
+    report_type: Option<InfrastructureReportType>,
+    author_id: InfrastructureUserId,
+    status: InfrastructureReportStatus,
+    reviewer_id: HashSet<InfrastructureUserId>,
+    created_at: Option<InfrastructureDateTime>,
+    due: Option<InfrastructureDateTime>,
     version: u64,
 }
 
-impl SerializedReportBuilder {
-    pub fn new(id: SerializedReportId, author_id: SerializedUserId) -> Self {
+impl InfrastructureReportBuilder {
+    pub fn new(id: InfrastructureReportId, author_id: InfrastructureUserId) -> Self {
         Self {
             permissions: HashSet::new(),
             content: None,
@@ -111,15 +111,15 @@ impl SerializedReportBuilder {
             created_at: None,
             due: None,
             id,
-            status: SerializedReportStatus::Draft,
+            status: InfrastructureReportStatus::Draft,
             version: 1,
         }
     }
-    pub fn set_status(&mut self, status: SerializedReportStatus) -> &mut Self {
+    pub fn set_status(&mut self, status: InfrastructureReportStatus) -> &mut Self {
         self.status = status;
         self
     }
-    pub fn set_created_at(&mut self, created_at: SerializedDateTime) -> &mut Self {
+    pub fn set_created_at(&mut self, created_at: InfrastructureDateTime) -> &mut Self {
         self.created_at = Some(created_at);
         self
     }
@@ -128,23 +128,23 @@ impl SerializedReportBuilder {
         self
     }
 
-    pub fn set_due(&mut self, due: SerializedDateTime) -> &mut Self {
+    pub fn set_due(&mut self, due: InfrastructureDateTime) -> &mut Self {
         self.due = Some(due);
         self
     }
-    pub fn add_permission(&mut self, permission: SerializedPermission) -> &mut Self {
+    pub fn add_permission(&mut self, permission: InfrastructurePermission) -> &mut Self {
         self.permissions.insert(permission);
         self
     }
-    pub fn set_content(&mut self, content: SerializedReportContent) -> &mut Self {
+    pub fn set_content(&mut self, content: InfrastructureReportContent) -> &mut Self {
         self.content = Some(content);
         self
     }
-    pub fn set_report_type(&mut self, report_type: SerializedReportType) -> &mut Self {
+    pub fn set_report_type(&mut self, report_type: InfrastructureReportType) -> &mut Self {
         self.report_type = Some(report_type);
         self
     }
-    pub fn add_reviewer(&mut self, reviewer: SerializedUserId) -> &mut Self {
+    pub fn add_reviewer(&mut self, reviewer: InfrastructureUserId) -> &mut Self {
         self.reviewer_id.insert(reviewer);
         self
     }
@@ -152,13 +152,13 @@ impl SerializedReportBuilder {
     pub fn build(
         self,
         title: &str,
-        updated_at: SerializedDateTime,
-    ) -> InfrastructureResult<SerializedReport> {
-        Ok(SerializedReport {
+        updated_at: InfrastructureDateTime,
+    ) -> InfrastructureResult<InfrastructureReport> {
+        Ok(InfrastructureReport {
             id: self.id,
-            title: SerializedTitle::new(title)?,
-            content: self.content.unwrap_or(SerializedReportContent::default()),
-            report_type: self.report_type.unwrap_or(SerializedReportType::Other),
+            title: InfrastructureTitle::new(title)?,
+            content: self.content.unwrap_or(InfrastructureReportContent::default()),
+            report_type: self.report_type.unwrap_or(InfrastructureReportType::Other),
             permissions: self.permissions,
             status: self.status,
             author_id: self.author_id,
@@ -171,7 +171,7 @@ impl SerializedReportBuilder {
     }
 }
 
-impl TryFrom<Report> for SerializedReport {
+impl TryFrom<Report> for InfrastructureReport {
     type Error = InfrastructureError;
 
     fn try_from(value: Report) -> InfrastructureResult<Self> {
@@ -198,10 +198,10 @@ impl TryFrom<Report> for SerializedReport {
     }
 }
 
-impl TryFrom<SerializedReport> for Report {
+impl TryFrom<InfrastructureReport> for Report {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedReport) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureReport) -> InfrastructureResult<Self> {
         let mut report_builder = Self::new(value.id().into(), value.author_id().into());
         report_builder
             .set_content(value.content().try_into()?)

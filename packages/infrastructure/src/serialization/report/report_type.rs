@@ -2,7 +2,7 @@ use domain::ReportType;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum SerializedReportType {
+pub enum InfrastructureReportType {
     Financial,
     Technical,
     Progress,
@@ -11,7 +11,7 @@ pub enum SerializedReportType {
     Other,
 }
 
-impl SerializedReportType {
+impl InfrastructureReportType {
     pub fn all() -> Vec<Self> {
         vec![
             Self::Financial,
@@ -28,7 +28,7 @@ impl SerializedReportType {
     }
 }
 
-impl From<ReportType> for SerializedReportType {
+impl From<ReportType> for InfrastructureReportType {
     fn from(value: ReportType) -> Self {
         match value {
             ReportType::Financial => Self::Financial,
@@ -41,15 +41,15 @@ impl From<ReportType> for SerializedReportType {
     }
 }
 
-impl From<SerializedReportType> for ReportType {
-    fn from(value: SerializedReportType) -> Self {
+impl From<InfrastructureReportType> for ReportType {
+    fn from(value: InfrastructureReportType) -> Self {
         match value {
-            SerializedReportType::Financial => Self::Financial,
-            SerializedReportType::Technical => Self::Technical,
-            SerializedReportType::Progress => Self::Progress,
-            SerializedReportType::Incident => Self::Incident,
-            SerializedReportType::Audit => Self::Audit,
-            SerializedReportType::Other => Self::Other,
+            InfrastructureReportType::Financial => Self::Financial,
+            InfrastructureReportType::Technical => Self::Technical,
+            InfrastructureReportType::Progress => Self::Progress,
+            InfrastructureReportType::Incident => Self::Incident,
+            InfrastructureReportType::Audit => Self::Audit,
+            InfrastructureReportType::Other => Self::Other,
         }
     }
 }

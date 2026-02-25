@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
-pub struct SerializedTitle(String);
+pub struct InfrastructureTitle(String);
 
-impl SerializedTitle {
+impl InfrastructureTitle {
     pub fn new(title: &str) -> InfrastructureResult<Self> {
         let title = title.trim();
 
@@ -47,7 +47,7 @@ impl SerializedTitle {
     }
 }
 
-impl Deref for SerializedTitle {
+impl Deref for InfrastructureTitle {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -55,19 +55,19 @@ impl Deref for SerializedTitle {
     }
 }
 
-impl DerefMut for SerializedTitle {
+impl DerefMut for InfrastructureTitle {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedTitle {
+impl std::fmt::Display for InfrastructureTitle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl std::str::FromStr for SerializedTitle {
+impl std::str::FromStr for InfrastructureTitle {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {
@@ -75,7 +75,7 @@ impl std::str::FromStr for SerializedTitle {
     }
 }
 
-impl TryFrom<Title> for SerializedTitle {
+impl TryFrom<Title> for InfrastructureTitle {
     type Error = InfrastructureError;
 
     fn try_from(value: Title) -> InfrastructureResult<Self> {
@@ -83,10 +83,10 @@ impl TryFrom<Title> for SerializedTitle {
     }
 }
 
-impl TryFrom<SerializedTitle> for Title {
+impl TryFrom<InfrastructureTitle> for Title {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedTitle) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureTitle) -> InfrastructureResult<Self> {
         Self::new(&value.title()).map_err(|err| InfrastructureError::Domain(err))
     }
 }

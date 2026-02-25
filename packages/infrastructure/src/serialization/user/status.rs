@@ -2,14 +2,14 @@ use domain::user::UserStatus;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum SerializedUserStatus {
+pub enum InfrastructureUserStatus {
     Active,
     Suspended,
     Inactive,
     Banned,
 }
 
-impl From<UserStatus> for SerializedUserStatus {
+impl From<UserStatus> for InfrastructureUserStatus {
     fn from(value: UserStatus) -> Self {
         match value {
             UserStatus::Active => Self::Active,
@@ -20,19 +20,19 @@ impl From<UserStatus> for SerializedUserStatus {
     }
 }
 
-impl From<SerializedUserStatus> for UserStatus {
-    fn from(value: SerializedUserStatus) -> Self {
+impl From<InfrastructureUserStatus> for UserStatus {
+    fn from(value: InfrastructureUserStatus) -> Self {
         match value {
-            SerializedUserStatus::Active => Self::Active,
-            SerializedUserStatus::Suspended => Self::Suspended,
-            SerializedUserStatus::Inactive => Self::Inactive,
-            SerializedUserStatus::Banned => Self::Banned,
+            InfrastructureUserStatus::Active => Self::Active,
+            InfrastructureUserStatus::Suspended => Self::Suspended,
+            InfrastructureUserStatus::Inactive => Self::Inactive,
+            InfrastructureUserStatus::Banned => Self::Banned,
         }
     }
 }
 
-impl Default for SerializedUserStatus {
+impl Default for InfrastructureUserStatus {
     fn default() -> Self {
-        SerializedUserStatus::Inactive
+        InfrastructureUserStatus::Inactive
     }
 }

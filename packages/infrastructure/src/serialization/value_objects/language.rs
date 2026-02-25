@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SerializedLanguage(String);
+pub struct InfrastructureLanguage(String);
 
-impl SerializedLanguage {
+impl InfrastructureLanguage {
     pub fn new(language: &str) -> InfrastructureResult<Self> {
         let language = language.trim();
 
@@ -28,7 +28,7 @@ impl SerializedLanguage {
     }
 }
 
-impl Deref for SerializedLanguage {
+impl Deref for InfrastructureLanguage {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -36,19 +36,19 @@ impl Deref for SerializedLanguage {
     }
 }
 
-impl DerefMut for SerializedLanguage {
+impl DerefMut for InfrastructureLanguage {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedLanguage {
+impl std::fmt::Display for InfrastructureLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl FromStr for SerializedLanguage {
+impl FromStr for InfrastructureLanguage {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {
@@ -56,7 +56,7 @@ impl FromStr for SerializedLanguage {
     }
 }
 
-impl TryFrom<Language> for SerializedLanguage {
+impl TryFrom<Language> for InfrastructureLanguage {
     type Error = InfrastructureError;
 
     fn try_from(value: Language) -> InfrastructureResult<Self> {
@@ -64,10 +64,10 @@ impl TryFrom<Language> for SerializedLanguage {
     }
 }
 
-impl TryFrom<SerializedLanguage> for Language {
+impl TryFrom<InfrastructureLanguage> for Language {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedLanguage) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureLanguage) -> InfrastructureResult<Self> {
         Self::new(&value.language()).map_err(|err| InfrastructureError::Domain(err))
     }
 }

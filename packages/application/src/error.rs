@@ -15,8 +15,8 @@ pub enum ApplicationError {
     #[error("Application Validation failed: {0}")]
     ValidationError(String),
 
-    #[error("Unknown application error")]
-    Unknown,
+    #[error("Unknown application error: {0}")]
+    Unknown(String),
 }
 
 pub type AppResult<T> = Result<T, ApplicationError>;

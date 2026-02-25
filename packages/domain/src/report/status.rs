@@ -1,8 +1,9 @@
 use std::fmt;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub enum ReportStatus {
     Draft,
+    #[default]
     Submitted,
     InReview,
     Approved,

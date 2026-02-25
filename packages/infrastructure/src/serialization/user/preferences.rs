@@ -3,23 +3,23 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     error::{InfrastructureError, InfrastructureResult},
-    serialization::value_objects::SerializedLanguage,
+    serialization::value_objects::InfrastructureLanguage,
 };
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SerializedUserPreferences {
+pub struct InfrastructureUserPreferences {
     pub email_notifications: bool,
     pub push_notifications: bool,
     pub two_factor_auth: bool,
-    pub language: SerializedLanguage,
+    pub language: InfrastructureLanguage,
 }
 
-impl SerializedUserPreferences {
+impl InfrastructureUserPreferences {
     pub fn new(
         email_notifications: bool,
         push_notifications: bool,
         two_factor_auth: bool,
-        language: SerializedLanguage,
+        language: InfrastructureLanguage,
     ) -> Self {
         Self {
             email_notifications,
@@ -40,12 +40,12 @@ impl SerializedUserPreferences {
         self.two_factor_auth.clone()
     }
 
-    pub fn language(&self) -> SerializedLanguage {
+    pub fn language(&self) -> InfrastructureLanguage {
         self.language.clone()
     }
 }
 
-impl TryFrom<UserPreferences> for SerializedUserPreferences {
+impl TryFrom<UserPreferences> for InfrastructureUserPreferences {
     type Error = InfrastructureError;
 
     fn try_from(prefs: UserPreferences) -> InfrastructureResult<Self> {
@@ -58,10 +58,10 @@ impl TryFrom<UserPreferences> for SerializedUserPreferences {
     }
 }
 
-impl TryFrom<SerializedUserPreferences> for UserPreferences {
+impl TryFrom<InfrastructureUserPreferences> for UserPreferences {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedUserPreferences) -> Result<Self, Self::Error> {
+    fn try_from(value: InfrastructureUserPreferences) -> Result<Self, Self::Error> {
         Ok(UserPreferences::new(
             value.email_notifications,
             value.push_notifications,

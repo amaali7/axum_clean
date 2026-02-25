@@ -9,15 +9,15 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct SerializedComment(String);
+pub struct InfrastructureComment(String);
 
-impl SerializedComment {
+impl InfrastructureComment {
     pub fn new(comment: &str) -> InfrastructureResult<Self> {
         let comment = comment.trim();
 
         if comment.len() < 3 {
             return Err(InfrastructureError::ValidationError(
-                "SerializedComment must be at least 3 characters".to_string(),
+                "InfrastructureComment must be at least 3 characters".to_string(),
             ));
         }
 
@@ -28,7 +28,7 @@ impl SerializedComment {
     }
 }
 
-impl Deref for SerializedComment {
+impl Deref for InfrastructureComment {
     type Target = str;
 
     fn deref(&self) -> &Self::Target {
@@ -36,19 +36,19 @@ impl Deref for SerializedComment {
     }
 }
 
-impl DerefMut for SerializedComment {
+impl DerefMut for InfrastructureComment {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
-impl std::fmt::Display for SerializedComment {
+impl std::fmt::Display for InfrastructureComment {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-impl FromStr for SerializedComment {
+impl FromStr for InfrastructureComment {
     type Err = InfrastructureError;
 
     fn from_str(s: &str) -> InfrastructureResult<Self> {
@@ -56,7 +56,7 @@ impl FromStr for SerializedComment {
     }
 }
 
-impl TryFrom<Comment> for SerializedComment {
+impl TryFrom<Comment> for InfrastructureComment {
     type Error = InfrastructureError;
 
     fn try_from(value: Comment) -> InfrastructureResult<Self> {
@@ -64,10 +64,10 @@ impl TryFrom<Comment> for SerializedComment {
     }
 }
 
-impl TryFrom<SerializedComment> for Comment {
+impl TryFrom<InfrastructureComment> for Comment {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedComment) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureComment) -> InfrastructureResult<Self> {
         Self::new(&value.comment()).map_err(|err| InfrastructureError::Domain(err))
     }
 }

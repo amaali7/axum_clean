@@ -9,20 +9,20 @@ use serde::{Deserialize, Serialize};
 use crate::error::{InfrastructureError, InfrastructureResult};
 
 use super::{
-    report::report::SerializedReport, role::SerializedRole, user::user::SerializedUser,
-    value_objects::SerializedDateTime, SerializedUserId,
+    report::report::InfrastructureReport, role::InfrastructureRole, user::user::InfrastructureUser,
+    value_objects::InfrastructureDateTime, InfrastructureUserId,
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum SerializedTable {
+pub enum InfrastructureTable {
     User,
     Role,
     Report,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SerializedEventId(String);
-impl SerializedEventId {
+pub struct InfrastructureEventId(String);
+impl InfrastructureEventId {
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
@@ -35,42 +35,42 @@ impl SerializedEventId {
     }
 }
 
-impl Deref for SerializedEventId {
+impl Deref for InfrastructureEventId {
     type Target = String;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
-impl DerefMut for SerializedEventId {
+impl DerefMut for InfrastructureEventId {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SerializedDomainEvent<T: Clone + Event> {
-    id: SerializedEventId,
-    table: SerializedTable,
+pub struct InfrastructureDomainEvent<T: Clone + Event> {
+    id: InfrastructureEventId,
+    table: InfrastructureTable,
     action: String,
-    user_id: SerializedUserId,
-    occurred_at: SerializedDateTime,
+    user_id: InfrastructureUserId,
+    occurred_at: InfrastructureDateTime,
     before: T,
     after: T,
 }
 
-impl<T: Clone + Event> SerializedDomainEvent<T> {
+impl<T: Clone + Event> InfrastructureDomainEvent<T> {
     pub fn new(
         id: &str,
-        table: SerializedTable,
+        table: InfrastructureTable,
         action: String,
-        user_id: SerializedUserId,
-        occurred_at: SerializedDateTime,
+        user_id: InfrastructureUserId,
+        occurred_at: InfrastructureDateTime,
         before: T,
         after: T,
     ) -> Self {
         Self {
-            id: SerializedEventId::new(id),
+            id: InfrastructureEventId::new(id),
             occurred_at,
             action,
             table,
@@ -79,19 +79,19 @@ impl<T: Clone + Event> SerializedDomainEvent<T> {
             after,
         }
     }
-    pub fn id(&self) -> SerializedEventId {
+    pub fn id(&self) -> InfrastructureEventId {
         self.id.clone()
     }
-    pub fn table(&self) -> SerializedTable {
+    pub fn table(&self) -> InfrastructureTable {
         self.table.clone()
     }
     pub fn action(&self) -> String {
         self.action.clone()
     }
-    pub fn user_id(&self) -> SerializedUserId {
+    pub fn user_id(&self) -> InfrastructureUserId {
         self.user_id.clone()
     }
-    pub fn occurred_at(&self) -> SerializedDateTime {
+    pub fn occurred_at(&self) -> InfrastructureDateTime {
         self.occurred_at.clone()
     }
     pub fn before(&self) -> T {
@@ -101,40 +101,40 @@ impl<T: Clone + Event> SerializedDomainEvent<T> {
         self.after.clone()
     }
 }
-impl From<DomainEventId> for SerializedEventId {
+impl From<DomainEventId> for InfrastructureEventId {
     fn from(value: DomainEventId) -> Self {
         Self::new(&value.id())
     }
 }
 
-impl From<SerializedEventId> for DomainEventId {
-    fn from(value: SerializedEventId) -> Self {
+impl From<InfrastructureEventId> for DomainEventId {
+    fn from(value: InfrastructureEventId) -> Self {
         Self::new(&value.id())
     }
 }
 
-impl From<Table> for SerializedTable {
+impl From<Table> for InfrastructureTable {
     fn from(value: Table) -> Self {
         match value {
-            Table::User => SerializedTable::User,
-            Table::Role => SerializedTable::Role,
-            Table::Report => SerializedTable::Report,
+            Table::User => InfrastructureTable::User,
+            Table::Role => InfrastructureTable::Role,
+            Table::Report => InfrastructureTable::Report,
         }
     }
 }
 
-impl From<SerializedTable> for Table {
-    fn from(value: SerializedTable) -> Self {
+impl From<InfrastructureTable> for Table {
+    fn from(value: InfrastructureTable) -> Self {
         match value {
-            SerializedTable::User => Table::User,
-            SerializedTable::Role => Table::Role,
-            SerializedTable::Report => Table::Report,
+            InfrastructureTable::User => Table::User,
+            InfrastructureTable::Role => Table::Role,
+            InfrastructureTable::Report => Table::Report,
         }
     }
 }
 // Report
 
-impl TryFrom<DomainEvent<Report>> for SerializedDomainEvent<SerializedReport> {
+impl TryFrom<DomainEvent<Report>> for InfrastructureDomainEvent<InfrastructureReport> {
     type Error = InfrastructureError;
 
     fn try_from(value: DomainEvent<Report>) -> InfrastructureResult<Self> {
@@ -150,10 +150,10 @@ impl TryFrom<DomainEvent<Report>> for SerializedDomainEvent<SerializedReport> {
     }
 }
 
-impl TryFrom<SerializedDomainEvent<SerializedReport>> for DomainEvent<Report> {
+impl TryFrom<InfrastructureDomainEvent<InfrastructureReport>> for DomainEvent<Report> {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedDomainEvent<SerializedReport>) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureDomainEvent<InfrastructureReport>) -> InfrastructureResult<Self> {
         Ok(Self::new(
             value.id().as_str(),
             value.table().into(),
@@ -168,7 +168,7 @@ impl TryFrom<SerializedDomainEvent<SerializedReport>> for DomainEvent<Report> {
 
 // Role
 
-impl TryFrom<DomainEvent<Role>> for SerializedDomainEvent<SerializedRole> {
+impl TryFrom<DomainEvent<Role>> for InfrastructureDomainEvent<InfrastructureRole> {
     type Error = InfrastructureError;
 
     fn try_from(value: DomainEvent<Role>) -> InfrastructureResult<Self> {
@@ -184,10 +184,10 @@ impl TryFrom<DomainEvent<Role>> for SerializedDomainEvent<SerializedRole> {
     }
 }
 
-impl TryFrom<SerializedDomainEvent<SerializedRole>> for DomainEvent<Role> {
+impl TryFrom<InfrastructureDomainEvent<InfrastructureRole>> for DomainEvent<Role> {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedDomainEvent<SerializedRole>) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureDomainEvent<InfrastructureRole>) -> InfrastructureResult<Self> {
         Ok(Self::new(
             value.id().as_str(),
             value.table().into(),
@@ -200,7 +200,7 @@ impl TryFrom<SerializedDomainEvent<SerializedRole>> for DomainEvent<Role> {
     }
 }
 // User
-impl TryFrom<DomainEvent<User>> for SerializedDomainEvent<SerializedUser> {
+impl TryFrom<DomainEvent<User>> for InfrastructureDomainEvent<InfrastructureUser> {
     type Error = InfrastructureError;
 
     fn try_from(value: DomainEvent<User>) -> InfrastructureResult<Self> {
@@ -216,10 +216,10 @@ impl TryFrom<DomainEvent<User>> for SerializedDomainEvent<SerializedUser> {
     }
 }
 
-impl TryFrom<SerializedDomainEvent<SerializedUser>> for DomainEvent<User> {
+impl TryFrom<InfrastructureDomainEvent<InfrastructureUser>> for DomainEvent<User> {
     type Error = InfrastructureError;
 
-    fn try_from(value: SerializedDomainEvent<SerializedUser>) -> InfrastructureResult<Self> {
+    fn try_from(value: InfrastructureDomainEvent<InfrastructureUser>) -> InfrastructureResult<Self> {
         Ok(Self::new(
             value.id().as_str(),
             value.table().into(),
