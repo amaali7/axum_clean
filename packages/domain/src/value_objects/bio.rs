@@ -5,7 +5,7 @@ use std::{
 
 use crate::{error::DomainResult, DomainError};
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Bio(String);
 
 impl Bio {

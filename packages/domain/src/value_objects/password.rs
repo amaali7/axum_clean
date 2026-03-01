@@ -2,7 +2,7 @@ use std::{fmt, str::FromStr};
 
 use crate::{error::DomainResult, DomainError};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Password {
     Hashed(HashedPassword),
     NoneHashed(NoneHashedPassword),
@@ -23,7 +23,7 @@ impl Default for Password {
     }
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct NoneHashedPassword(String);
 
 impl fmt::Display for NoneHashedPassword {
@@ -63,7 +63,7 @@ impl FromStr for NoneHashedPassword {
     }
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct HashedPassword(String);
 
 impl fmt::Display for HashedPassword {

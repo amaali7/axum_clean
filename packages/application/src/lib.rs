@@ -1,10 +1,10 @@
 #![allow(dead_code)]
 
 use domain::{Permission, RoleId, UserId};
-pub mod dto;
+// pub mod dto;
 pub mod error;
 pub mod ports;
-pub mod usecases;
+// pub mod usecases;
 
 #[derive(Debug, Clone)]
 pub struct RequestContex {

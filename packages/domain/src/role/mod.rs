@@ -1,14 +1,10 @@
-pub mod permissions;
-
-pub use permissions::Permission;
-
+pub mod specifications;
 use std::collections::HashSet;
 use std::ops::{Deref, DerefMut};
 
 use crate::error::DomainResult;
-use crate::events::DomainEventId;
-use crate::value_objects::{DateTime, Description};
-use crate::{DomainError, Event, Name};
+use crate::value_objects::{Action, DateTime, Description, Resource};
+use crate::{DomainError, Event, Name, Permission};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct RoleId(String);
@@ -54,6 +50,9 @@ impl Role {
         RoleBuilder::new(id)
     }
 
+    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
+        self.permissions.iter().any(|p| p.matches(resource, action))
+    }
     pub fn id(&self) -> RoleId {
         self.id.clone()
     }

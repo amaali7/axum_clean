@@ -1,0 +1,237 @@
+#+TITLE: Domain Changes for Multi-Tenant + ABAC Support
+#+AUTHOR: Axum Clean - Domain Layer Only
+
+* Goal
+
+Support:
+
+- Multi-tenant system
+- Cross-tenant collaboration
+- Roles with permissions
+- Temporary permissions
+- Report with author + reviewers
+- Future ABAC flexibility
+
+Domain layer models business truth only.
+No HTTP. No DB. No policy engine.
+
+---
+
+* 1. Tenant as First-Class Concept
+
+** Why?
+
+System is no longer single-organization.
+Tenant becomes a core business boundary.
+
+Represents:
+- Data boundary
+- Ownership boundary
+- Policy boundary
+
+** Domain Model
+
+#+begin_src rust
+pub struct TenantId(pub String);
+
+pub struct Tenant {
+    pub id: TenantId,
+    pub name: String,
+}
+#+end_src
+
+---
+
+* 2. User Membership per Tenant
+
+** Why?
+
+- User may belong to multiple tenants
+- User may have different roles per tenant
+
+Instead of:
+
+User → Roles
+
+We now model:
+
+User → Membership → Tenant → Roles
+
+** Domain Model
+
+#+begin_src rust
+pub struct UserId(pub String);
+
+pub struct User {
+    pub id: UserId,
+    pub name: String,
+}
+
+pub struct Membership {
+    pub user_id: UserId,
+    pub tenant_id: TenantId,
+    pub roles: Vec<Role>,
+}
+#+end_src
+
+---
+
+* 3. Role and Permission as Business Concepts
+
+** Why?
+
+Business speaks in terms of:
+- Tenant Admin
+- Reviewer
+- Editor
+
+These are domain language concepts.
+
+** Domain Model
+
+#+begin_src rust
+pub struct Role {
+    pub name: String,
+    pub permissions: Vec<Permission>,
+}
+
+pub struct Permission {
+    pub resource: String,
+    pub action: String,
+}
+#+end_src
+
+Role = grouping of permissions  
+Permission = business capability  
+
+Domain does NOT decide access.
+
+---
+
+* 4. Report Ownership and Relationships
+
+** Why?
+
+Report:
+- Belongs to a tenant
+- Has author
+- Has reviewers
+- Can be shared
+
+These are business facts.
+
+** Domain Model
+
+#+begin_src rust
+pub struct ReportId(pub String);
+
+pub struct Report {
+    pub id: ReportId,
+    pub owner_tenant: TenantId,
+    pub author_id: UserId,
+    pub reviewer_ids: Vec<UserId>,
+    pub shared_with_tenants: Vec<TenantId>,
+}
+#+end_src
+
+---
+
+* 5. Business Facts (Not Authorization)
+
+Domain exposes facts, not decisions.
+
+** Example Methods
+
+#+begin_src rust
+impl Report {
+    pub fn belongs_to(&self, tenant: &TenantId) -> bool {
+        &self.owner_tenant == tenant
+    }
+
+    pub fn is_shared_with(&self, tenant: &TenantId) -> bool {
+        self.shared_with_tenants.contains(tenant)
+    }
+
+    pub fn is_author(&self, user: &UserId) -> bool {
+        &self.author_id == user
+    }
+
+    pub fn is_reviewer(&self, user: &UserId) -> bool {
+        self.reviewer_ids.contains(user)
+    }
+}
+#+end_src
+
+Domain answers:
+
+- Does this report belong to tenant?
+- Is this user author?
+- Is it shared?
+
+Domain does NOT answer:
+
+- "Is access allowed?"
+- "Can user edit?"
+
+---
+
+* 6. Temporary Permission as Domain Concept
+
+** Why?
+
+User may receive temporary permission
+without modifying role.
+
+This is business behavior.
+
+** Domain Model
+
+#+begin_src rust
+pub struct TemporaryGrant {
+    pub user_id: UserId,
+    pub permission: Permission,
+    pub expires_at: chrono::DateTime<chrono::Utc>,
+}
+#+end_src
+
+TemporaryGrant = time-bound business rule.
+
+---
+
+* 7. Conceptual Structure
+
+Tenant
+  └── Membership
+        └── Roles
+              └── Permissions
+
+User
+
+Report
+  ├── owner_tenant
+  ├── author
+  ├── reviewers
+  └── shared_with_tenants
+
+TemporaryGrant
+
+---
+
+* Clean Architecture Reminder
+
+Domain contains:
+
+- Business language
+- Relationships
+- Ownership
+- Roles
+- Capabilities
+
+Domain does NOT contain:
+
+- HTTP
+- JWT
+- Middleware
+- Policy engines
+- Database logic
+- Axum or gRPC code

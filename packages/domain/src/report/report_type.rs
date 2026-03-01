@@ -1,27 +1,63 @@
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
-pub enum ReportType {
-    Financial,
-    Technical,
-    Progress,
-    Incident,
-    Audit,
-    #[default]
-    Other,
+use crate::{DateTime, Description, Name};
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ReportTypeId(String);
+
+impl ReportTypeId {
+    pub fn new(id: &str) -> Self {
+        Self(id.to_string())
+    }
+    pub fn id(&self) -> String {
+        self.0.clone()
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl std::ops::Deref for ReportTypeId {
+    type Target = String;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl std::ops::DerefMut for ReportTypeId {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl std::fmt::Display for ReportTypeId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+#[derive(Debug, Default, Hash, Clone, PartialEq, Eq)]
+pub struct ReportType {
+    id: ReportTypeId,
+    name: Name,
+    description: Description,
+    created_at: DateTime,
 }
 
 impl ReportType {
-    pub fn all() -> Vec<Self> {
-        vec![
-            Self::Financial,
-            Self::Technical,
-            Self::Progress,
-            Self::Incident,
-            Self::Audit,
-            Self::Other,
-        ]
+    pub fn new(
+        id: ReportTypeId,
+        name: Name,
+        description: Description,
+        created_at: DateTime,
+    ) -> Self {
+        Self {
+            id,
+            name,
+            description,
+            created_at,
+        }
     }
 
-    pub fn requires_approval(&self) -> bool {
-        matches!(self, Self::Financial | Self::Audit)
+    pub fn created_at(&self) -> DateTime {
+        self.created_at.clone()
     }
 }

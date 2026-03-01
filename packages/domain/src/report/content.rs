@@ -1,10 +1,12 @@
+use std::collections::HashSet;
+
 use crate::{
     error::DomainResult,
     value_objects::{Body, Comment, DateTime, Url},
     DomainError, UserId,
 };
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Default)]
 pub struct ReviewComment {
     reviewer_id: UserId,
     comment: Comment,
@@ -35,8 +37,8 @@ impl ReviewComment {
 #[derive(Debug, Clone, Default)]
 pub struct ReportContent {
     body: Body,
-    attachments: Vec<Url>, // URLs or paths to attachments
-    review_comments: Vec<ReviewComment>,
+    attachments: HashSet<Url>, // URLs or paths to attachments
+    review_comments: HashSet<ReviewComment>,
     rejection_reason: Option<Comment>,
 }
 
@@ -50,11 +52,11 @@ impl ReportContent {
         self.body.clone()
     }
 
-    pub fn attachments(&self) -> Vec<Url> {
+    pub fn attachments(&self) -> HashSet<Url> {
         self.attachments.clone()
     }
 
-    pub fn review_comments(&self) -> Vec<ReviewComment> {
+    pub fn review_comments(&self) -> HashSet<ReviewComment> {
         self.review_comments.clone()
     }
 
@@ -66,8 +68,8 @@ impl ReportContent {
 #[derive(Debug, Clone)]
 pub struct ReportContentBuilder {
     body: Option<Body>,
-    attachments: Vec<Url>, // URLs or paths to attachments
-    review_comments: Vec<ReviewComment>,
+    attachments: HashSet<Url>, // URLs or paths to attachments
+    review_comments: HashSet<ReviewComment>,
     rejection_reason: Option<Comment>,
 }
 
@@ -81,19 +83,19 @@ impl ReportContentBuilder {
     pub fn new() -> Self {
         Self {
             body: None,
-            attachments: Vec::new(),
-            review_comments: Vec::new(),
+            attachments: HashSet::new(),
+            review_comments: HashSet::new(),
             rejection_reason: None,
         }
     }
 
     pub fn add_attachment(&mut self, attachment: Url) -> &mut Self {
-        self.attachments.push(attachment);
+        self.attachments.insert(attachment);
         self
     }
 
     pub fn add_review_comment(&mut self, review_comment: ReviewComment) -> &mut Self {
-        self.review_comments.push(review_comment);
+        self.review_comments.insert(review_comment);
         self
     }
 

@@ -3,6 +3,8 @@ pub mod error;
 pub mod events;
 pub mod report;
 pub mod role;
+pub mod specifications;
+pub mod tenant;
 pub mod traits;
 pub mod user;
 pub mod value_objects;
@@ -11,7 +13,8 @@ pub mod value_objects;
 pub use error::DomainError;
 pub use events::{DomainEvent, DomainEventId, Event, Table};
 pub use report::{Report, ReportContent, ReportId, ReportStatus, ReportType};
-pub use role::{Permission, Role, RoleId};
+pub use role::{Role, RoleId};
+pub use tenant::{Membership, Permission, Tenant, TenantId};
 pub use traits::{AndSpecification, Specification};
 pub use user::{User, UserId, UserProfile};
 pub use value_objects::{

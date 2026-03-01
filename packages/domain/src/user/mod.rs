@@ -5,7 +5,7 @@ pub use preferences::UserPreferences;
 pub use profile::UserProfile;
 
 use crate::error::DomainResult;
-use crate::events::DomainEventId;
+use crate::value_objects::{Action, Resource};
 use crate::{DateTime, DomainError, Email, Event, Permission, RoleId, Username};
 
 use std::collections::HashSet;
@@ -66,6 +66,18 @@ impl User {
     pub fn new(id: UserId) -> UserBuilder {
         UserBuilder::new(id)
     }
+    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
+        self.permissions.iter().any(|p| p.matches(resource, action))
+    }
+
+    pub fn has_role(&self, role_id: &RoleId) -> bool {
+        self.roles.iter().any(|p| p == role_id)
+    }
+
+    pub fn is_active(&self) -> bool {
+        self.status == UserStatus::Active
+    }
+
     // Basic getters - return references to avoid cloning
     pub fn id(&self) -> UserId {
         self.id.clone()

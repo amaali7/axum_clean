@@ -1,3 +1,4 @@
+pub mod action;
 pub mod address;
 pub mod bio;
 pub mod body;
@@ -10,10 +11,12 @@ pub mod language;
 pub mod name;
 pub mod password;
 pub mod phone_number;
+pub mod resource;
 pub mod title;
 pub mod url;
 pub mod username;
 
+pub use action::Action;
 pub use address::{Address, AddressBuilder, Addressess};
 pub use bio::Bio;
 pub use body::Body;
@@ -26,6 +29,7 @@ pub use language::Language;
 pub use name::Name;
 pub use password::{HashedPassword, Password};
 pub use phone_number::{PhoneNumber, PhoneNumbers};
+pub use resource::Resource;
 pub use title::Title;
 pub use url::Url;
 pub use username::Username;

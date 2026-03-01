@@ -1,15 +1,18 @@
-use std::ops::{Deref, DerefMut};
+use std::{
+    collections::HashSet,
+    ops::{Deref, DerefMut},
+};
 
 use crate::{error::DomainResult, DomainError};
 
 use super::Title;
 
-#[derive(Debug, Clone, Default)]
-pub struct PhoneNumbers(Vec<PhoneNumber>);
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct PhoneNumbers(HashSet<PhoneNumber>);
 
 impl PhoneNumbers {
     pub fn new() -> Self {
-        PhoneNumbers(Vec::new())
+        PhoneNumbers(HashSet::new())
     }
 
     pub fn add_phone_numbers(&mut self, phone_numbers: Self) {
@@ -17,16 +20,16 @@ impl PhoneNumbers {
     }
 
     pub fn add_phone_number(&mut self, phone_number: PhoneNumber) {
-        self.0.push(phone_number);
+        self.0.insert(phone_number);
     }
 
-    pub fn phone_numbers(&self) -> Vec<PhoneNumber> {
+    pub fn phone_numbers(&self) -> HashSet<PhoneNumber> {
         self.0.clone()
     }
 }
 
 impl Deref for PhoneNumbers {
-    type Target = Vec<PhoneNumber>;
+    type Target = HashSet<PhoneNumber>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -40,7 +43,7 @@ impl DerefMut for PhoneNumbers {
 }
 
 // More value objects...
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct PhoneNumber {
     title: Title,
     number: String,

@@ -1,29 +1,32 @@
-use std::ops::{Deref, DerefMut};
+use std::{
+    collections::HashSet,
+    ops::{Deref, DerefMut},
+};
 
 use crate::{error::DomainResult, DomainError};
 
-#[derive(Debug, Clone, Default)]
-pub struct Addressess(Vec<Address>);
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct Addressess(HashSet<Address>);
 
 impl Addressess {
     pub fn new() -> Self {
-        Addressess(Vec::new())
+        Addressess(HashSet::new())
     }
 
     pub fn add_addressess(&mut self, address: Self) {
         self.0.extend(address.0);
     }
     pub fn add_address(&mut self, address: Address) {
-        self.0.push(address);
+        self.0.insert(address);
     }
 
-    pub fn addressess(&self) -> Vec<Address> {
+    pub fn addressess(&self) -> HashSet<Address> {
         self.0.clone()
     }
 }
 
 impl Deref for Addressess {
-    type Target = Vec<Address>;
+    type Target = HashSet<Address>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -36,7 +39,7 @@ impl DerefMut for Addressess {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Address {
     title: String,
     street: String,

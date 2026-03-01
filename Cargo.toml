@@ -2,7 +2,8 @@
 members = [
     "packages/domain",
     "packages/application",
-    "packages/infrastructure", "packages/interface",
+    # "packages/infrastructure",
+    # "packages/interface",
     # "packages/api"
 ]
 resolver = "3"

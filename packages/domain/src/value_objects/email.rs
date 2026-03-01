@@ -22,19 +22,6 @@ impl Email {
             ));
         }
 
-        let parts: Vec<&str> = email.split('@').collect();
-        if parts.len() != 2 || parts[0].is_empty() || parts[1].is_empty() {
-            return Err(DomainError::ValidationError(
-                "Invalid email format".to_string(),
-            ));
-        }
-
-        if !parts[1].contains('.') {
-            return Err(DomainError::ValidationError(
-                "Invalid domain in email".to_string(),
-            ));
-        }
-
         Ok(Self(email))
     }
 

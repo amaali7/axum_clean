@@ -1,21 +1,24 @@
 pub mod content;
-pub mod form;
 pub mod report_type;
+pub mod specifications;
 pub mod status;
+
+use std::collections::HashSet;
 
 pub use content::ReportContent;
 pub use report_type::ReportType;
 pub use status::ReportStatus;
 
 use crate::error::DomainResult;
+use crate::value_objects::Action;
 use crate::value_objects::DateTime;
+use crate::value_objects::Resource;
 use crate::value_objects::Title;
 use crate::Event;
+use crate::TenantId;
 
-use super::events::DomainEventId;
-use super::role::Permission;
 use super::user::UserId;
-use std::collections::HashSet;
+use crate::Permission;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ReportId(String);
@@ -60,6 +63,8 @@ pub struct Report {
     permissions: HashSet<Permission>,
     status: ReportStatus,
     author_id: UserId,
+    owner_tenant: TenantId,
+    shared_with_tenants: HashSet<TenantId>,
     assigned_reviewer_id: HashSet<UserId>,
     created_at: DateTime,
     updated_at: DateTime,
@@ -68,10 +73,30 @@ pub struct Report {
 }
 
 impl Report {
-    pub fn new(id: ReportId, author_id: UserId) -> ReportBuilder {
-        ReportBuilder::new(id, author_id)
+    pub fn new(id: ReportId, author_id: UserId, owner_tenant: TenantId) -> ReportBuilder {
+        ReportBuilder::new(id, author_id, owner_tenant)
     }
 
+    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
+        self.permissions.iter().any(|p| p.matches(resource, action))
+    }
+    pub fn belongs_to(&self, tenant: &TenantId) -> bool {
+        &self.owner_tenant == tenant
+    }
+
+    pub fn is_shared_with(&self, tenant: &TenantId) -> bool {
+        self.shared_with_tenants.contains(tenant)
+    }
+
+    pub fn is_author(&self, user: &UserId) -> bool {
+        &self.author_id == user
+    }
+
+    pub fn is_reviewer(&self, user: &UserId) -> bool {
+        self.assigned_reviewer_id.contains(user)
+    }
+
+    // Geters
     pub fn id(&self) -> ReportId {
         self.id.clone()
     }
@@ -85,7 +110,7 @@ impl Report {
     }
 
     pub fn report_type(&self) -> ReportType {
-        self.report_type
+        self.report_type.clone()
     }
 
     pub fn permissions(&self) -> HashSet<Permission> {
@@ -94,6 +119,14 @@ impl Report {
 
     pub fn status(&self) -> ReportStatus {
         self.status.clone()
+    }
+
+    pub fn owner_tenant(&self) -> TenantId {
+        self.owner_tenant.clone()
+    }
+
+    pub fn shared_with_tenants(&self) -> HashSet<TenantId> {
+        self.shared_with_tenants.clone()
     }
 
     pub fn author_id(&self) -> UserId {
@@ -128,7 +161,9 @@ pub struct ReportBuilder {
     content: Option<ReportContent>,
     report_type: Option<ReportType>,
     author_id: UserId,
-    status: ReportStatus,
+    owner_tenant: TenantId,
+    shared_with_tenants: HashSet<TenantId>,
+    status: Option<ReportStatus>,
     reviewer_id: HashSet<UserId>,
     created_at: Option<DateTime>,
     due: Option<DateTime>,
@@ -136,7 +171,7 @@ pub struct ReportBuilder {
 }
 
 impl ReportBuilder {
-    pub fn new(id: ReportId, author_id: UserId) -> Self {
+    pub fn new(id: ReportId, author_id: UserId, owner_tenant: TenantId) -> Self {
         Self {
             permissions: HashSet::new(),
             content: None,
@@ -146,12 +181,14 @@ impl ReportBuilder {
             created_at: None,
             due: None,
             id,
-            status: ReportStatus::Draft,
+            status: None,
             version: 1,
+            owner_tenant,
+            shared_with_tenants: HashSet::new(),
         }
     }
     pub fn set_status(&mut self, status: ReportStatus) -> &mut Self {
-        self.status = status;
+        self.status = Some(status);
         self
     }
     pub fn set_created_at(&mut self, created_at: DateTime) -> &mut Self {
@@ -184,20 +221,31 @@ impl ReportBuilder {
         self
     }
 
+    pub fn set_tenant(&mut self, tenant_ids: HashSet<TenantId>) -> &mut Self {
+        self.shared_with_tenants = tenant_ids;
+        self
+    }
+    pub fn add_shared_tenant(&mut self, tenant_id: TenantId) -> &mut Self {
+        self.shared_with_tenants.insert(tenant_id);
+        self
+    }
+
     pub fn build(self, title: &str, updated_at: DateTime) -> DomainResult<Report> {
         Ok(Report {
             id: self.id,
             title: Title::new(title)?,
             content: self.content.unwrap_or_default(),
-            report_type: self.report_type.unwrap_or(ReportType::Other),
+            report_type: self.report_type.unwrap_or(ReportType::default()),
             permissions: self.permissions,
-            status: self.status,
+            status: self.status.unwrap_or(ReportStatus::default()),
             author_id: self.author_id,
             assigned_reviewer_id: self.reviewer_id,
             created_at: self.created_at.unwrap_or(updated_at.clone()),
             updated_at,
             due_date: self.due,
             version: self.version,
+            owner_tenant: self.owner_tenant,
+            shared_with_tenants: self.shared_with_tenants,
         })
     }
 }

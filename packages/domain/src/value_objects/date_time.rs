@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Hash, Default, PartialEq, Eq)]
 pub struct DateTime(i64);
 
 impl DateTime {

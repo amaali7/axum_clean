@@ -5,7 +5,7 @@ use std::{
 
 use crate::{error::DomainResult, DomainError};
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Url(String);
 
 impl Url {
