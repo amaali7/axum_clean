@@ -1,0 +1,346 @@
+#+TITLE: Dynamic Policy Integration with AuthorizationEngine
+#+AUTHOR: Axum Clean Project Notes
+#+OPTIONS: toc:3 num:nil
+
+* Introduction
+
+This document explains how to integrate dynamically stored policies
+(with database or file backing) into the current AuthorizationEngine.
+
+Goals:
+
+- Keep guard policies static and compiled
+- Load editable policies at runtime
+- Keep Domain layer untouched
+- Preserve Clean Architecture boundaries
+- Maintain deterministic evaluation order
+
+---
+
+* Architectural Overview
+
+AuthorizationEngine
+  ├── Guard Policies (static, compiled)
+  ├── Dynamic Policies (loaded from DB)
+  └── Default Deny
+
+Evaluation Flow:
+
+1. Guard policies evaluated first
+2. Dynamic policies evaluated next
+3. Default Deny if no match
+
+---
+
+* Policy Data Model (StoredPolicy)
+
+Dynamic policies are represented as data, not code.
+
+#+begin_src rust
+#[derive(Debug, Clone)]
+pub enum PolicyEffect {
+    Allow,
+    Deny,
+}
+
+#[derive(Debug, Clone)]
+pub struct StoredPolicy {
+    pub id: String,
+
+    pub resource_type: String,
+    pub action: String,
+
+    pub required_relations: Vec<String>,
+
+    pub required_subject_attributes: Vec<(String, String)>,
+    pub required_resource_attributes: Vec<(String, String)>,
+
+    pub effect: PolicyEffect,
+    pub priority: i32,
+}
+#+end_src
+
+Concept:
+
+- resource_type: matches AuthorizationResourceType
+- action: matches AuthorizationAction
+- required_relations: matches AuthorizationRelations
+- attributes: ABAC conditions
+- effect: Allow or Deny
+- priority: evaluation order
+
+---
+
+* Policy Evaluation Logic
+
+Each StoredPolicy must decide whether it applies.
+
+#+begin_src rust
+impl StoredPolicy {
+    pub fn evaluate(&self, ctx: &AuthorizationContext) -> Option<AccessDecision> {
+
+        // Match resource type
+        if ctx.resource_type.as_str() != self.resource_type {
+            return None;
+        }
+
+        // Match action
+        if ctx.action.as_str() != self.action {
+            return None;
+        }
+
+        // Match relations
+        for relation in &self.required_relations {
+            if !ctx.relations.contains(&AuthorizationRelation::new(relation)) {
+                return None;
+            }
+        }
+
+        // Match subject attributes
+        for (key, value) in &self.required_subject_attributes {
+            let attr = ctx.subject_attributes.get(&AttributeKey::new(key));
+            if attr != Some(&AttributeValue::String(value.clone())) {
+                return None;
+            }
+        }
+
+        // Match resource attributes
+        for (key, value) in &self.required_resource_attributes {
+            let attr = ctx.resource_attributes.get(&AttributeKey::new(key));
+            if attr != Some(&AttributeValue::String(value.clone())) {
+                return None;
+            }
+        }
+
+        // If all matched, return effect
+        match self.effect {
+            PolicyEffect::Allow => Some(AccessDecision::Allow),
+            PolicyEffect::Deny => Some(AccessDecision::Deny),
+        }
+    }
+}
+#+end_src
+
+If policy does not match → return None (abstain).
+If matched → return Allow or Deny.
+
+---
+
+* Dynamic Policy Store
+
+Policies should be loaded from DB and cached.
+
+#+begin_src rust
+pub trait PolicyRepository {
+    fn load_active_policies(&self) -> Vec<StoredPolicy>;
+}
+#+end_src
+
+Example in-memory store:
+
+#+begin_src rust
+pub struct InMemoryPolicyStore {
+    policies: Vec<StoredPolicy>,
+}
+
+impl InMemoryPolicyStore {
+    pub fn new(policies: Vec<StoredPolicy>) -> Self {
+        Self { policies }
+    }
+
+    pub fn policies(&self) -> &Vec<StoredPolicy> {
+        &self.policies
+    }
+}
+#+end_src
+
+In production:
+
+- Implement DatabasePolicyRepository
+- Load once at startup
+- Reload when superuser updates policy
+- Atomically swap policy set
+
+---
+
+* Updated AuthorizationEngine
+
+Now extend your current engine.
+
+#+begin_src rust
+pub struct AuthorizationEngine {
+    guard_policies: Vec<Box<dyn AuthorizationPolicy>>,
+    dynamic_policies: Vec<StoredPolicy>,
+}
+
+impl AuthorizationEngine {
+    pub fn new(
+        guard_policies: Vec<Box<dyn AuthorizationPolicy>>,
+        dynamic_policies: Vec<StoredPolicy>,
+    ) -> Self {
+        let mut sorted = dynamic_policies;
+        sorted.sort_by(|a, b| b.priority.cmp(&a.priority));
+
+        Self {
+            guard_policies,
+            dynamic_policies: sorted,
+        }
+    }
+
+    pub fn evaluate(&self, ctx: &AuthorizationContext) -> AccessDecision {
+
+        // 1. Guard Policies
+        for policy in &self.guard_policies {
+            if let Some(decision) = policy.evaluate(ctx) {
+                return decision;
+            }
+        }
+
+        // 2. Dynamic Policies
+        for policy in &self.dynamic_policies {
+            if let Some(decision) = policy.evaluate(ctx) {
+                return decision;
+            }
+        }
+
+        // 3. Default Deny
+        AccessDecision::Deny
+    }
+}
+#+end_src
+
+---
+
+* Example Stored Policy
+
+Example: Author can update report
+
+#+begin_src rust
+let policy = StoredPolicy {
+    id: "p1".to_string(),
+    resource_type: "report".to_string(),
+    action: "update".to_string(),
+    required_relations: vec!["author".to_string()],
+    required_subject_attributes: vec![],
+    required_resource_attributes: vec![],
+    effect: PolicyEffect::Allow,
+    priority: 10,
+};
+#+end_src
+
+Example: Deny archived report updates
+
+#+begin_src rust
+let policy = StoredPolicy {
+    id: "p2".to_string(),
+    resource_type: "report".to_string(),
+    action: "update".to_string(),
+    required_relations: vec![],
+    required_subject_attributes: vec![],
+    required_resource_attributes: vec![
+        ("status".to_string(), "archived".to_string())
+    ],
+    effect: PolicyEffect::Deny,
+    priority: 100,
+};
+#+end_src
+
+Higher priority ensures Deny executes first.
+
+---
+
+* Guard Policy Example (Static)
+
+Tenant isolation should remain static.
+
+#+begin_src rust
+pub struct TenantIsolationPolicy;
+
+impl AuthorizationPolicy for TenantIsolationPolicy {
+    fn evaluate(&self, ctx: &AuthorizationContext) -> Option<AccessDecision> {
+
+        let subject_tenant = ctx.subject.tenant_id();
+        let resource_tenant =
+            ctx.resource_attributes.get(&AttributeKey::new("tenant_id"));
+
+        if resource_tenant != Some(&AttributeValue::String(subject_tenant)) {
+            return Some(AccessDecision::Deny);
+        }
+
+        None
+    }
+}
+#+end_src
+
+Guard policies are not editable.
+
+---
+
+* Runtime Reload Strategy
+
+When superuser changes policy:
+
+1. Save to DB
+2. Load new policy set
+3. Sort by priority
+4. Replace engine.dynamic_policies atomically
+
+Never evaluate DB per request.
+
+---
+
+* Evaluation Order
+
+1. Guard Policies
+2. Dynamic Policies (sorted by priority)
+3. Default Deny
+
+Rules:
+
+- Explicit Deny overrides Allow
+- Higher priority evaluated first
+- First match returns
+- Default Deny
+
+---
+
+* Clean Architecture Placement
+
+Application Layer:
+
+- AuthorizationEngine
+- StoredPolicy
+- PolicyRepository
+- PolicyLoader
+
+Domain Layer:
+
+- Report
+- Tenant
+- Membership
+- Role
+
+Infrastructure Layer:
+
+- DatabasePolicyRepository
+- JSONPolicyLoader
+
+Domain remains completely unaware of authorization.
+
+---
+
+* Resulting System Properties
+
+You now have:
+
+- Runtime editable policies
+- Multi-tenant safety
+- Deterministic evaluation
+- Extensible model
+- Clean separation
+- Enterprise-grade foundation
+
+This is now a policy-driven authorization engine,
+not just RBAC.
+
+End of document.

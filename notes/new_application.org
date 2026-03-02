@@ -1,0 +1,249 @@
+#+TITLE: axum_clean Application Layer (Use Cases + Authorization)
+#+AUTHOR: amaali7
+
+* Application Layer Overview
+
+The Application Layer is responsible for:
+
+- Executing use cases
+- Evaluating authorization
+- Orchestrating domain entities
+- Coordinating repositories (via traits)
+
+It does NOT define domain structure.
+It does NOT contain infrastructure details.
+
+---
+
+* Core Concepts
+
+Application layer introduces:
+
+- SubjectContext
+- AccessDecision
+- Authorization Engine
+- Use Case orchestration
+
+---
+
+* 1. Subject Context
+
+Represents the acting user within a tenant scope.
+
+#+begin_src rust
+pub struct SubjectContext {
+  pub user_id: UserId,
+  pub tenant_id: TenantId,
+  pub roles: Vec<Role>,
+  pub temporary_grants: Vec<TemporaryGrant>,
+}
+#+end_src
+
+Concept:
+
+SubjectContext is built from:
+- User identity
+- Membership in current tenant
+- Roles
+- Temporary grants
+
+This is NOT a domain entity.
+It is an application-layer construct.
+
+---
+
+* 2. Access Decision
+
+Represents authorization result.
+
+#+begin_src rust
+pub enum AccessDecision {
+  Allow,
+  Deny,
+}
+#+end_src
+
+Only application layer decides this.
+
+---
+
+* 3. Authorization Engine
+
+Implements layered evaluation:
+
+1. Tenant isolation
+2. Relationship-based access (ReBAC)
+3. Role-based access (RBAC)
+4. Attribute-based access (ABAC)
+
+#+begin_src rust
+pub struct AuthorizationEngine;
+
+impl AuthorizationEngine {
+
+  pub fn can_review(
+    subject: &SubjectContext,
+    report: &Report,
+  ) -> AccessDecision {
+
+    // 1. Tenant Isolation
+    if !report.belongs_to(&subject.tenant_id)
+      && !report.is_shared_with(&subject.tenant_id)
+    {
+      return AccessDecision::Deny;
+    }
+
+    // 2. Relationship-based access
+    if report.is_author(&subject.user_id)
+      || report.is_reviewer(&subject.user_id)
+    {
+      return AccessDecision::Allow;
+    }
+
+    // 3. Role-based access
+    let has_role_permission = subject.roles.iter().any(|role| {
+      role.permissions.iter().any(|p| {
+        p.resource == "report" && p.action == "review"
+      })
+    });
+
+    if has_role_permission {
+      return AccessDecision::Allow;
+    }
+
+    // 4. Attribute-based (temporary grants)
+    let has_temp_permission = subject.temporary_grants.iter().any(|grant| {
+      grant.permission.resource == "report"
+        && grant.permission.action == "review"
+    });
+
+    if has_temp_permission {
+      return AccessDecision::Allow;
+    }
+
+    AccessDecision::Deny
+  }
+}
+#+end_src
+
+Concept:
+
+Application layer combines:
+
+- Domain facts
+- Context
+- Roles
+- Attributes
+
+This is your hybrid ABAC model.
+
+---
+
+* 4. Use Case Example
+
+Example: Review Report Use Case
+
+#+begin_src rust
+pub struct ReviewReportUseCase {
+  pub auth_engine: AuthorizationEngine,
+}
+
+impl ReviewReportUseCase {
+
+  pub fn execute(
+    &self,
+    subject: SubjectContext,
+    report: Report,
+  ) -> Result<(), String> {
+
+    match self.auth_engine.can_review(&subject, &report) {
+      AccessDecision::Allow => {
+        // Execute domain behavior
+        Ok(())
+      }
+      AccessDecision::Deny => {
+        Err("Forbidden".into())
+      }
+    }
+  }
+}
+#+end_src
+
+Concept:
+
+Use case flow:
+
+1. Load report (via repository trait)
+2. Build SubjectContext
+3. Call AuthorizationEngine
+4. If allowed → execute domain behavior
+5. If denied → return error
+
+---
+
+* 5. Repository Traits (Application Boundary)
+
+Application layer defines repository interfaces.
+
+#+begin_src rust
+pub trait ReportRepository {
+  fn find_by_id(&self, id: &ReportId) -> Option<Report>;
+}
+
+pub trait MembershipRepository {
+  fn find_by_user_and_tenant(
+    &self,
+    user_id: &UserId,
+    tenant_id: &TenantId,
+  ) -> Option<Membership>;
+}
+#+end_src
+
+Concept:
+
+Application depends on abstractions.
+Infrastructure implements these traits.
+
+---
+
+* 6. Responsibility Summary
+
+Application Layer IS responsible for:
+
+- Authorization decisions
+- Policy orchestration
+- Use case coordination
+- Calling domain methods
+- Enforcing tenant isolation
+
+Application Layer is NOT responsible for:
+
+- HTTP routing
+- JWT parsing
+- Database implementation
+- Framework logic
+
+---
+
+* Final Architecture View
+
+Domain:
+- Entities
+- Relationships
+- Business facts
+
+Application:
+- SubjectContext
+- AuthorizationEngine
+- Use cases
+- AccessDecision
+- Repository traits
+
+Infrastructure:
+- SurrealDB adapters
+- Persistence logic
+
+Interface:
+- Axum routes
+- Middleware
+- Controllers

@@ -1,71 +1,64 @@
 #![allow(dead_code)]
 
-use domain::{Permission, RoleId, UserId};
+use domain::{tenant::temporary_grant::TemporaryGrant, Permission, Role, RoleId, TenantId, UserId};
 // pub mod dto;
 pub mod error;
-pub mod ports;
+// pub mod ports;
 // pub mod usecases;
+pub mod authorization;
 
 #[derive(Debug, Clone)]
-pub struct RequestContex {
-    user_id: UserId,
-    permission_set: Vec<Permission>,
-    role_set: Vec<RoleId>,
+pub struct SubjectContext {
+    pub user_id: UserId,
+    pub tenant_id: TenantId,
+    pub roles: Vec<Role>,
+    pub temporary_grants: Vec<TemporaryGrant>,
 }
 
-impl RequestContex {
-    pub fn new(user_id: UserId, permission_set: &[Permission], role_set: &[RoleId]) -> Self {
+impl SubjectContext {
+    pub fn new(
+        user_id: UserId,
+        tenant_id: TenantId,
+        role_set: &[Role],
+        temporary_grants: &[TemporaryGrant],
+    ) -> Self {
         Self {
             user_id,
-            permission_set: permission_set.to_vec(),
-            role_set: role_set.to_vec(),
+            tenant_id,
+            roles: role_set.to_vec(),
+            temporary_grants: temporary_grants.to_vec(),
         }
     }
 
-    pub fn add_role(&mut self, role: RoleId) {
-        self.role_set.push(role);
+    pub fn add_role(&mut self, role: Role) {
+        self.roles.push(role);
     }
 
-    pub fn add_role_set(&mut self, role_set: &[RoleId]) {
-        self.role_set.extend_from_slice(role_set);
+    pub fn add_roles(&mut self, roles: &[Role]) {
+        self.roles.extend_from_slice(roles);
     }
 
-    pub fn add_permission(&mut self, permission: Permission) {
-        self.permission_set.push(permission);
+    pub fn add_temporary_grant(&mut self, temporary_grant: TemporaryGrant) {
+        self.temporary_grants.push(temporary_grant);
     }
 
-    pub fn add_permission_set(&mut self, permission_set: &[Permission]) {
-        self.permission_set.extend_from_slice(permission_set);
+    pub fn add_temporary_grants(&mut self, temporary_grant: &[TemporaryGrant]) {
+        self.temporary_grants.extend_from_slice(temporary_grant);
     }
 
     pub fn user_id(&self) -> UserId {
         self.user_id.clone()
     }
 
-    pub fn permission_set_string(&self) -> String {
-        let mut output = String::new();
-        for permission in self.permission_set.iter() {
-            output.push_str(&format!("{},", permission));
-        }
-        output.truncate(output.len() - 1);
-        output
+    pub fn tenant_id(&self) -> TenantId {
+        self.tenant_id.clone()
     }
 
-    pub fn permission_set(&self) -> Vec<Permission> {
-        self.permission_set.clone()
+    pub fn roles(&self) -> Vec<Role> {
+        self.roles.clone()
     }
 
-    pub fn role_set(&self) -> Vec<RoleId> {
-        self.role_set.clone()
+    pub fn temporary_grants(&self) -> Vec<TemporaryGrant> {
+        self.temporary_grants.clone()
     }
-
-    pub fn user_id_as_str(&self) -> String {
-        self.user_id.id()
-    }
-}
-
-pub trait RequestContexCompiler {
-    fn user_compile(&self) -> String;
-    fn role_compile(&self) -> String;
-    fn report_compile(&self) -> String;
 }

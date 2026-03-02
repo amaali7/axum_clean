@@ -1,0 +1,437 @@
+#+TITLE: Dynamic Authorization Architecture Evolution
+#+AUTHOR: Axum Clean Project Notes
+#+OPTIONS: toc:3 num:nil
+
+* Introduction
+
+This document describes the architectural evolution from static, code-based
+authorization policies to a dynamic, policy-driven system that supports:
+
+- Runtime policy updates
+- Superuser-editable rules
+- Database or file-based policy storage
+- Cached in-memory evaluation
+- Layered security guarantees
+
+This is a transition from:
+
+Level 1: Hardcoded policies
+→ Level 2: Config-driven policies
+
+It preserves Clean Architecture boundaries while increasing flexibility.
+
+---
+
+* Part 1 — Moving from Static Policies to Policy-as-Data
+
+** Current State
+
+Policies are implemented as Rust structs:
+
+- Compiled
+- Static
+- Hardcoded
+- Not editable without deployment
+
+This is simple and safe but not flexible.
+
+** Target State
+
+Policies stored in:
+
+- JSON files
+- Database tables
+- Remote configuration
+
+Superuser can edit policies.
+System reloads them at runtime.
+
+This transforms the engine into:
+
+AuthorizationEngine
+  ├── Static Guard Policies
+  ├── Dynamic Policy Set (Loaded from DB)
+  └── Evaluation Strategy
+
+---
+
+* Two Architectural Directions
+
+** Option 1 — Structured Config Policies (Recommended First Step)
+
+Policies represented as structured data.
+
+Example JSON:
+
+#+begin_src json
+{
+  "resource_type": "report",
+  "action": "update",
+  "required_relations": ["author"],
+  "effect": "allow",
+  "priority": 10
+}
+#+end_src
+
+Engine behavior:
+
+1. Load policies from DB
+2. Sort by priority
+3. Evaluate sequentially
+4. First match returns decision
+5. Default deny
+
+Advantages:
+
+- Simple
+- Predictable
+- Safe
+- Aligns with current model
+- No DSL parsing required
+
+Disadvantages:
+
+- Limited expressiveness
+- Harder to encode complex logic
+
+---
+
+** Option 2 — DSL-Based Authorization (Advanced Stage)
+
+Example:
+
+permit(principal, action == "update", resource)
+when relation == "author"
+
+Or:
+
+allow if subject.role == "admin"
+deny if resource.status == "archived"
+
+This requires:
+
+- Parser
+- Interpreter
+- Validation layer
+- Sandboxing
+
+Advantages:
+
+- Highly expressive
+- Enterprise-ready
+- Future-proof
+
+Disadvantages:
+
+- High complexity
+- Harder to secure
+- Requires strict validation
+
+---
+
+* Critical Security Boundary
+
+Some policies must NEVER be editable:
+
+- Tenant isolation
+- System deny overrides
+- Security invariants
+
+These remain compiled and enforced first.
+
+Architecture becomes:
+
+Hard Guard Policies (code)
+        ↓
+Dynamic Editable Policies (database)
+        ↓
+Default Deny
+
+This ensures:
+
+Superuser cannot disable core security boundaries.
+
+---
+
+* Runtime Update Strategy
+
+Policies should NOT be evaluated directly from DB.
+
+Correct approach:
+
+1. Load policies into memory
+2. Cache in AuthorizationEngine
+3. On update:
+   - Reload into new policy set
+   - Atomically swap active set
+
+This avoids:
+
+- DB latency per request
+- Inconsistent evaluation
+- Partial reload states
+
+---
+
+* Conflict Resolution Strategy
+
+You must define deterministic behavior.
+
+Recommended model:
+
+1. Explicit Deny overrides Allow
+2. Higher priority evaluated first
+3. First match returns
+4. Default deny
+
+This ensures predictability.
+
+---
+
+* Policy Storage Design (Database)
+
+Example Table: policies
+
+| id | resource_type | action | relations | attributes | effect | priority | version | active |
+
+Key fields:
+
+- effect: allow / deny
+- priority: integer
+- version: policy versioning
+- active: enable/disable
+
+Best practices:
+
+- Version every policy set
+- Audit every change
+- Log who changed what
+- Allow rollback
+
+Dynamic authorization without audit is dangerous.
+
+---
+
+* Clean Architecture Impact
+
+Layer placement:
+
+Application Layer:
+- AuthorizationEngine
+- DynamicPolicyStore
+- PolicyRepository
+- PolicyEvaluator
+- PolicyCache
+
+Domain Layer:
+- Remains untouched
+- Contains business entities only
+
+Infrastructure Layer:
+- DatabasePolicyRepository
+- FilePolicyRepository
+
+Authorization remains purely in Application.
+
+---
+
+* Architectural Maturity Levels
+
+Level 1 — Hardcoded Policies
+Level 2 — Config-driven Policies
+Level 3 — DSL Policies
+Level 4 — Graph-based (Zanzibar-style)
+Level 5 — Distributed Global Authorization Service
+
+Current project is transitioning:
+
+Level 1 → Level 2
+
+This is a strong architectural move.
+
+---
+
+* Part 2 — Policy Taxonomy for This Project
+
+Given your system supports:
+
+- Multi-tenant isolation
+- Report resources
+- Author/Reviewer relationships
+- Cross-tenant sharing
+- Attribute-based access
+- Action-based control
+
+Your minimum production-grade policy set:
+
+** 1. Explicit Deny Policy
+
+Purpose:
+Block suspended users, frozen resources, locked accounts.
+
+Type:
+Guard policy (runs first).
+
+** 2. Tenant Isolation Policy
+
+Purpose:
+Prevent cross-tenant access unless explicitly shared.
+
+Rule:
+subject.tenant_id == resource.tenant_id
+OR resource.shared_with contains subject.tenant_id
+
+Must remain static and compiled.
+
+** 3. Resource Lifecycle Policy
+
+Purpose:
+Enforce workflow integrity.
+
+Example:
+- Draft → editable by author
+- Submitted → editable by reviewer
+- Approved → read-only
+
+Uses resource_attributes["status"].
+
+** 4. Ownership Policy
+
+Purpose:
+Allow creator elevated permissions.
+
+Uses:
+relations.contains("author")
+
+** 5. Role-Based Policy (RBAC Layer)
+
+Purpose:
+Permissions derived from tenant role.
+
+Uses:
+subject_attributes["role"]
+
+Example:
+- Admin → full access
+- Reviewer → review only
+- Viewer → read-only
+
+** 6. Cross-Tenant Sharing Policy
+
+Purpose:
+Controlled collaboration across tenants.
+
+May restrict:
+- Action type
+- Duration
+- Sensitivity level
+
+** 7. Attribute-Based Policy (ABAC Layer)
+
+Purpose:
+Dynamic access rules based on attributes.
+
+Example:
+user.clearance >= report.classification
+
+---
+
+* Policy Execution Order
+
+Recommended order:
+
+1. Explicit Deny
+2. Tenant Isolation
+3. Resource Lifecycle
+4. Ownership
+5. Role-Based
+6. Attribute-Based
+7. Default Deny
+
+This creates layered defense.
+
+---
+
+* Design Philosophy
+
+Policies fall into categories:
+
+Guard Policies
+- Hard stop
+- Immediate deny
+
+Grant Policies
+- Return allow if matched
+
+Abstain Policies
+- Return None
+- Let next policy decide
+
+Understanding this separation ensures predictability.
+
+---
+
+* Advanced Evolution (Future)
+
+When system grows:
+
+- Introduce policy version snapshots
+- Add policy simulation mode
+- Add dry-run evaluation
+- Add policy reasoning output
+- Add audit explanations
+- Introduce graph-based relationship engine
+
+This moves toward Zanzibar-style systems.
+
+---
+
+* External References for Deep Study
+
+Clean Architecture:
+https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
+
+Domain-Driven Design:
+https://domainlanguage.com/ddd/
+
+Attribute-Based Access Control (ABAC):
+https://csrc.nist.gov/publications/detail/sp/800-162/final
+
+RBAC Standard (NIST):
+https://csrc.nist.gov/projects/role-based-access-control
+
+Google Zanzibar Paper:
+https://research.google/pubs/pub48190/
+
+AWS Cedar Policy Language:
+https://www.cedarpolicy.com/
+
+Open Policy Agent (OPA):
+https://www.openpolicyagent.org/
+
+Enterprise Authorization Patterns:
+https://martinfowler.com/articles/authorization.html
+
+---
+
+* Final Architectural Insight
+
+If implemented correctly, your system becomes:
+
+A Policy-Driven Multi-Tenant Authorization Engine
+
+Characteristics:
+
+- Secure by default
+- Runtime configurable
+- Auditable
+- Layered
+- Replaceable
+- Clean-Architecture compliant
+
+You are building something that resembles enterprise IAM systems.
+
+This is no longer simple RBAC.
+This is evolving toward a policy platform.
+
+End of document.
