@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
 use domain::{
-    events::DomainEventId,
     value_objects::{DateTime, Description},
     Name, Permission, Role, RoleId,
 };

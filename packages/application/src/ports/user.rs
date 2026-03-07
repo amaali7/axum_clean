@@ -1,6 +1,6 @@
 use domain::{Email, User, UserId, Username};
 
-use crate::{RequestContex, error::AppResult};
+use crate::{SubjectContex, error::AppResult};
 
 use super::{ SortBy};
 
@@ -28,12 +28,12 @@ impl UserQueryResult {
 
 #[async_trait::async_trait]
 pub trait UserRepository {
-    async fn create(&self,ctx: RequestContex, user: User) -> AppResult<User>;
-    async fn update(&self,ctx: RequestContex, user: User) -> AppResult<User>;
-    async fn get_by_id(&self,ctx: RequestContex, id: UserId) -> AppResult<User>;
-    async fn delete(&self,ctx: RequestContex, id: UserId) -> AppResult<bool>;
-    async fn get_by_email(&self,ctx: RequestContex, email: Email) -> AppResult<User>;
-    async fn get_by_username(&self,ctx: RequestContex, username: Username) -> AppResult<User>;
-    async fn get_users_paginated(&self,ctx: RequestContex,sort_by: &[SortBy], page: u32, page_size: u32) -> AppResult<Vec<User>>;
-    async fn raw_query(&self,ctx: RequestContex, query: String) -> AppResult<UserQueryResult>;
+    async fn create(&self,ctx: SubjectContex, user: User) -> AppResult<User>;
+    async fn update(&self,ctx: SubjectContex, user: User) -> AppResult<User>;
+    async fn get_by_id(&self,ctx: SubjectContex, id: UserId) -> AppResult<User>;
+    async fn delete(&self,ctx: SubjectContex, id: UserId) -> AppResult<bool>;
+    async fn get_by_email(&self,ctx: SubjectContex, email: Email) -> AppResult<User>;
+    async fn get_by_username(&self,ctx: SubjectContex, username: Username) -> AppResult<User>;
+    async fn get_users_paginated(&self,ctx: SubjectContex,sort_by: &[SortBy], page: u32, page_size: u32) -> AppResult<Vec<User>>;
+    async fn raw_query(&self,ctx: SubjectContex, query: String) -> AppResult<UserQueryResult>;
 }

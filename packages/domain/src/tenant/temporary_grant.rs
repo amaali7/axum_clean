@@ -11,7 +11,8 @@ use super::Permission;
 pub struct TemporaryGrant {
     user_id: UserId,
     description: Description,
-    permissions: HashSet<Permission>,
+    resource: Resource,
+    action: Action,
     expires_at: DateTime,
     created_at: DateTime,
 }
@@ -19,33 +20,35 @@ pub struct TemporaryGrant {
 impl TemporaryGrant {
     pub fn new(
         user_id: UserId,
-        permissions: HashSet<Permission>,
+        description: Description,
+        resource: Resource,
+        action: Action,
         expires_at: DateTime,
         created_at: DateTime,
-        description: Description,
     ) -> Self {
         Self {
             user_id,
-            permissions,
             expires_at,
             description,
             created_at,
+            resource,
+            action,
         }
     }
 
-    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
-        self.permissions.iter().any(|p| p.matches(resource, action))
-    }
     pub fn user_id(&self) -> UserId {
         self.user_id.clone()
-    }
-    pub fn permissions(&self) -> HashSet<Permission> {
-        self.permissions.clone()
     }
     pub fn description(&self) -> Description {
         self.description.clone()
     }
 
+    pub fn resource(&self) -> Resource {
+        self.resource.clone()
+    }
+    pub fn action(&self) -> Action {
+        self.action.clone()
+    }
     pub fn created_at(&self) -> DateTime {
         self.created_at.clone()
     }

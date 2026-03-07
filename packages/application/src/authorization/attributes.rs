@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashMap, HashSet},
+    collections::HashMap,
     ops::{Deref, DerefMut},
 };
 
@@ -11,8 +11,8 @@ impl AuthorizationAttributes {
         AuthorizationAttributes(HashMap::new())
     }
 
-    pub fn add_attributes(&mut self, attribute: HashMap<AttributeKey, AttributeValue>) {
-        self.0.extend(attribute);
+    pub fn add_attributes(&mut self, attribute: Self) {
+        self.0.extend(attribute.attributes());
     }
 
     pub fn add_attribute(&mut self, attribute: (AttributeKey, AttributeValue)) {
@@ -67,7 +67,7 @@ impl DerefMut for AttributeKey {
 
 impl std::fmt::Display for AttributeKey {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}: {}", self.title, self.number)
+        write!(f, "{}", self.0)
     }
 }
 

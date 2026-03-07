@@ -1,14 +1,17 @@
+use std::sync::Arc;
+
 use domain::User;
 
-use crate::{ RequestContex, dto::user_dto::{input::UpdateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository};
+use crate::{ SubjectContex, authorization::ports::AuthorizationService, dto::user_dto::{input::UpdateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository};
 
 
-pub struct UpdateUserUseCase<R: UserRepository> {
-    repo: R,
+pub struct UpdateUserUseCase{
+    repo: Arc<dyn UserRepository>,
+    auth: Arc<dyn AuthorizationService>
 }
 
-impl<R: UserRepository> UpdateUserUseCase<R> {
-    pub async fn execute(&self, ctx: RequestContex, input: UpdateUserInput) -> AppResult<OwnerUserOutput> {
+impl UpdateUserUseCase {
+    pub async fn execute(&self, ctx: SubjectContex, input: UpdateUserInput) -> AppResult<OwnerUserOutput> {
         let user: User = self.repo.update( ctx, input.try_into()?).await?;
         Ok(OwnerUserOutput::from(user))
     }

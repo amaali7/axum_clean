@@ -1,3 +1,4 @@
+pub mod environment;
 pub mod membership;
 pub mod permissions;
 pub mod specifications;

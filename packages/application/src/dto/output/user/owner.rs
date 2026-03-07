@@ -1,10 +1,7 @@
-use std::collections::HashSet;
-
 use domain::{
-    events::DomainEventId,
     user::{UserPreferences, UserStatus},
     value_objects::{Addressess, Bio, DateTime, Language, PhoneNumbers, Url},
-    Email, Name, Permission, RoleId, User, UserId, UserProfile, Username,
+    Email, Name, User, UserId, UserProfile, Username,
 };
 
 /// Owner User Output Data
@@ -14,8 +11,6 @@ pub struct OwnerUserOutput {
     pub email: Email,
     pub username: Username,
     pub profile: OwnerUserProfileOutput,
-    pub roles: HashSet<RoleId>,
-    pub permissions: HashSet<Permission>, // Cached permissions for performance
     pub preferences: OwnerUserPreferencesOutput,
     pub status: UserStatus,
 }
@@ -45,8 +40,6 @@ impl From<User> for OwnerUserOutput {
             email: value.email().clone(),
             username: value.username().clone(),
             profile: OwnerUserProfileOutput::from(value.profile().clone()),
-            roles: value.roles().clone(),
-            permissions: value.permissions().clone(),
             preferences: OwnerUserPreferencesOutput::from(value.preferences().clone()),
             status: value.status().clone(),
         }

@@ -1,10 +1,9 @@
 use std::collections::HashSet;
 
 use domain::{
-    events::DomainEventId,
     report::content::ReviewComment,
     value_objects::{Body, Comment, DateTime, Title, Url},
-    Permission, Report, ReportContent, ReportId, ReportStatus, ReportType, UserId,
+    Report, ReportContent, ReportId, ReportStatus, ReportType, TenantId, UserId,
 };
 /// Preivilege User Report Output
 pub struct PreivilegeReportOutput {
@@ -12,9 +11,10 @@ pub struct PreivilegeReportOutput {
     pub title: Title,
     pub content: PreivilegeReportContentOutput,
     pub report_type: ReportType,
-    pub permissions: HashSet<Permission>,
     pub status: ReportStatus,
     pub author_id: UserId,
+    pub owner_tenant: TenantId,
+    pub shared_with_tenants: HashSet<TenantId>,
     pub assigned_reviewer_id: HashSet<UserId>,
     pub created_at: DateTime,
     pub updated_at: DateTime,
@@ -24,11 +24,12 @@ pub struct PreivilegeReportOutput {
 
 pub struct PreivilegeReportContentOutput {
     pub body: Body,
-    pub attachments: Vec<Url>, // URLs or paths to attachments
-    pub review_comments: Vec<PreivilegeReviewCommentOutput>,
+    pub attachments: HashSet<Url>, // URLs or paths to attachments
+    pub review_comments: HashSet<PreivilegeReviewCommentOutput>,
     pub rejection_reason: Option<Comment>,
 }
 
+#[derive(Debug, Eq, PartialEq, Default, Hash, Clone)]
 pub struct PreivilegeReviewCommentOutput {
     pub reviewer_id: UserId,
     pub comment: Comment,
@@ -42,7 +43,6 @@ impl From<Report> for PreivilegeReportOutput {
             title: value.title(),
             content: PreivilegeReportContentOutput::from(value.content()),
             report_type: value.report_type(),
-            permissions: value.permissions(),
             status: value.status(),
             author_id: value.author_id(),
             assigned_reviewer_id: value.assigned_reviewer_id(),
@@ -50,6 +50,8 @@ impl From<Report> for PreivilegeReportOutput {
             updated_at: value.updated_at(),
             due_date: value.due_date(),
             version: value.version(),
+            owner_tenant: value.owner_tenant(),
+            shared_with_tenants: value.shared_with_tenants(),
         }
     }
 }

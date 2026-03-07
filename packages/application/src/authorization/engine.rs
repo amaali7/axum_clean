@@ -1,12 +1,18 @@
-use crate::SubjectContext;
+use domain::tenant::environment::Environment;
+
+use crate::SubjectContex;
 
 use super::{
-    action::AuthorizationAction, attributes::AuthorizationAttributes, policys::AuthorizationPolicy,
-    relation::AuthorizationRelations, resource_type::AuthorizationResourceType, AccessDecision,
+    action::AuthorizationAction,
+    attributes::AuthorizationAttributes,
+    policys::{ApplicationAuthorizationPolicy, ApplicationStoredPolicy},
+    relation::AuthorizationRelations,
+    resource_type::AuthorizationResourceType,
+    AccessDecision,
 };
 
 pub struct AuthorizationContext<'a> {
-    pub subject: &'a SubjectContext,
+    pub subject: &'a SubjectContex,
     pub action: AuthorizationAction,
 
     pub resource_type: AuthorizationResourceType,
@@ -15,34 +21,45 @@ pub struct AuthorizationContext<'a> {
     pub resource_attributes: AuthorizationAttributes,
 
     pub relations: AuthorizationRelations,
+    pub environment: Environment,
 }
 
 pub struct AuthorizationEngine {
-    policies: Vec<Box<dyn AuthorizationPolicy>>,
+    guard_policies: Vec<ApplicationStoredPolicy>,
+    dynamic_policies: Vec<Box<dyn ApplicationAuthorizationPolicy>>,
 }
 
 impl AuthorizationEngine {
     pub fn new() -> Self {
         Self {
-            policies: Vec::new(),
+            dynamic_policies: Vec::new(),
+            guard_policies: Vec::new(),
         }
     }
 
     pub fn register_policy<P>(&mut self, policy: P)
     where
-        P: AuthorizationPolicy + 'static,
+        P: ApplicationAuthorizationPolicy + 'static,
     {
-        self.policies.push(Box::new(policy));
+        self.dynamic_policies.push(Box::new(policy));
     }
 
     pub fn evaluate(&self, ctx: &AuthorizationContext) -> AccessDecision {
-        for policy in &self.policies {
+        // 1. Guard policies (hard security rules)
+        for policy in &self.guard_policies {
             if let Some(decision) = policy.evaluate(ctx) {
                 return decision;
             }
         }
 
-        // Default deny (secure by default)
+        // 2. Dynamic policies (editable)
+        for policy in &self.dynamic_policies {
+            if let Some(decision) = policy.evaluate(ctx) {
+                return decision;
+            }
+        }
+
+        // 3. Secure default
         AccessDecision::Deny
     }
 }

@@ -1,9 +1,10 @@
+use std::collections::HashSet;
+
 use domain::{
     value_objects::{Body, Title, Url},
-    DateTime, Report, ReportContent, ReportId, ReportType, UserId,
+    DateTime, Report, ReportContent, ReportId, ReportType, TenantId, UserId,
 };
 
-use crate::error::ApplicationError;
 /// General Report Output
 pub struct GeneralReportOutput {
     pub id: ReportId,
@@ -11,6 +12,8 @@ pub struct GeneralReportOutput {
     pub content: GeneralReportContentOutput,
     pub report_type: ReportType,
     pub author_id: UserId,
+    pub owner_tenant: TenantId,
+    pub shared_with_tenants: HashSet<TenantId>,
     pub created_at: DateTime,
     pub updated_at: DateTime,
     pub due_date: Option<DateTime>,
@@ -18,7 +21,7 @@ pub struct GeneralReportOutput {
 }
 pub struct GeneralReportContentOutput {
     pub body: Body,
-    pub attachments: Vec<Url>, // URLs or paths to attachments
+    pub attachments: HashSet<Url>, // URLs or paths to attachments
 }
 
 /// Mappers from Domain
@@ -35,6 +38,8 @@ impl From<Report> for GeneralReportOutput {
             updated_at: value.updated_at(),
             due_date: value.due_date(),
             version: value.version(),
+            owner_tenant: value.owner_tenant(),
+            shared_with_tenants: value.shared_with_tenants(),
         }
     }
 }
@@ -45,34 +50,5 @@ impl From<ReportContent> for GeneralReportContentOutput {
             body: value.body(),
             attachments: value.attachments(),
         }
-    }
-}
-
-/// Mapper to Domain
-impl TryFrom<GeneralReportOutput> for Report {
-    type Error = ApplicationError;
-
-    fn try_from(value: GeneralReportOutput) -> Result<Self, Self::Error> {
-        let mut builder = Self::new(value.id, value.author_id);
-        builder
-            .set_report_type(value.report_type)
-            .set_due(value.due_date.unwrap_or_default())
-            .set_content(ReportContent::try_from(value.content)?);
-        let report = builder.build(&value.title, value.created_at)?;
-        Ok(report)
-    }
-}
-
-impl TryFrom<GeneralReportContentOutput> for ReportContent {
-    type Error = ApplicationError;
-
-    fn try_from(value: GeneralReportContentOutput) -> Result<Self, Self::Error> {
-        let mut builder = Self::new();
-        builder.set_body(value.body);
-        for attachment in value.attachments.into_iter() {
-            builder.add_attachment(attachment);
-        }
-        let report_content = builder.build()?;
-        Ok(report_content)
     }
 }

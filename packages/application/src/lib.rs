@@ -1,21 +1,21 @@
 #![allow(dead_code)]
 
 use domain::{tenant::temporary_grant::TemporaryGrant, Permission, Role, RoleId, TenantId, UserId};
-// pub mod dto;
-pub mod error;
-// pub mod ports;
-// pub mod usecases;
 pub mod authorization;
+pub mod dto;
+pub mod error;
+pub mod ports;
+pub mod usecases;
 
 #[derive(Debug, Clone)]
-pub struct SubjectContext {
+pub struct SubjectContex {
     pub user_id: UserId,
     pub tenant_id: TenantId,
     pub roles: Vec<Role>,
     pub temporary_grants: Vec<TemporaryGrant>,
 }
 
-impl SubjectContext {
+impl SubjectContex {
     pub fn new(
         user_id: UserId,
         tenant_id: TenantId,

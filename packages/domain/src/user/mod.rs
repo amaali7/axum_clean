@@ -5,10 +5,8 @@ pub use preferences::UserPreferences;
 pub use profile::UserProfile;
 
 use crate::error::DomainResult;
-use crate::value_objects::{Action, Resource};
-use crate::{DateTime, DomainError, Email, Event, Permission, RoleId, Username};
+use crate::{DateTime, DomainError, Email, Event, Username};
 
-use std::collections::HashSet;
 use std::ops::DerefMut;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
@@ -53,8 +51,6 @@ pub struct User {
     email: Email,
     username: Username,
     profile: UserProfile,
-    roles: HashSet<RoleId>,
-    permissions: HashSet<Permission>, // Cached permissions for performance
     preferences: UserPreferences,
     status: UserStatus,
     failed_logins: Option<u64>,
@@ -66,14 +62,6 @@ impl User {
     pub fn new(id: UserId) -> UserBuilder {
         UserBuilder::new(id)
     }
-    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
-        self.permissions.iter().any(|p| p.matches(resource, action))
-    }
-
-    pub fn has_role(&self, role_id: &RoleId) -> bool {
-        self.roles.iter().any(|p| p == role_id)
-    }
-
     pub fn is_active(&self) -> bool {
         self.status == UserStatus::Active
     }
@@ -104,14 +92,6 @@ impl User {
     }
 
     // Collection getters - return references to avoid cloning
-    pub fn roles(&self) -> HashSet<RoleId> {
-        self.roles.clone()
-    }
-
-    pub fn permissions(&self) -> HashSet<Permission> {
-        self.permissions.clone()
-    }
-
     pub fn failed_logins(&self) -> Option<u64> {
         self.failed_logins.clone()
     }
@@ -140,8 +120,6 @@ pub struct UserBuilder {
     email: Option<Email>,
     username: Option<Username>,
     profile: Option<UserProfile>,
-    roles: HashSet<RoleId>,
-    permissions: HashSet<Permission>, // Cached permissions for performance
     preferences: Option<UserPreferences>,
     status: UserStatus,
     failed_logins: Option<u64>,
@@ -155,8 +133,6 @@ impl UserBuilder {
             email: None,
             username: None,
             profile: None,
-            roles: HashSet::new(),
-            permissions: HashSet::new(),
             id,
             preferences: None,
             status: UserStatus::Inactive,
@@ -176,22 +152,6 @@ impl UserBuilder {
     }
     pub fn set_email(&mut self, email: Email) -> &mut Self {
         self.email = Some(email);
-        self
-    }
-    pub fn add_roles(&mut self, roles: HashSet<RoleId>) -> &mut Self {
-        self.roles.extend(roles);
-        self
-    }
-    pub fn add_permissions(&mut self, permissions: HashSet<Permission>) -> &mut Self {
-        self.permissions.extend(permissions);
-        self
-    }
-    pub fn add_role(&mut self, role: RoleId) -> &mut Self {
-        self.roles.insert(role);
-        self
-    }
-    pub fn add_permission(&mut self, permission: Permission) -> &mut Self {
-        self.permissions.insert(permission);
         self
     }
     pub fn set_username(&mut self, username: Username) -> &mut Self {
@@ -231,8 +191,6 @@ impl UserBuilder {
             profile: self.profile.ok_or(DomainError::ValidationError(
                 "Profile not found".to_string(),
             ))?,
-            roles: self.roles,
-            permissions: self.permissions,
             preferences: self.preferences.unwrap_or_default(),
             status: self.status,
             failed_logins: self.failed_logins,

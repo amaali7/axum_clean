@@ -1,0 +1,360 @@
+#+TITLE: Environment Attributes for ABAC in Domain Layer
+#+AUTHOR: Authorization Architecture Notes
+#+OPTIONS: toc:3 num:nil
+
+* Introduction
+
+Adding *environment attributes* is a very good move. What you're describing is the classic **Attribute-Based Access Control (ABAC) four-pillar model**:
+
+1. Subject (the user or actor performing the action)
+2. Resource (the object being accessed)
+3. Action (the operation being performed)
+4. Environment (contextual conditions during the request)
+
+This model is widely described in access control guidance from the National Institute of Standards and Technology (NIST) and in policy frameworks such as the eXtensible Access Control Markup Language (XACML).
+
+The important architectural rule for this project is:
+
+#+begin_quote
+Environment belongs in the Domain model as value objects, while the data used to populate it is provided by the Application layer.
+#+end_quote
+
+The domain defines **what contextual information can influence authorization**, while the application layer gathers **runtime signals** and supplies them when evaluating policies.
+
+* Domain Layer Design
+
+The domain should define **environment attributes as immutable value objects**.
+
+The domain must *not* depend on HTTP requests, IP parsing, or device telemetry.
+
+Only **authorization-relevant context** should appear in the domain model.
+
+**Environment Struct**
+
+#+begin_src rust
+use chrono::{DateTime, Utc};
+pub struct Environment {
+     time: EnvironmentTime,
+     location: EnvironmentLocation,
+     device: DeviceSecurityPosture,
+     network: NetworkInformation,
+     risk: RiskSignals,
+}
+#+end_src
+
+This structure provides a single container for all environmental context used by authorization policies.
+
+The authorization engine receives this object as part of the request context.
+
+* Time and Date
+
+Time-based authorization is very common in enterprise systems.
+
+Examples include:
+
+- business-hours access restrictions
+- scheduled maintenance windows
+- trading windows
+- after-hours administrative restrictions
+
+**Domain Value Object**
+
+#+begin_src rust
+use chrono::{DateTime, Utc};
+
+pub struct EnvironmentTime {
+    pub timestamp: DateTime<Utc>,
+    pub is_business_hours: bool,
+}
+#+end_src
+
+The timestamp represents the current request time.
+
+The *is_business_hours* flag is calculated by the application layer because business hours may vary by tenant configuration.
+
+**Example Policy**
+
+#+begin_src text
+ALLOW update_report
+IF resource.owner == subject
+AND environment.time.is_business_hours
+#+end_src
+
+* Location
+
+Location may influence security decisions. It can be derived from:
+
+- IP geolocation
+- VPN detection
+- office network ranges
+- device GPS information
+
+The domain does not store raw network data. Instead it represents **logical location zones**.
+
+**Domain Value Object**
+
+#+begin_src rust
+pub enum LocationZone {
+    InternalNetwork,
+    CorporateOffice,
+    Country(String),
+    Unknown,
+}
+
+pub struct EnvironmentLocation {
+pub zone: LocationZone,
+}
+#+end_src
+
+The application layer determines the zone using infrastructure services such as geolocation or network inspection.
+
+* Device Security Posture
+
+Many systems enforce access restrictions based on device security state.
+
+Examples:
+
+- corporate-managed devices
+- endpoint compliance checks
+- security patch level
+- endpoint protection status
+
+**Domain Value Object**
+
+#+begin_src rust
+pub struct DeviceSecurityPosture {
+    pub is_managed: bool,
+    pub is_compliant: bool,
+    pub has_recent_security_patch: bool,
+}
+#+end_src
+
+Example rule:
+
+#+begin_src text
+ALLOW administrative_actions
+IF environment.device.is_managed
+AND environment.device.is_compliant
+#+end_src
+
+* Network Information
+
+Network conditions influence security decisions.
+
+Examples:
+
+- requiring VPN for sensitive operations
+- ensuring encrypted transport
+- restricting public network access
+
+**Domain Value Object**
+
+#+begin_src rust
+pub enum ConnectionType {
+    CorporateNetwork,
+    PublicWifi,
+    Cellular,
+    Unknown,
+}
+
+pub struct NetworkInformation {
+pub is_vpn: bool,
+pub is_secure_transport: bool,
+pub connection_type: ConnectionType,
+}
+#+end_src
+
+Example rule:
+
+#+begin_src text
+ALLOW export_sensitive_data
+IF environment.network.is_vpn
+AND environment.network.is_secure_transport
+#+end_src
+
+* Risk Signals
+
+Risk-based authorization uses contextual signals derived from behavioral analysis and authentication strength.
+
+Examples include:
+
+- unusual login behavior
+- suspicious IP reputation
+- high transaction frequency
+- weak authentication methods
+
+**Domain Value Object**
+
+#+begin_src rust
+pub enum AuthenticationStrength {
+    PasswordOnly,
+    MultiFactor,
+    HardwareKey,
+}
+
+pub struct RiskSignals {
+     score: u8,
+     authentication_strength: AuthenticationStrength,
+     recent_transaction_count: u32,
+}
+#+end_src
+
+Example rule:
+
+#+begin_src text
+DENY financial_transfer
+IF environment.risk.score > 70
+#+end_src
+
+* Updated Authorization Context
+
+Your authorization engine should now receive the environment context.
+
+#+begin_src rust
+pub struct AuthorizationContext {
+pub subject: SubjectId,
+pub resource_type: ResourceType,
+pub resource_attributes: AttributeMap,
+pub subject_attributes: AttributeMap,
+pub action: Action,
+pub relations: Vec<Relation>,
+pub environment: Environment,
+}
+#+end_src
+
+Policies can now evaluate environment data through the context.
+
+#+begin_src text
+ctx.environment.time
+ctx.environment.network
+ctx.environment.device
+ctx.environment.location
+ctx.environment.risk
+#+end_src
+
+* Application Layer Responsibility
+
+The **Application layer builds the Environment object** before authorization evaluation.
+
+Example request pipeline:
+
+#+begin_src text
+HTTP Request
+↓
+Extract client IP
+Extract device information
+Determine authentication strength
+Check VPN status
+Perform geolocation lookup
+Calculate behavioral risk score
+↓
+Construct Environment object
+↓
+Construct AuthorizationContext
+↓
+Call AuthorizationEngine
+#+end_src
+
+Example environment construction:
+
+#+begin_src rust
+Environment {
+time: EnvironmentTime {
+timestamp: Utc::now(),
+is_business_hours,
+},
+location: EnvironmentLocation {
+zone: detected_zone,
+},
+device: DeviceSecurityPosture {
+is_managed,
+is_compliant,
+has_recent_security_patch,
+},
+network: NetworkInformation {
+is_vpn,
+is_secure_transport,
+connection_type,
+},
+risk: RiskSignals {
+score,
+authentication_strength,
+recent_transaction_count,
+},
+}
+#+end_src
+
+* Example Policies Using Environment
+
+Environment attributes allow many contextual authorization rules.
+
+**After-Hours Lockdown**
+
+#+begin_src text
+DENY admin_actions
+IF environment.time.is_business_hours == false
+#+end_src
+
+**VPN Requirement**
+
+#+begin_src text
+ALLOW read_sensitive_data
+IF environment.network.is_vpn
+#+end_src
+
+**Corporate Device Requirement**
+
+#+begin_src text
+ALLOW deploy_release
+IF environment.device.is_managed
+#+end_src
+
+**High Risk Block**
+
+#+begin_src text
+DENY money_transfer
+IF environment.risk.score > 80
+#+end_src
+
+* Why This Design Is Clean
+
+Benefits:
+
+- Domain defines the authorization language
+- Application gathers runtime context
+- Infrastructure provides detection and telemetry
+- Authorization engine remains deterministic and pure
+
+This structure respects **Clean Architecture boundaries** and keeps authorization logic independent from transport or infrastructure concerns.
+
+* Important Rule
+
+Environment attributes must be:
+
+- immutable for the duration of a request
+- computed before policy evaluation
+- trusted inputs
+
+Policies should **never retrieve environment data dynamically** during evaluation.
+
+* Future Extensions
+
+This design supports advanced security models such as:
+
+- adaptive access control
+- risk-based authorization
+- zero-trust architectures
+- conditional authentication requirements
+- dynamic session hardening
+
+* Conclusion
+
+Your authorization architecture is evolving through several layers of capability:
+
+#+begin_src text
+RBAC → ReBAC → ABAC → Context-Aware Authorization
+#+end_src
+
+This progression leads to a **highly expressive and modern access-control system** capable of enforcing complex enterprise security policies while preserving clean architectural boundaries.
+
+Future improvements may include optimized policy evaluation, attribute normalization, and policy definition languages to simplify complex rule authoring.

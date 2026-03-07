@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use domain::{
     report::content::ReviewComment,
     value_objects::{Body, Comment, DateTime, Title, Url},
-    Report, ReportContent, ReportId, ReportStatus, ReportType, UserId,
+    Report, ReportContent, ReportId, ReportStatus, ReportType, TenantId, UserId,
 };
 /// Reviewer User Report Output
 pub struct ReviewerReportOutput {
@@ -13,6 +13,8 @@ pub struct ReviewerReportOutput {
     pub report_type: ReportType,
     pub status: ReportStatus,
     pub author_id: UserId,
+    pub owner_tenant: TenantId,
+    pub shared_with_tenants: HashSet<TenantId>,
     pub assigned_reviewer_id: HashSet<UserId>,
     pub created_at: DateTime,
     pub updated_at: DateTime,
@@ -22,11 +24,12 @@ pub struct ReviewerReportOutput {
 
 pub struct ReviewerReportContentOutput {
     pub body: Body,
-    pub attachments: Vec<Url>, // URLs or paths to attachments
-    pub review_comments: Vec<ReviewerReviewCommentOutput>,
+    pub attachments: HashSet<Url>, // URLs or paths to attachments
+    pub review_comments: HashSet<ReviewerReviewCommentOutput>,
     pub rejection_reason: Option<Comment>,
 }
 
+#[derive(Debug, Eq, PartialEq, Default, Hash, Clone)]
 pub struct ReviewerReviewCommentOutput {
     pub reviewer_id: UserId,
     pub comment: Comment,
@@ -47,6 +50,8 @@ impl From<Report> for ReviewerReportOutput {
             updated_at: value.updated_at(),
             due_date: value.due_date(),
             version: value.version(),
+            owner_tenant: value.owner_tenant(),
+            shared_with_tenants: value.shared_with_tenants(),
         }
     }
 }

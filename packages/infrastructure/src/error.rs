@@ -1,4 +1,4 @@
-use application::error::ApplicationError;
+use application::error::AppError;
 use domain::error::DomainError;
 // use surrealdb::error::{Api, Db};
 use thiserror::Error;
@@ -9,7 +9,7 @@ pub enum InfrastructureError {
     Domain(#[from] DomainError),
 
     #[error("Application  failed: {0}")]
-    Application(#[from] ApplicationError),
+    Application(#[from] AppError),
 
     #[error("Repository failed: {0}")]
     Repository(String),
@@ -66,27 +66,27 @@ impl From<InfrastructureError> for DomainError {
     }
 }
 
-// For converting InfrastructureError to ApplicationError
-impl From<InfrastructureError> for ApplicationError {
+// For converting InfrastructureError to AppError
+impl From<InfrastructureError> for AppError {
     fn from(error: InfrastructureError) -> Self {
         match error {
-            InfrastructureError::Domain(domain_error) => ApplicationError::Domain(domain_error),
+            InfrastructureError::Domain(domain_error) => AppError::Domain(domain_error),
             InfrastructureError::Application(application_error) => application_error,
             InfrastructureError::Repository(repo_error) => {
-                ApplicationError::Repository(repo_error.to_string())
+                AppError::Repository(repo_error.to_string())
             }
-            InfrastructureError::Surreal(error) => ApplicationError::Repository(error.to_string()),
-            InfrastructureError::Forbidden => ApplicationError::Forbidden,
+            InfrastructureError::Surreal(error) => AppError::Repository(error.to_string()),
+            InfrastructureError::Forbidden => AppError::Forbidden,
             InfrastructureError::ValidationError(validation_error) => {
-                ApplicationError::ValidationError(validation_error)
+                AppError::ValidationError(validation_error)
             }
             InfrastructureError::UnHashedPassword => {
-                ApplicationError::ValidationError("UnHashed Password".to_string())
+                AppError::ValidationError("UnHashed Password".to_string())
             }
             InfrastructureError::InvalidTimestamp => {
-                ApplicationError::ValidationError("Invalid DateTime".to_string())
+                AppError::ValidationError("Invalid DateTime".to_string())
             }
-            InfrastructureError::Unknown => ApplicationError::Unknown,
+            InfrastructureError::Unknown => AppError::Unknown,
         }
     }
 }

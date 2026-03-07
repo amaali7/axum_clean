@@ -6,7 +6,7 @@ use domain::{
     Name, Permission, Role, RoleId,
 };
 
-use crate::error::ApplicationError;
+use crate::error::AppError;
 
 pub struct CreateRoleInput {
     pub id: RoleId,
@@ -16,24 +16,10 @@ pub struct CreateRoleInput {
     pub is_system_role: bool,
 }
 
-/// Mapper from Domain
-
-impl From<Role> for CreateRoleInput {
-    fn from(value: Role) -> Self {
-        Self {
-            name: value.name(),
-            description: value.description(),
-            permissions: value.permissions(),
-            is_system_role: value.is_system_role(),
-            id: value.id(),
-        }
-    }
-}
-
 /// Mapper from DOT
 
 impl TryFrom<CreateRoleInput> for Role {
-    type Error = ApplicationError;
+    type Error = AppError;
     fn try_from(value: CreateRoleInput) -> Result<Self, Self::Error> {
         let mut builder = Self::new(value.id);
         builder

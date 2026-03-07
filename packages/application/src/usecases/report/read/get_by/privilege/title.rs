@@ -1,6 +1,6 @@
 use domain::Title;
 
-use crate::{RequestContex, dto::report_dto::output::PreivilegeReportOutput, error::AppResult, ports::ReportRepository};
+use crate::{SubjectContex, dto::report_dto::output::PreivilegeReportOutput, error::AppResult, ports::ReportRepository};
 
 
 
@@ -9,7 +9,7 @@ pub struct GetReportByTitlePrivilegeUseCase<R: ReportRepository> {
 }
 
 impl<R: ReportRepository> GetReportByTitlePrivilegeUseCase<R> {
-    pub async fn execute(&self, ctx: RequestContex, title: Title) -> AppResult<PreivilegeReportOutput> {
+    pub async fn execute(&self, ctx: SubjectContex, title: Title) -> AppResult<PreivilegeReportOutput> {
         Ok(self.repo.get_by_title( ctx,title.clone()).await?.into())
     }
 }

@@ -1,15 +1,18 @@
 
+use std::sync::Arc;
+
 use domain::Email;
 
-use crate::{RequestContex, dto::user_dto::output::GeneralUserOutput, error::AppResult, ports::UserRepository};
+use crate::{SubjectContex, authorization::ports::AuthorizationService, dto::user_dto::output::GeneralUserOutput, error::AppResult, ports::UserRepository};
 
 
-pub struct GetUserByEmailGeneralUseCase<R: UserRepository> {
-    repo: R,
+pub struct GetUserByEmailGeneralUseCase {
+    repo: Arc<dyn UserRepository>,
+    auth: Arc<dyn AuthorizationService>
 }
 
-impl<R: UserRepository> GetUserByEmailGeneralUseCase<R> {
-    pub async fn execute(&self, ctx: RequestContex, email: Email ) -> AppResult<GeneralUserOutput> {
+impl GetUserByEmailGeneralUseCase {
+    pub async fn execute(&self, ctx: SubjectContex, email: Email ) -> AppResult<GeneralUserOutput> {
         Ok(self.repo.get_by_email(ctx, email.clone()).await?.into())
     }
 }

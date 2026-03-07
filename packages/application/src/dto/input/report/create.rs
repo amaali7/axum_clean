@@ -3,19 +3,20 @@ use std::collections::HashSet;
 use domain::{
     report::content::ReviewComment,
     value_objects::{Body, Comment, DateTime, Title, Url},
-    Permission, Report, ReportContent, ReportId, ReportStatus, ReportType, UserId,
+    Report, ReportContent, ReportId, ReportStatus, ReportType, TenantId, UserId,
 };
 
-use crate::error::ApplicationError;
+use crate::error::AppError;
 /// Preivileg User Report Output
 pub struct CreateReportInput {
     pub id: ReportId,
     pub title: Title,
     pub content: CreateReportContentInput,
     pub report_type: ReportType,
-    pub permissions: HashSet<Permission>,
     pub status: ReportStatus,
     pub author_id: UserId,
+    pub owner_tenant: TenantId,
+    pub shared_with_tenants: HashSet<TenantId>,
     pub assigned_reviewer_id: HashSet<UserId>,
     pub due_date: Option<DateTime>,
     pub version: u64,
@@ -23,76 +24,32 @@ pub struct CreateReportInput {
 
 pub struct CreateReportContentInput {
     pub body: Body,
-    pub attachments: Vec<Url>, // URLs or paths to attachments
-    pub review_comments: Vec<CreateReviewCommentInput>,
+    pub attachments: HashSet<Url>, // URLs or paths to attachments
+    pub review_comments: HashSet<CreateReviewCommentInput>,
     pub rejection_reason: Option<Comment>,
 }
 
+#[derive(Debug, Eq, PartialEq, Default, Hash, Clone)]
 pub struct CreateReviewCommentInput {
     pub reviewer_id: UserId,
     pub comment: Comment,
 }
 
-/// Mapper from Domain
-
-impl From<ReviewComment> for CreateReviewCommentInput {
-    fn from(value: ReviewComment) -> Self {
-        Self {
-            reviewer_id: value.reviewer_id(),
-            comment: value.comment(),
-        }
-    }
-}
-
-impl From<ReportContent> for CreateReportContentInput {
-    fn from(value: ReportContent) -> Self {
-        Self {
-            body: value.body(),
-            attachments: value.attachments(),
-            review_comments: value
-                .review_comments()
-                .into_iter()
-                .map(|item| CreateReviewCommentInput::from(item))
-                .collect(),
-            rejection_reason: value.rejection_reason(),
-        }
-    }
-}
-
-impl From<Report> for CreateReportInput {
-    fn from(value: Report) -> Self {
-        Self {
-            title: value.title(),
-            content: CreateReportContentInput::from(value.content()),
-            report_type: value.report_type(),
-            permissions: value.permissions(),
-            status: value.status(),
-            author_id: value.author_id(),
-            assigned_reviewer_id: value.assigned_reviewer_id(),
-            due_date: value.due_date(),
-            version: value.version(),
-            id: value.id(),
-        }
-    }
-}
-
 /// Mapper From DOT
 
 impl TryFrom<CreateReportInput> for Report {
-    type Error = ApplicationError;
+    type Error = AppError;
 
     fn try_from(value: CreateReportInput) -> Result<Self, Self::Error> {
-        let mut builder = Self::new(value.id, value.author_id);
+        let mut builder = Self::new(value.id, value.author_id, value.owner_tenant);
         builder
             .set_report_type(value.report_type)
             .set_due(value.due_date.unwrap_or_default())
             .set_status(value.status)
             .set_version(value.version)
+            .add_shared_tenants(value.shared_with_tenants)
             .set_content(ReportContent::try_from(value.content)?);
 
-        for permission in value.permissions.into_iter() {
-            builder.add_permission(permission);
-        }
         for reviewer in value.assigned_reviewer_id.into_iter() {
             builder.add_reviewer(reviewer);
         }
@@ -102,7 +59,7 @@ impl TryFrom<CreateReportInput> for Report {
 }
 
 impl TryFrom<CreateReportContentInput> for ReportContent {
-    type Error = ApplicationError;
+    type Error = AppError;
 
     fn try_from(value: CreateReportContentInput) -> Result<Self, Self::Error> {
         let mut builder = Self::new();

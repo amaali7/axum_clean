@@ -1,10 +1,9 @@
 use std::collections::HashSet;
 
 use domain::{
-    events::DomainEventId,
     user::UserStatus,
     value_objects::{Addressess, Bio, PhoneNumbers, Url},
-    Email, Name, Permission, RoleId, User, UserId, UserProfile, Username,
+    Email, Name, User, UserId, UserProfile, Username,
 };
 
 /// Not owner but have privileges
@@ -14,8 +13,6 @@ pub struct PrivilegeUserOutput {
     pub email: Email,
     pub username: Username,
     pub profile: PrivilegeUserProfileOutput,
-    pub roles: HashSet<RoleId>,
-    pub permissions: HashSet<Permission>, // Cached permissions for performance
     pub status: UserStatus,
 }
 
@@ -36,8 +33,6 @@ impl From<User> for PrivilegeUserOutput {
             email: value.email(),
             username: value.username(),
             profile: PrivilegeUserProfileOutput::from(value.profile()),
-            roles: value.roles(),
-            permissions: value.permissions(),
             status: value.status(),
         }
     }

@@ -1,14 +1,17 @@
+use std::sync::Arc;
+
 use domain::UserId;
 
-use crate::{RequestContex, error::AppResult, ports::UserRepository};
+use crate::{SubjectContex, authorization::ports::AuthorizationService, error::AppResult, ports::UserRepository};
 
 
-pub struct DeleteUserUseCase<R: UserRepository> {
-    repo: R,
+pub struct DeleteUserUseCase {
+    repo: Arc<dyn UserRepository>,
+    auth: Arc<dyn AuthorizationService>
 }
 
-impl<R: UserRepository> DeleteUserUseCase<R> {
-    pub async fn execute(&self, ctx: RequestContex, user_id: UserId) -> AppResult<bool> {
+impl DeleteUserUseCase {
+    pub async fn execute(&self, ctx: SubjectContex, user_id: UserId) -> AppResult<bool> {
         self.repo.delete(ctx, user_id.clone()).await
     }
 }

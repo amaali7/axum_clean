@@ -5,7 +5,7 @@ use domain::{
     Name, Permission, Role, RoleId,
 };
 
-use crate::error::ApplicationError;
+use crate::error::AppError;
 
 pub struct UpdateRoleInput {
     pub id: RoleId,
@@ -15,22 +15,10 @@ pub struct UpdateRoleInput {
     pub is_system_role: Option<bool>,
 }
 
-impl From<Role> for UpdateRoleInput {
-    fn from(value: Role) -> Self {
-        Self {
-            name: Some(value.name()),
-            description: Some(value.description()),
-            permissions: value.permissions(),
-            is_system_role: Some(value.is_system_role()),
-            id: value.id(),
-        }
-    }
-}
-
 /// Mapper from DOT
 
 impl TryFrom<UpdateRoleInput> for Role {
-    type Error = ApplicationError;
+    type Error = AppError;
     fn try_from(value: UpdateRoleInput) -> Result<Self, Self::Error> {
         let mut builder = Self::new(value.id);
         builder

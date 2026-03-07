@@ -1,13 +1,16 @@
+use std::sync::Arc;
+
 use domain::Username;
 
-use crate::{RequestContex, dto::user_dto::output::PrivilegeUserOutput, error::AppResult, ports::UserRepository};
+use crate::{SubjectContex, authorization::ports::AuthorizationService, dto::user_dto::output::PrivilegeUserOutput, error::AppResult, ports::UserRepository};
 
-pub struct GetUserByUsernamePrivilegeUseCase<R: UserRepository> {
-    repo: R,
+pub struct GetUserByUsernamePrivilegeUseCase {
+    repo: Arc<dyn UserRepository>,
+    auth: Arc<dyn AuthorizationService>
 }
 
-impl<R: UserRepository> GetUserByUsernamePrivilegeUseCase<R> {
-    pub async fn execute(&self, ctx: RequestContex, username: Username) -> AppResult<PrivilegeUserOutput> {
+impl GetUserByUsernamePrivilegeUseCase {
+    pub async fn execute(&self, ctx: SubjectContex, username: Username) -> AppResult<PrivilegeUserOutput> {
         Ok(self.repo.get_by_username(ctx, username.clone()).await?.into())
     }
 }

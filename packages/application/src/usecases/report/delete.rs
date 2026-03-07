@@ -1,6 +1,6 @@
 use domain::ReportId;
 
-use crate::{RequestContex, error::AppResult, ports::ReportRepository};
+use crate::{SubjectContex, error::AppResult, ports::ReportRepository};
 
 
 pub struct DeleteReportUseCase<R: ReportRepository> {
@@ -8,7 +8,7 @@ pub struct DeleteReportUseCase<R: ReportRepository> {
 }
 
 impl<R: ReportRepository> DeleteReportUseCase<R> {
-    pub async fn execute(&self, ctx: RequestContex, report_id: ReportId) -> AppResult<bool> {
+    pub async fn execute(&self, ctx: SubjectContex, report_id: ReportId) -> AppResult<bool> {
         self.repo.delete(ctx, report_id.clone()).await
     }
 }

@@ -2,7 +2,7 @@ use domain::error::DomainError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum ApplicationError {
+pub enum AppError {
     #[error("Domain validation failed: {0}")]
     Domain(#[from] DomainError),
 
@@ -15,8 +15,11 @@ pub enum ApplicationError {
     #[error("Application Validation failed: {0}")]
     ValidationError(String),
 
+    #[error("Application Policy failed: {0}")]
+    PolicyError(String),
+
     #[error("Unknown application error: {0}")]
     Unknown(String),
 }
 
-pub type AppResult<T> = Result<T, ApplicationError>;
+pub type AppResult<T> = Result<T, AppError>;

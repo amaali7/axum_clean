@@ -1,12 +1,10 @@
-use std::collections::HashSet;
-
 use domain::{
     user::{UserPreferences, UserStatus},
     value_objects::{Addressess, Bio, DateTime, Language, PhoneNumbers, Url},
-    Email, Name, Password, Permission, RoleId, User, UserId, UserProfile, Username,
+    Email, Name, Password, User, UserId, UserProfile, Username,
 };
 
-use crate::error::ApplicationError;
+use crate::error::AppError;
 
 /// Owner User Output Data
 
@@ -15,8 +13,6 @@ pub struct CreateUserInput {
     pub email: Email,
     pub username: Username,
     pub profile: CreateUserProfileInput,
-    pub roles: HashSet<RoleId>,
-    pub permissions: HashSet<Permission>, // Cached permissions for performance
     pub preferences: CreateUserPreferencesInput,
     pub status: UserStatus,
 }
@@ -40,53 +36,10 @@ pub struct CreateUserProfileInput {
     pub website: Option<Url>,
 }
 
-/// Mapper from Domain
-impl From<User> for CreateUserInput {
-    fn from(value: User) -> Self {
-        CreateUserInput {
-            email: value.email(),
-            username: value.username(),
-            profile: CreateUserProfileInput::from(value.profile()),
-            roles: value.roles(),
-            permissions: value.permissions(),
-            preferences: CreateUserPreferencesInput::from(value.preferences()),
-            status: value.status(),
-            id: value.id(),
-        }
-    }
-}
-
-impl From<UserProfile> for CreateUserProfileInput {
-    fn from(value: UserProfile) -> Self {
-        CreateUserProfileInput {
-            first_name: value.first_name(),
-            last_name: value.last_name(),
-            bio: value.bio(),
-            phone_numbers: value.phone_numbers(),
-            avatar_url: value.avatar_url(),
-            date_of_birth: value.date_of_birth(),
-            addresses: value.addresses(),
-            website: value.website(),
-            password: value.password(),
-        }
-    }
-}
-
-impl From<UserPreferences> for CreateUserPreferencesInput {
-    fn from(value: UserPreferences) -> Self {
-        CreateUserPreferencesInput {
-            email_notifications: value.email_notifications(),
-            push_notifications: value.push_notifications(),
-            two_factor_auth: value.two_factor_auth(),
-            language: value.language(),
-        }
-    }
-}
-
 /// Mapper from DTO
 
 impl TryFrom<CreateUserInput> for User {
-    type Error = ApplicationError;
+    type Error = AppError;
 
     fn try_from(value: CreateUserInput) -> Result<Self, Self::Error> {
         let mut builder = User::new(value.id);
@@ -95,8 +48,6 @@ impl TryFrom<CreateUserInput> for User {
             .set_profile(UserProfile::try_from(value.profile)?)
             .set_username(value.username)
             .set_preferences(UserPreferences::from(value.preferences))
-            .add_permissions(value.permissions)
-            .add_roles(value.roles)
             .set_status(value.status);
         let user = builder.build()?;
         Ok(user)
@@ -104,7 +55,7 @@ impl TryFrom<CreateUserInput> for User {
 }
 
 impl TryFrom<CreateUserProfileInput> for UserProfile {
-    type Error = ApplicationError;
+    type Error = AppError;
 
     fn try_from(value: CreateUserProfileInput) -> Result<Self, Self::Error> {
         let mut builder = UserProfile::new();

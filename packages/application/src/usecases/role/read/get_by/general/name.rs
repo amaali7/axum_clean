@@ -1,6 +1,6 @@
 use domain::Name;
 
-use crate::{ RequestContex, dto::role_dto::output::GeneralRoleOutput, error::AppResult, ports::RoleRepository};
+use crate::{ SubjectContex, dto::role_dto::output::GeneralRoleOutput, error::AppResult, ports::RoleRepository};
 
 
 pub struct GetRoleByNameGeneralUseCase<R: RoleRepository> {
@@ -8,7 +8,7 @@ pub struct GetRoleByNameGeneralUseCase<R: RoleRepository> {
 }
 
 impl<R: RoleRepository> GetRoleByNameGeneralUseCase<R> {
-    pub async fn execute(&self, ctx: RequestContex, name: Name) -> AppResult<GeneralRoleOutput> {
+    pub async fn execute(&self, ctx: SubjectContex, name: Name) -> AppResult<GeneralRoleOutput> {
         Ok(self.repo.get_by_name(ctx, name.clone()).await?.into())
     }
 }

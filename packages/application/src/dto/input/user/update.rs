@@ -1,12 +1,10 @@
-use std::collections::HashSet;
-
 use domain::{
     user::{UserPreferences, UserStatus},
     value_objects::{Addressess, Bio, DateTime, Language, PhoneNumbers, Url},
-    Email, Name, Password, Permission, RoleId, User, UserId, UserProfile, Username,
+    Email, Name, Password, User, UserId, UserProfile, Username,
 };
 
-use crate::error::ApplicationError;
+use crate::error::AppError;
 
 /// Owner User Output Data
 
@@ -16,8 +14,6 @@ pub struct UpdateUserInput {
     pub email: Option<Email>,
     pub username: Option<Username>,
     pub profile: Option<UpdateUserProfileInput>,
-    pub roles: HashSet<RoleId>,
-    pub permissions: HashSet<Permission>, // Cached permissions for performance
     pub preferences: Option<UpdateUserPreferencesInput>,
     pub status: Option<UserStatus>,
 }
@@ -49,8 +45,6 @@ impl From<User> for UpdateUserInput {
             email: Some(value.email()),
             username: Some(value.username()),
             profile: Some(UpdateUserProfileInput::from(value.profile())),
-            roles: value.roles(),
-            permissions: value.permissions(),
             preferences: Some(UpdateUserPreferencesInput::from(value.preferences())),
             status: Some(value.status()),
             id: value.id(),
@@ -88,7 +82,7 @@ impl From<UserPreferences> for UpdateUserPreferencesInput {
 /// Mapper from DTO
 
 impl TryFrom<UpdateUserInput> for User {
-    type Error = ApplicationError;
+    type Error = AppError;
 
     fn try_from(value: UpdateUserInput) -> Result<Self, Self::Error> {
         let mut builder = User::new(value.id);
@@ -97,8 +91,6 @@ impl TryFrom<UpdateUserInput> for User {
             .set_profile(UserProfile::try_from(value.profile.unwrap_or_default())?)
             .set_username(value.username.unwrap_or_default())
             .set_preferences(UserPreferences::from(value.preferences.unwrap_or_default()))
-            .add_permissions(value.permissions)
-            .add_roles(value.roles)
             .set_status(value.status.unwrap_or_default());
         let user = builder.build()?;
 
@@ -107,7 +99,7 @@ impl TryFrom<UpdateUserInput> for User {
 }
 
 impl TryFrom<UpdateUserProfileInput> for UserProfile {
-    type Error = ApplicationError;
+    type Error = AppError;
 
     fn try_from(value: UpdateUserProfileInput) -> Result<Self, Self::Error> {
         let mut builder = UserProfile::new();

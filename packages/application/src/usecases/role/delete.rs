@@ -1,7 +1,7 @@
 
 use domain::RoleId;
 
-use crate::{RequestContex, error::AppResult, ports::RoleRepository};
+use crate::{SubjectContex, error::AppResult, ports::RoleRepository};
 
 
 pub struct DeleteRoleUseCase<R: RoleRepository> {
@@ -9,7 +9,7 @@ pub struct DeleteRoleUseCase<R: RoleRepository> {
 }
 
 impl<R: RoleRepository> DeleteRoleUseCase<R> {
-    pub async fn execute(&self, ctx: RequestContex, role_id: RoleId) -> AppResult<bool> {
+    pub async fn execute(&self, ctx: SubjectContex, role_id: RoleId) -> AppResult<bool> {
         self.repo.delete(ctx, role_id.clone()).await
     }
 }

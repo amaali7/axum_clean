@@ -1,4 +1,3 @@
-pub mod user;
 use crate::value_objects::{Action, Resource};
 
 pub struct HasPermission {

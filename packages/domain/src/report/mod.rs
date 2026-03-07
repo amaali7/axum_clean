@@ -10,17 +10,14 @@ pub use report_type::ReportType;
 pub use status::ReportStatus;
 
 use crate::error::DomainResult;
-use crate::value_objects::Action;
 use crate::value_objects::DateTime;
-use crate::value_objects::Resource;
 use crate::value_objects::Title;
 use crate::Event;
 use crate::TenantId;
 
 use super::user::UserId;
-use crate::Permission;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
 pub struct ReportId(String);
 
 impl ReportId {
@@ -60,7 +57,6 @@ pub struct Report {
     title: Title,
     content: ReportContent,
     report_type: ReportType,
-    permissions: HashSet<Permission>,
     status: ReportStatus,
     author_id: UserId,
     owner_tenant: TenantId,
@@ -77,9 +73,6 @@ impl Report {
         ReportBuilder::new(id, author_id, owner_tenant)
     }
 
-    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
-        self.permissions.iter().any(|p| p.matches(resource, action))
-    }
     pub fn belongs_to(&self, tenant: &TenantId) -> bool {
         &self.owner_tenant == tenant
     }
@@ -111,10 +104,6 @@ impl Report {
 
     pub fn report_type(&self) -> ReportType {
         self.report_type.clone()
-    }
-
-    pub fn permissions(&self) -> HashSet<Permission> {
-        self.permissions.clone()
     }
 
     pub fn status(&self) -> ReportStatus {
@@ -157,7 +146,6 @@ impl Report {
 #[derive(Debug, Clone)]
 pub struct ReportBuilder {
     id: ReportId,
-    permissions: HashSet<Permission>,
     content: Option<ReportContent>,
     report_type: Option<ReportType>,
     author_id: UserId,
@@ -173,7 +161,6 @@ pub struct ReportBuilder {
 impl ReportBuilder {
     pub fn new(id: ReportId, author_id: UserId, owner_tenant: TenantId) -> Self {
         Self {
-            permissions: HashSet::new(),
             content: None,
             report_type: None,
             author_id,
@@ -204,10 +191,6 @@ impl ReportBuilder {
         self.due = Some(due);
         self
     }
-    pub fn add_permission(&mut self, permission: Permission) -> &mut Self {
-        self.permissions.insert(permission);
-        self
-    }
     pub fn set_content(&mut self, content: ReportContent) -> &mut Self {
         self.content = Some(content);
         self
@@ -221,7 +204,7 @@ impl ReportBuilder {
         self
     }
 
-    pub fn set_tenant(&mut self, tenant_ids: HashSet<TenantId>) -> &mut Self {
+    pub fn add_shared_tenants(&mut self, tenant_ids: HashSet<TenantId>) -> &mut Self {
         self.shared_with_tenants = tenant_ids;
         self
     }
@@ -236,7 +219,6 @@ impl ReportBuilder {
             title: Title::new(title)?,
             content: self.content.unwrap_or_default(),
             report_type: self.report_type.unwrap_or(ReportType::default()),
-            permissions: self.permissions,
             status: self.status.unwrap_or(ReportStatus::default()),
             author_id: self.author_id,
             assigned_reviewer_id: self.reviewer_id,

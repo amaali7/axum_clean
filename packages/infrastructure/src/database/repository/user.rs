@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use application::{RequestContex, error::{AppResult, ApplicationError}, ports::{ SortBy, UserRepository, user::UserQueryResult}};
+use application::{SubjectContex, error::{AppResult, AppError}, ports::{ SortBy, UserRepository, user::UserQueryResult}};
 use domain::{Email, Username, user::{User, UserId}};
 
 use crate::{
@@ -30,8 +30,8 @@ impl SurrealUserRepository {
 
 #[async_trait]
 impl UserRepository for SurrealUserRepository {
-    async fn create(&self,ctx: RequestContex, user: User) -> AppResult<User>{
-        let record: InfrastructureUser = user.try_into().map_err(|_| ApplicationError::Repository("User Error ".to_string()))?;
+    async fn create(&self,ctx: SubjectContex, user: User) -> AppResult<User>{
+        let record: InfrastructureUser = user.try_into().map_err(|_| AppError::Repository("User Error ".to_string()))?;
         let result: Option<InfrastructureUser> =  self
             .client
             .db
@@ -39,16 +39,16 @@ impl UserRepository for SurrealUserRepository {
                     INSERT INTO user CONTENT $user RETURN AFTER")
             .bind(("uid", ctx.user_id_as_str()))
             .bind(("user", record))
-            .await.map_err(|err| ApplicationError::Repository(err.to_string()))?.take(0)  // Get first query result
-            .map_err(|err| ApplicationError::Repository(err.to_string()))?;
+            .await.map_err(|err| AppError::Repository(err.to_string()))?.take(0)  // Get first query result
+            .map_err(|err| AppError::Repository(err.to_string()))?;
         match result {
             Some(user) => Ok(user.try_into()?),
-            None => Err(ApplicationError::Repository("User not created!".to_string())),
+            None => Err(AppError::Repository("User not created!".to_string())),
         }
         
     }
-    async fn update(&self,ctx: RequestContex, user: User) -> AppResult<User>{
-        let record: InfrastructureUser = user.try_into().map_err(|err: InfrastructureError| ApplicationError::Domain(err.into()))?;
+    async fn update(&self,ctx: SubjectContex, user: User) -> AppResult<User>{
+        let record: InfrastructureUser = user.try_into().map_err(|err: InfrastructureError| AppError::Domain(err.into()))?;
         let result: Option<InfrastructureUser> =  self
             .client
             .db
@@ -57,28 +57,28 @@ impl UserRepository for SurrealUserRepository {
             .bind(("user", record.clone()))
             .bind(("uid", ctx.user_id_as_str()))
             .bind(("id", record.id()))
-            .await.map_err(|err| ApplicationError::Repository(err.to_string()))?.take(0)  // Get first query result
-            .map_err(|err| ApplicationError::Repository(err.to_string()))?;
+            .await.map_err(|err| AppError::Repository(err.to_string()))?.take(0)  // Get first query result
+            .map_err(|err| AppError::Repository(err.to_string()))?;
         match result {
             Some(user) => Ok(user.try_into()?),
-            None => Err(ApplicationError::Repository("User not Updated!".to_string())),
+            None => Err(AppError::Repository("User not Updated!".to_string())),
         }
     }
-    async fn get_by_id(&self, _request_contex: RequestContex, id: UserId) -> AppResult<User>{
+    async fn get_by_id(&self, _request_contex: SubjectContex, id: UserId) -> AppResult<User>{
         let id: InfrastructureUserId = id.into();
         let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("SELECT * FROM ONLY user:$id")
             .bind(("id", id))
-            .await.map_err(|err| ApplicationError::Repository(err.to_string()))?.take(0)  // Get first query result
-            .map_err(|err| ApplicationError::Repository(err.to_string()))?;
+            .await.map_err(|err| AppError::Repository(err.to_string()))?.take(0)  // Get first query result
+            .map_err(|err| AppError::Repository(err.to_string()))?;
         match result {
             Some(user) => Ok(user.try_into()?),
-            None => Err(ApplicationError::Repository("User not Updated!".to_string())),
+            None => Err(AppError::Repository("User not Updated!".to_string())),
         }
     }
-    async fn delete(&self,ctx: RequestContex, id: UserId) -> AppResult<bool>{
+    async fn delete(&self,ctx: SubjectContex, id: UserId) -> AppResult<bool>{
         let result: Option<InfrastructureUser> =  self
             .client
             .db
@@ -86,44 +86,44 @@ impl UserRepository for SurrealUserRepository {
                     DELETE person:$id RETURN BEFORE")
             .bind(("uid", ctx.user_id_as_str()))
             .bind(("id", id.id()))
-            .await.map_err(|err| ApplicationError::Repository(err.to_string()))?.take(0)  // Get first query result
-            .map_err(|err| ApplicationError::Repository(err.to_string()))?;
+            .await.map_err(|err| AppError::Repository(err.to_string()))?.take(0)  // Get first query result
+            .map_err(|err| AppError::Repository(err.to_string()))?;
         match result {
             Some(_) => Ok(true),
-            None => Err(ApplicationError::Repository("User not deleted!".to_string())),
+            None => Err(AppError::Repository("User not deleted!".to_string())),
         }
     }
-    async fn get_by_email(&self, _request_contex:RequestContex, email: Email) -> AppResult<User>{
+    async fn get_by_email(&self, _request_contex:SubjectContex, email: Email) -> AppResult<User>{
         let email: InfrastructureEmail = email.try_into()?;
         let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("SELECT * FROM user WHERE email = $email LIMIT 1")
             .bind(("email", email))
-            .await.map_err(|err| ApplicationError::Repository(err.to_string()))?.take(0)  // Get first query result
-            .map_err(|err| ApplicationError::Repository(err.to_string()))?;
+            .await.map_err(|err| AppError::Repository(err.to_string()))?.take(0)  // Get first query result
+            .map_err(|err| AppError::Repository(err.to_string()))?;
         match result {
             Some(user) => Ok(user.try_into()?),
-            None => Err(ApplicationError::Repository("User not Updated!".to_string())),
+            None => Err(AppError::Repository("User not Updated!".to_string())),
         }
     }
-    async fn get_by_username(&self,_request_contex:RequestContex,  username: Username) -> AppResult<User>{
+    async fn get_by_username(&self,_request_contex:SubjectContex,  username: Username) -> AppResult<User>{
         let username: InfrastructureUsername = username.try_into()?;
         let result: Option<InfrastructureUser> =  self
             .client
             .db
             .query("SELECT * FROM user WHERE username = $username LIMIT 1")
             .bind(("username", username))
-            .await.map_err(|err| ApplicationError::Repository(err.to_string()))?.take(0)  // Get first query result
-            .map_err(|err| ApplicationError::Repository(err.to_string()))?;
+            .await.map_err(|err| AppError::Repository(err.to_string()))?.take(0)  // Get first query result
+            .map_err(|err| AppError::Repository(err.to_string()))?;
         match result {
             Some(user) => Ok(user.try_into()?),
-            None => Err(ApplicationError::Repository("User not Updated!".to_string())),
+            None => Err(AppError::Repository("User not Updated!".to_string())),
         }
     }
     
     // TODO: Add permissions field into requert contex to be prossesed as required take into account murge all roles permessions with the user ones
-    async fn get_users_paginated(&self,ctx: RequestContex ,sort_by: &[SortBy], page: u32, page_size: u32) -> AppResult<Vec<User>>{
+    async fn get_users_paginated(&self,ctx: SubjectContex ,sort_by: &[SortBy], page: u32, page_size: u32) -> AppResult<Vec<User>>{
         let mut order = String::new();
         
         for ord in sort_by{
@@ -141,21 +141,21 @@ impl UserRepository for SurrealUserRepository {
             .bind(("order", order))
             .bind(("page_size", page_size))
             .bind(("start_at", page*page_size))
-            .await.map_err(|err| ApplicationError::Repository(err.to_string()))?.take(0).map_err(|err| ApplicationError::Repository(err.to_string()))?;
+            .await.map_err(|err| AppError::Repository(err.to_string()))?.take(0).map_err(|err| AppError::Repository(err.to_string()))?;
         let mut users: Vec<User> = Vec::new();
         for user in result{
-            users.push(user.try_into().map_err(|err: InfrastructureError| ApplicationError::Repository(err.to_string()))?);
+            users.push(user.try_into().map_err(|err: InfrastructureError| AppError::Repository(err.to_string()))?);
         }
         Ok(users)
     }
 
-    async fn raw_query(&self,ctx: RequestContex, query: String) -> AppResult<UserQueryResult>{
+    async fn raw_query(&self,ctx: SubjectContex, query: String) -> AppResult<UserQueryResult>{
         let response = self.client
             .db
             .query(query)
-            .await.map_err(|err| ApplicationError::Repository(err.to_string()))?;
+            .await.map_err(|err| AppError::Repository(err.to_string()))?;
         // Using the extension trait
-        Ok(response.into_user_result().await.map_err(|err| ApplicationError::Repository(err.to_string()))?.try_into()?)
+        Ok(response.into_user_result().await.map_err(|err| AppError::Repository(err.to_string()))?.try_into()?)
     }
 }
 

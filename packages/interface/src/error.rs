@@ -1,4 +1,4 @@
-use application::error::ApplicationError;
+use application::error::AppError;
 use domain::error::DomainError;
 // use surrealdb::error::{Api, Db};
 use thiserror::Error;
@@ -9,7 +9,7 @@ pub enum InterfaceError {
     Domain(#[from] DomainError),
 
     #[error("Application  failed: {0}")]
-    Application(#[from] ApplicationError),
+    Application(#[from] AppError),
 
     #[error("Repository failed: {0}")]
     Http(String),
@@ -57,26 +57,26 @@ impl From<InterfaceError> for DomainError {
     }
 }
 
-// For converting InterfaceError to ApplicationError
-impl From<InterfaceError> for ApplicationError {
+// For converting InterfaceError to AppError
+impl From<InterfaceError> for AppError {
     fn from(error: InterfaceError) -> Self {
         match error {
-            InterfaceError::Domain(domain_error) => ApplicationError::Domain(domain_error),
+            InterfaceError::Domain(domain_error) => AppError::Domain(domain_error),
             InterfaceError::Application(application_error) => application_error,
             InterfaceError::Http(repo_error) => {
-                ApplicationError::Repository(repo_error.to_string())
+                AppError::Repository(repo_error.to_string())
             }
-            InterfaceError::Forbidden => ApplicationError::Forbidden,
+            InterfaceError::Forbidden => AppError::Forbidden,
             InterfaceError::ValidationError(validation_error) => {
-                ApplicationError::ValidationError(validation_error)
+                AppError::ValidationError(validation_error)
             }
             InterfaceError::UnHashedPassword => {
-                ApplicationError::ValidationError("UnHashed Password".to_string())
+                AppError::ValidationError("UnHashed Password".to_string())
             }
             InterfaceError::InvalidTimestamp => {
-                ApplicationError::ValidationError("Invalid DateTime".to_string())
+                AppError::ValidationError("Invalid DateTime".to_string())
             }
-            InterfaceError::Unknown(un) => ApplicationError::Unknown(un),
+            InterfaceError::Unknown(un) => AppError::Unknown(un),
         }
     }
 }
