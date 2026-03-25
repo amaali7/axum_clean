@@ -1,5 +1,6 @@
 pub mod report;
 pub mod role;
+pub mod usecase_discriptor;
 pub mod user;
 
 pub mod user_servies {

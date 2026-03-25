@@ -1,9 +1,10 @@
+pub mod config;
 pub mod environment;
 pub mod membership;
 pub mod permissions;
 pub mod specifications;
 pub mod temporary_grant;
-
+pub mod value_objects;
 pub use membership::Membership;
 pub use permissions::Permission;
 

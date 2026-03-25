@@ -33,4 +33,23 @@ impl NetworkInformation {
     pub fn connection_type(&self) -> ConnectionType {
         self.connection_type.clone()
     }
+
+    pub fn is_corporate_ip(&self) -> bool {
+        if let ConnectionType::CorporateNetwork = self.connection_type {
+            return true;
+        }
+        false
+    }
+    pub fn is_celluar_network(&self) -> bool {
+        if let ConnectionType::Cellular = self.connection_type {
+            return true;
+        }
+        false
+    }
+    pub fn is_public_network(&self) -> bool {
+        if let ConnectionType::PublicWifi = self.connection_type {
+            return true;
+        }
+        false
+    }
 }
