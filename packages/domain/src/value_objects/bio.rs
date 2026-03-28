@@ -26,8 +26,8 @@ impl Bio {
 
         Ok(Self(bio.to_string()))
     }
-    pub fn bio(&self) -> String {
-        self.0.clone()
+    pub fn bio(&self) -> &String {
+        &self.0
     }
 }
 

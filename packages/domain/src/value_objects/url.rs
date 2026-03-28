@@ -27,8 +27,8 @@ impl Url {
         Ok(Self(raw.into()))
     }
 
-    pub fn url(&self) -> String {
-        self.0.clone()
+    pub fn url(&self) -> &String {
+        &self.0
     }
 }
 

@@ -18,10 +18,10 @@ pub struct PrivilegeTenantOutput {
 impl From<Tenant> for PrivilegeTenantOutput {
     fn from(value: Tenant) -> Self {
         Self {
-            id: value.id(),
-            name: value.name(),
-            description: value.description(),
-            create_at: value.created_at(),
+            id: value.id().clone(),
+            name: value.name().clone(),
+            description: value.description().clone(),
+            create_at: value.created_at().clone(),
         }
     }
 }
@@ -40,10 +40,10 @@ pub struct PrivilegePermissionOutput {
 impl From<Permission> for PrivilegePermissionOutput {
     fn from(value: Permission) -> Self {
         Self {
-            resource: value.resource(),
-            action: value.action(),
-            description: value.description(),
-            create_at: DateTime::default(),
+            resource: value.resource().clone(),
+            action: value.action().clone(),
+            description: value.description().clone(),
+            create_at: DateTime::default().clone(),
         }
     }
 }
@@ -61,10 +61,10 @@ pub struct PrivilegeMembershipOutput {
 impl From<Membership> for PrivilegeMembershipOutput {
     fn from(value: Membership) -> Self {
         Self {
-            user_id: value.user_id(),
-            tenet_id: value.tenet_id(),
-            roles: value.roles(),
-            create_at: DateTime::default(),
+            user_id: value.user_id().clone(),
+            tenet_id: value.tenet_id().clone(),
+            roles: value.roles().clone(),
+            create_at: DateTime::default().clone(),
         }
     }
 }
@@ -84,12 +84,12 @@ pub struct PrivilegeTemporaryGrantOutput {
 impl From<TemporaryGrant> for PrivilegeTemporaryGrantOutput {
     fn from(value: TemporaryGrant) -> Self {
         Self {
-            user_id: value.user_id(),
-            description: value.description(),
-            resource: value.resource(),
-            action: value.action(),
-            expires_at: value.expires_at(),
-            create_at: DateTime::default(),
+            user_id: value.user_id().clone(),
+            description: value.description().clone(),
+            resource: value.resource().clone(),
+            action: value.action().clone(),
+            expires_at: value.expires_at().clone(),
+            create_at: DateTime::default().clone(),
         }
     }
 }

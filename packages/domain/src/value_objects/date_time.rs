@@ -21,8 +21,8 @@ impl Weekday {
             Weekday::Friday => 5,
         }
     }
-    pub fn all() -> [Weekday; 7] {
-        [
+    pub fn all() -> &'static [Weekday; 7] {
+        &[
             Weekday::Saturday,
             Weekday::Sunday,
             Weekday::Monday,
@@ -42,8 +42,8 @@ impl DateTime {
         Self(datetime)
     }
 
-    pub fn datetime(&self) -> i64 {
-        self.0
+    pub fn datetime(&self) -> &i64 {
+        &self.0
     }
     pub fn is_before(&self, other: &DateTime) -> bool {
         self.0 < other.0

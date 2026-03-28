@@ -20,8 +20,8 @@ impl Addressess {
         self.0.insert(address);
     }
 
-    pub fn addressess(&self) -> HashSet<Address> {
-        self.0.clone()
+    pub fn addressess(&self) -> &HashSet<Address> {
+        &self.0
     }
 }
 
@@ -63,24 +63,24 @@ impl Address {
     pub fn new() -> AddressBuilder {
         AddressBuilder::default()
     }
-    pub fn title(&self) -> String {
-        self.title.clone()
+    pub fn title(&self) -> &String {
+        &self.title
     }
-    pub fn street(&self) -> String {
-        self.street.clone()
+    pub fn street(&self) -> &String {
+        &self.street
     }
-    pub fn city(&self) -> String {
-        self.city.clone()
+    pub fn city(&self) -> &String {
+        &self.city
     }
-    pub fn state(&self) -> String {
-        self.state.clone()
+    pub fn state(&self) -> &String {
+        &self.state
     }
-    pub fn postal_code(&self) -> String {
-        self.postal_code.clone()
+    pub fn postal_code(&self) -> &String {
+        &self.postal_code
     }
 
-    pub fn country(&self) -> String {
-        self.country.clone()
+    pub fn country(&self) -> &String {
+        &self.country
     }
 }
 

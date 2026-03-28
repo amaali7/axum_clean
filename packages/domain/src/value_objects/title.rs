@@ -40,8 +40,8 @@ impl Title {
         Ok(Self(title.to_string()))
     }
 
-    pub fn title(&self) -> String {
-        self.0.clone()
+    pub fn title(&self) -> &String {
+        &self.0
     }
 }
 

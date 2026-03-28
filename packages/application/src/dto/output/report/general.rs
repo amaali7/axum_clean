@@ -29,17 +29,17 @@ pub struct GeneralReportContentOutput {
 impl From<Report> for GeneralReportOutput {
     fn from(value: Report) -> Self {
         Self {
-            id: value.id(),
-            title: value.title(),
-            content: GeneralReportContentOutput::from(value.content()),
-            report_type: value.report_type(),
-            author_id: value.author_id(),
-            created_at: value.created_at(),
-            updated_at: value.updated_at(),
-            due_date: value.due_date(),
-            version: value.version(),
-            owner_tenant: value.owner_tenant(),
-            shared_with_tenants: value.shared_with_tenants(),
+            id: value.id().clone().clone(),
+            title: value.title().clone().clone(),
+            content: GeneralReportContentOutput::from(value.content().clone()),
+            report_type: value.report_type().clone().clone(),
+            author_id: value.author_id().clone().clone(),
+            created_at: value.created_at().clone().clone(),
+            updated_at: value.updated_at().clone().clone(),
+            due_date: value.due_date().clone().clone(),
+            version: value.version().clone().clone(),
+            owner_tenant: value.owner_tenant().clone().clone(),
+            shared_with_tenants: value.shared_with_tenants().clone().clone(),
         }
     }
 }
@@ -47,8 +47,8 @@ impl From<Report> for GeneralReportOutput {
 impl From<ReportContent> for GeneralReportContentOutput {
     fn from(value: ReportContent) -> Self {
         Self {
-            body: value.body(),
-            attachments: value.attachments(),
+            body: value.body().clone().clone(),
+            attachments: value.attachments().clone().clone(),
         }
     }
 }

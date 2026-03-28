@@ -224,7 +224,7 @@ impl QueryBuilder {
     }
 
     pub fn build(self) -> QueryAst {
-        self.query
+        &self.query
     }
 }
 #+end_src

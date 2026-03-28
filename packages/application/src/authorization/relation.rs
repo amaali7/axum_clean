@@ -52,7 +52,7 @@ impl AuthorizationRelation {
 }
 
 impl Deref for AuthorizationRelation {
-    type Target = String;
+    type Target = str;
 
     fn deref(&self) -> &Self::Target {
         &self.0

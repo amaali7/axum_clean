@@ -25,42 +25,42 @@ impl UserProfile {
         UserProfileBuilder::new()
     }
 
-    pub fn first_name(&self) -> Name {
-        self.first_name.clone()
+    pub fn first_name(&self) -> &Name {
+        &self.first_name
     }
-    pub fn last_name(&self) -> Name {
-        self.last_name.clone()
+    pub fn last_name(&self) -> &Name {
+        &self.last_name
     }
-    pub fn password(&self) -> Password {
-        self.password.clone()
+    pub fn password(&self) -> &Password {
+        &self.password
     }
-    pub fn bio(&self) -> Option<Bio> {
-        self.bio.clone()
+    pub fn bio(&self) -> &Option<Bio> {
+        &self.bio
     }
-    pub fn phone_numbers(&self) -> PhoneNumbers {
-        self.phone_numbers.clone()
+    pub fn phone_numbers(&self) -> &PhoneNumbers {
+        &self.phone_numbers
     }
-    pub fn avatar_url(&self) -> Option<Url> {
-        self.avatar_url.clone()
+    pub fn avatar_url(&self) -> &Option<Url> {
+        &self.avatar_url
     }
-    pub fn date_of_birth(&self) -> Option<DateTime> {
-        self.date_of_birth.clone()
+    pub fn date_of_birth(&self) -> &Option<DateTime> {
+        &self.date_of_birth
     }
-    pub fn addresses(&self) -> Addressess {
-        self.addressess.clone()
+    pub fn addresses(&self) -> &Addressess {
+        &self.addressess
     }
-    pub fn website(&self) -> Option<Url> {
-        self.website.clone()
+    pub fn website(&self) -> &Option<Url> {
+        &self.website
     }
     pub fn is_deleted(&self) -> bool {
         self.is_deleted
     }
-    pub fn created_at(&self) -> DateTime {
-        self.created_at.clone()
+    pub fn created_at(&self) -> &DateTime {
+        &self.created_at
     }
 
-    pub fn updated_at(&self) -> DateTime {
-        self.updated_at.clone()
+    pub fn updated_at(&self) -> &DateTime {
+        &self.updated_at
     }
 }
 

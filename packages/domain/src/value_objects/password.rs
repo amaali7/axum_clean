@@ -50,8 +50,8 @@ impl NoneHashedPassword {
         Ok(Self(password.to_string()))
     }
 
-    pub fn none_hashed_password(&self) -> String {
-        self.0.clone()
+    pub fn none_hashed_password(&self) -> &String {
+        &self.0
     }
 }
 
@@ -84,8 +84,8 @@ impl HashedPassword {
         Ok(Self(hashed_password.to_string()))
     }
 
-    pub fn hashed_password(&self) -> String {
-        self.0.clone()
+    pub fn hashed_password(&self) -> &String {
+        &self.0
     }
 }
 

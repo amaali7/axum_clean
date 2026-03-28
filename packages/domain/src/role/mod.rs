@@ -13,8 +13,8 @@ impl RoleId {
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
-    pub fn id(&self) -> String {
-        self.0.clone()
+    pub fn id(&self) -> &String {
+        &self.0
     }
 
     pub fn as_str(&self) -> &str {
@@ -23,7 +23,7 @@ impl RoleId {
 }
 
 impl Deref for RoleId {
-    type Target = String;
+    type Target = str;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
@@ -53,27 +53,27 @@ impl Role {
     pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
         self.permissions.iter().any(|p| p.matches(resource, action))
     }
-    pub fn id(&self) -> RoleId {
-        self.id.clone()
+    pub fn id(&self) -> &RoleId {
+        &self.id
     }
 
-    pub fn name(&self) -> Name {
-        self.name.clone()
+    pub fn name(&self) -> &Name {
+        &self.name
     }
-    pub fn description(&self) -> Description {
-        self.description.clone()
+    pub fn description(&self) -> &Description {
+        &self.description
     }
 
-    pub fn permissions(&self) -> HashSet<Permission> {
-        self.permissions.clone()
+    pub fn permissions(&self) -> &HashSet<Permission> {
+        &self.permissions
     }
 
     pub fn is_system_role(&self) -> bool {
         self.is_system_role
     }
 
-    pub fn created_at(&self) -> DateTime {
-        self.created_at.clone()
+    pub fn created_at(&self) -> &DateTime {
+        &self.created_at
     }
 }
 

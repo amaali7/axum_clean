@@ -43,8 +43,8 @@ impl Resource {
         Ok(Self(resource.to_string()))
     }
 
-    pub fn resource(&self) -> String {
-        self.0.clone()
+    pub fn resource(&self) -> &String {
+        &self.0
     }
 }
 

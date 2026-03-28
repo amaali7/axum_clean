@@ -12,8 +12,8 @@ impl Diff {
     pub fn new(diff: &str) -> Self {
         Self(diff.to_string())
     }
-    pub fn diff(&self) -> String {
-        self.0.clone()
+    pub fn diff(&self) -> &String {
+        &self.0
     }
 }
 

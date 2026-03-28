@@ -29,11 +29,11 @@ pub struct PrivilegeUserProfileOutput {
 impl From<User> for PrivilegeUserOutput {
     fn from(value: User) -> Self {
         Self {
-            id: value.id(),
-            email: value.email(),
-            username: value.username(),
-            profile: PrivilegeUserProfileOutput::from(value.profile()),
-            status: value.status(),
+            id: value.id().clone(),
+            email: value.email().clone(),
+            username: value.username().clone(),
+            profile: PrivilegeUserProfileOutput::from(value.profile().clone()),
+            status: value.status().clone(),
         }
     }
 }
@@ -41,13 +41,13 @@ impl From<User> for PrivilegeUserOutput {
 impl From<UserProfile> for PrivilegeUserProfileOutput {
     fn from(value: UserProfile) -> Self {
         Self {
-            first_name: value.first_name(),
-            last_name: value.last_name(),
-            bio: value.bio(),
-            phone_numbers: value.phone_numbers(),
-            avatar_url: value.avatar_url(),
-            addresses: value.addresses(),
-            website: value.website(),
+            first_name: value.first_name().clone(),
+            last_name: value.last_name().clone(),
+            bio: value.bio().clone(),
+            phone_numbers: value.phone_numbers().clone(),
+            avatar_url: value.avatar_url().clone(),
+            addresses: value.addresses().clone(),
+            website: value.website().clone(),
         }
     }
 }

@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use domain::User;
 
-use crate::{ SubjectContex, authorization::ports::AuthorizationService, dto::user_dto::{input::UpdateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository};
+use crate::{ SubjectContex, authorization::ports::AuthorizationService, dto::user_dto::{input::UpdateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository, usecases::usecase_discriptor::UseCaseDescriptor};
 
 
 pub struct UpdateUserUseCase{
@@ -15,4 +15,12 @@ impl UpdateUserUseCase {
         let user: User = self.repo.update( ctx, input.try_into()?).await?;
         Ok(OwnerUserOutput::from(user))
     }
+}
+
+impl UseCaseDescriptor for UpdateUserUseCase {
+    const NAME: &'static str = "update_user";
+
+    const RESOURCE: &'static str= "user";
+
+    const ACTION: &'static str = "update";
 }

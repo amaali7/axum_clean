@@ -36,23 +36,23 @@ impl Environment {
         }
     }
 
-    pub fn time(&self) -> EnvironmentTime {
-        self.time.clone()
+    pub fn time(&self) -> &EnvironmentTime {
+        &self.time
     }
 
-    pub fn location(&self) -> EnvironmentLocation {
-        self.location.clone()
+    pub fn location(&self) -> &EnvironmentLocation {
+        &self.location
     }
 
-    pub fn device(&self) -> DeviceSecurityPosture {
-        self.device.clone()
+    pub fn device(&self) -> &DeviceSecurityPosture {
+        &self.device
     }
 
-    pub fn network(&self) -> NetworkInformation {
-        self.network.clone()
+    pub fn network(&self) -> &NetworkInformation {
+        &self.network
     }
 
-    pub fn risk(&self) -> RiskSignals {
-        self.risk.clone()
+    pub fn risk(&self) -> &RiskSignals {
+        &self.risk
     }
 }

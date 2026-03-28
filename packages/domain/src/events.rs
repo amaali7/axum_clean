@@ -1,4 +1,4 @@
-use std::ops::{Deref, DerefMut};
+use std::ops::Deref;
 
 use crate::{DateTime, UserId};
 
@@ -15,8 +15,8 @@ impl DomainEventId {
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
-    pub fn id(&self) -> String {
-        self.0.clone()
+    pub fn id(&self) -> &String {
+        &self.0
     }
 
     pub fn as_str(&self) -> &str {
@@ -25,15 +25,9 @@ impl DomainEventId {
 }
 
 impl Deref for DomainEventId {
-    type Target = String;
+    type Target = str;
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for DomainEventId {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 
@@ -72,25 +66,25 @@ impl<T: Clone + Event> DomainEvent<T> {
             after,
         }
     }
-    pub fn id(&self) -> DomainEventId {
-        self.id.clone()
+    pub fn id(&self) -> &DomainEventId {
+        &self.id
     }
-    pub fn table(&self) -> Table {
-        self.table.clone()
+    pub fn table(&self) -> &Table {
+        &self.table
     }
-    pub fn action(&self) -> String {
-        self.action.clone()
+    pub fn action(&self) -> &String {
+        &self.action
     }
-    pub fn user_id(&self) -> UserId {
-        self.user_id.clone()
+    pub fn user_id(&self) -> &UserId {
+        &self.user_id
     }
-    pub fn occurred_at(&self) -> DateTime {
-        self.occurred_at.clone()
+    pub fn occurred_at(&self) -> &DateTime {
+        &self.occurred_at
     }
-    pub fn before(&self) -> T {
-        self.before.clone()
+    pub fn before(&self) -> &T {
+        &self.before
     }
-    pub fn after(&self) -> T {
-        self.after.clone()
+    pub fn after(&self) -> &T {
+        &self.after
     }
 }

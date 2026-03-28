@@ -34,8 +34,8 @@ impl UserPreferences {
         self.two_factor_auth
     }
 
-    pub fn language(&self) -> Language {
-        self.language.clone()
+    pub fn language(&self) -> &Language {
+        &self.language
     }
 }
 

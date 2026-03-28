@@ -25,10 +25,10 @@ pub struct GeneralUserProfileOutput {
 impl From<User> for GeneralUserOutput {
     fn from(value: User) -> Self {
         Self {
-            id: value.id(),
-            email: value.email(),
-            username: value.username(),
-            profile: GeneralUserProfileOutput::from(value.profile()),
+            id: value.id().clone(),
+            email: value.email().clone(),
+            username: value.username().clone(),
+            profile: GeneralUserProfileOutput::from(value.profile().clone()),
         }
     }
 }
@@ -36,14 +36,14 @@ impl From<User> for GeneralUserOutput {
 impl From<UserProfile> for GeneralUserProfileOutput {
     fn from(value: UserProfile) -> Self {
         Self {
-            first_name: value.first_name(),
+            first_name: value.first_name().clone(),
 
-            last_name: value.last_name(),
-            bio: value.bio(),
-            phone_numbers: value.phone_numbers(),
-            avatar_url: value.avatar_url(),
-            addresses: value.addresses(),
-            website: value.website(),
+            last_name: value.last_name().clone(),
+            bio: value.bio().clone(),
+            phone_numbers: value.phone_numbers().clone(),
+            avatar_url: value.avatar_url().clone(),
+            addresses: value.addresses().clone(),
+            website: value.website().clone(),
         }
     }
 }

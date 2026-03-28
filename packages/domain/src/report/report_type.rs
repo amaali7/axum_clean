@@ -7,8 +7,8 @@ impl ReportTypeId {
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
-    pub fn id(&self) -> String {
-        self.0.clone()
+    pub fn id(&self) -> &String {
+        &self.0
     }
 
     pub fn as_str(&self) -> &str {
@@ -17,7 +17,7 @@ impl ReportTypeId {
 }
 
 impl std::ops::Deref for ReportTypeId {
-    type Target = String;
+    type Target = str;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
@@ -57,7 +57,7 @@ impl ReportType {
         }
     }
 
-    pub fn created_at(&self) -> DateTime {
-        self.created_at.clone()
+    pub fn created_at(&self) -> &DateTime {
+        &self.created_at
     }
 }

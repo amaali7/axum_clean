@@ -25,8 +25,8 @@ impl Email {
         Ok(Self(email))
     }
 
-    pub fn email(&self) -> String {
-        self.0.clone()
+    pub fn email(&self) -> &String {
+        &self.0
     }
 
     // pub fn domain(&self) -> &str {

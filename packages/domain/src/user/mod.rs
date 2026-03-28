@@ -16,8 +16,8 @@ impl UserId {
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
-    pub fn id(&self) -> String {
-        self.0.clone()
+    pub fn id(&self) -> &String {
+        &self.0
     }
 
     pub fn as_str(&self) -> &str {
@@ -26,7 +26,7 @@ impl UserId {
 }
 
 impl std::ops::Deref for UserId {
-    type Target = String;
+    type Target = str;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -67,41 +67,41 @@ impl User {
     }
 
     // Basic getters - return references to avoid cloning
-    pub fn id(&self) -> UserId {
-        self.id.clone()
+    pub fn id(&self) -> &UserId {
+        &self.id
     }
 
-    pub fn email(&self) -> Email {
-        self.email.clone()
+    pub fn email(&self) -> &Email {
+        &self.email
     }
 
-    pub fn username(&self) -> Username {
-        self.username.clone()
+    pub fn username(&self) -> &Username {
+        &self.username
     }
 
-    pub fn profile(&self) -> UserProfile {
-        self.profile.clone()
+    pub fn profile(&self) -> &UserProfile {
+        &self.profile
     }
 
-    pub fn preferences(&self) -> UserPreferences {
-        self.preferences.clone()
+    pub fn preferences(&self) -> &UserPreferences {
+        &self.preferences
     }
 
-    pub fn status(&self) -> UserStatus {
-        self.status
+    pub fn status(&self) -> &UserStatus {
+        &self.status
     }
 
     // Collection getters - return references to avoid cloning
-    pub fn failed_logins(&self) -> Option<u64> {
-        self.failed_logins.clone()
+    pub fn failed_logins(&self) -> &Option<u64> {
+        &self.failed_logins
     }
 
-    pub fn locked_until(&self) -> Option<DateTime> {
-        self.locked_until.clone()
+    pub fn locked_until(&self) -> &Option<DateTime> {
+        &self.locked_until
     }
 
-    pub fn last_login(&self) -> Option<DateTime> {
-        self.last_login.clone()
+    pub fn last_login(&self) -> &Option<DateTime> {
+        &self.last_login
     }
 }
 

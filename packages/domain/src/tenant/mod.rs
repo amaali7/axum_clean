@@ -19,8 +19,8 @@ impl TenantId {
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
-    pub fn id(&self) -> String {
-        self.0.clone()
+    pub fn id(&self) -> &String {
+        &self.0
     }
 
     pub fn as_str(&self) -> &str {
@@ -29,7 +29,7 @@ impl TenantId {
 }
 
 impl std::ops::Deref for TenantId {
-    type Target = String;
+    type Target = str;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -66,19 +66,19 @@ impl Tenant {
         }
     }
 
-    pub fn id(&self) -> TenantId {
-        self.id.clone()
+    pub fn id(&self) -> &TenantId {
+        &self.id
     }
 
-    pub fn name(&self) -> Name {
-        self.name.clone()
+    pub fn name(&self) -> &Name {
+        &self.name
     }
-    pub fn description(&self) -> Description {
-        self.description.clone()
+    pub fn description(&self) -> &Description {
+        &self.description
     }
 
-    pub fn created_at(&self) -> DateTime {
-        self.created_at.clone()
+    pub fn created_at(&self) -> &DateTime {
+        &self.created_at
     }
 }
 

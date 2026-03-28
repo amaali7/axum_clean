@@ -9,9 +9,9 @@ pub struct GeneralRoleOutput {
 impl From<Role> for GeneralRoleOutput {
     fn from(value: Role) -> Self {
         Self {
-            id: value.id(),
-            name: value.name(),
-            description: value.description(),
+            id: value.id().clone(),
+            name: value.name().clone(),
+            description: value.description().clone(),
         }
     }
 }

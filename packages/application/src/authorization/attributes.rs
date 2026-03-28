@@ -52,7 +52,7 @@ impl AttributeKey {
 }
 
 impl Deref for AttributeKey {
-    type Target = String;
+    type Target = str;
 
     fn deref(&self) -> &Self::Target {
         &self.0

@@ -26,8 +26,8 @@ impl Conutry {
 
         Ok(Self(conutry.to_string()))
     }
-    pub fn conutry(&self) -> String {
-        self.0.clone()
+    pub fn conutry(&self) -> &String {
+        &self.0
     }
 }
 

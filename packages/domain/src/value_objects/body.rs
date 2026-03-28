@@ -20,8 +20,8 @@ impl Body {
 
         Ok(Self(body.to_string()))
     }
-    pub fn body(&self) -> String {
-        self.0.clone()
+    pub fn body(&self) -> &String {
+        &self.0
     }
 }
 

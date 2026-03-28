@@ -25,15 +25,15 @@ impl RiskSignals {
         }
     }
 
-    pub fn score(&self) -> u8 {
-        self.score
+    pub fn score(&self) -> &u8 {
+        &self.score
     }
 
-    pub fn authentication_strength(&self) -> AuthenticationStrength {
-        self.authentication_strength.clone()
+    pub fn authentication_strength(&self) -> &AuthenticationStrength {
+        &self.authentication_strength
     }
 
-    pub fn recent_transaction_count(&self) -> u32 {
-        self.recent_transaction_count
+    pub fn recent_transaction_count(&self) -> &u32 {
+        &self.recent_transaction_count
     }
 }

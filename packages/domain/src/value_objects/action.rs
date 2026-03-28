@@ -43,8 +43,8 @@ impl Action {
         Ok(Self(action.to_string()))
     }
 
-    pub fn action(&self) -> String {
-        self.0.clone()
+    pub fn action(&self) -> &String {
+        &self.0
     }
 }
 

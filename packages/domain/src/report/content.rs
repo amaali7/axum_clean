@@ -21,16 +21,16 @@ impl ReviewComment {
             created_at,
         }
     }
-    pub fn reviewer_id(&self) -> UserId {
-        self.reviewer_id.clone()
+    pub fn reviewer_id(&self) -> &UserId {
+        &self.reviewer_id
     }
 
-    pub fn comment(&self) -> Comment {
-        self.comment.clone()
+    pub fn comment(&self) -> &Comment {
+        &self.comment
     }
 
-    pub fn created_at(&self) -> DateTime {
-        self.created_at.clone()
+    pub fn created_at(&self) -> &DateTime {
+        &self.created_at
     }
 }
 
@@ -48,20 +48,20 @@ impl ReportContent {
         ReportContentBuilder::new()
     }
 
-    pub fn body(&self) -> Body {
-        self.body.clone()
+    pub fn body(&self) -> &Body {
+        &self.body
     }
 
-    pub fn attachments(&self) -> HashSet<Url> {
-        self.attachments.clone()
+    pub fn attachments(&self) -> &HashSet<Url> {
+        &self.attachments
     }
 
-    pub fn review_comments(&self) -> HashSet<ReviewComment> {
-        self.review_comments.clone()
+    pub fn review_comments(&self) -> &HashSet<ReviewComment> {
+        &self.review_comments
     }
 
-    pub fn rejection_reason(&self) -> Option<Comment> {
-        self.rejection_reason.clone()
+    pub fn rejection_reason(&self) -> &Option<Comment> {
+        &self.rejection_reason
     }
 }
 

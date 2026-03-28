@@ -21,16 +21,16 @@ impl TenantEnvironmentConfig {
             max_risk_score,
         }
     }
-    pub fn allowed_time_window(&self) -> Option<TimeWindow> {
-        self.allowed_time_window.clone()
+    pub fn allowed_time_window(&self) -> &Option<TimeWindow> {
+        &self.allowed_time_window
     }
-    pub fn allowed_networks(&self) -> Vec<NetworkZone> {
-        self.allowed_networks.clone()
+    pub fn allowed_networks(&self) -> &Vec<NetworkZone> {
+        &self.allowed_networks
     }
     pub fn require_managed_device(&self) -> bool {
         self.require_managed_device
     }
-    pub fn max_risk_score(&self) -> Option<u8> {
-        self.max_risk_score
+    pub fn max_risk_score(&self) -> &Option<u8> {
+        &self.max_risk_score
     }
 }

@@ -23,8 +23,8 @@ impl PhoneNumbers {
         self.0.insert(phone_number);
     }
 
-    pub fn phone_numbers(&self) -> HashSet<PhoneNumber> {
-        self.0.clone()
+    pub fn phone_numbers(&self) -> &HashSet<PhoneNumber> {
+        &self.0
     }
 }
 
@@ -73,11 +73,11 @@ impl PhoneNumber {
             number: cleaned,
         })
     }
-    pub fn title(&self) -> Title {
-        self.title.clone()
+    pub fn title(&self) -> &Title {
+        &self.title
     }
-    pub fn number(&self) -> String {
-        self.number.clone()
+    pub fn number(&self) -> &String {
+        &self.number
     }
 }
 

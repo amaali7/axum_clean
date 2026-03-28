@@ -20,8 +20,8 @@ impl Description {
         Ok(Self(description.to_string()))
     }
 
-    pub fn description(&self) -> String {
-        self.0.clone()
+    pub fn description(&self) -> &String {
+        &self.0
     }
 }
 

@@ -14,8 +14,8 @@ impl EnvironmentTime {
         }
     }
 
-    pub fn timestamp(&self) -> DateTime {
-        self.timestamp.clone()
+    pub fn timestamp(&self) -> &DateTime {
+        &self.timestamp
     }
 
     pub fn is_business_hours(&self) -> bool {

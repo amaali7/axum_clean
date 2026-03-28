@@ -31,19 +31,19 @@ impl Membership {
         self.roles.iter().any(|p| p == role_id)
     }
 
-    pub fn tenet_id(&self) -> TenantId {
-        self.tenet_id.clone()
+    pub fn tenet_id(&self) -> &TenantId {
+        &self.tenet_id
     }
 
-    pub fn user_id(&self) -> UserId {
-        self.user_id.clone()
+    pub fn user_id(&self) -> &UserId {
+        &self.user_id
     }
-    pub fn roles(&self) -> HashSet<RoleId> {
-        self.roles.clone()
+    pub fn roles(&self) -> &HashSet<RoleId> {
+        &self.roles
     }
 
-    pub fn created_at(&self) -> DateTime {
-        self.created_at.clone()
+    pub fn created_at(&self) -> &DateTime {
+        &self.created_at
     }
 }
 

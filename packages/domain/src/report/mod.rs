@@ -1,6 +1,5 @@
 pub mod content;
 pub mod report_type;
-pub mod specifications;
 pub mod status;
 
 use std::collections::HashSet;
@@ -24,8 +23,8 @@ impl ReportId {
     pub fn new(id: &str) -> Self {
         Self(id.to_string())
     }
-    pub fn id(&self) -> String {
-        self.0.clone()
+    pub fn id(&self) -> &String {
+        &self.0
     }
 
     pub fn as_str(&self) -> &str {
@@ -34,7 +33,7 @@ impl ReportId {
 }
 
 impl std::ops::Deref for ReportId {
-    type Target = String;
+    type Target = str;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
@@ -90,56 +89,56 @@ impl Report {
     }
 
     // Geters
-    pub fn id(&self) -> ReportId {
-        self.id.clone()
+    pub fn id(&self) -> &ReportId {
+        &self.id
     }
 
-    pub fn title(&self) -> Title {
-        self.title.clone()
+    pub fn title(&self) -> &Title {
+        &self.title
     }
 
-    pub fn content(&self) -> ReportContent {
-        self.content.clone()
+    pub fn content(&self) -> &ReportContent {
+        &self.content
     }
 
-    pub fn report_type(&self) -> ReportType {
-        self.report_type.clone()
+    pub fn report_type(&self) -> &ReportType {
+        &self.report_type
     }
 
-    pub fn status(&self) -> ReportStatus {
-        self.status.clone()
+    pub fn status(&self) -> &ReportStatus {
+        &self.status
     }
 
-    pub fn owner_tenant(&self) -> TenantId {
-        self.owner_tenant.clone()
+    pub fn owner_tenant(&self) -> &TenantId {
+        &self.owner_tenant
     }
 
-    pub fn shared_with_tenants(&self) -> HashSet<TenantId> {
-        self.shared_with_tenants.clone()
+    pub fn shared_with_tenants(&self) -> &HashSet<TenantId> {
+        &self.shared_with_tenants
     }
 
-    pub fn author_id(&self) -> UserId {
-        self.author_id.clone()
+    pub fn author_id(&self) -> &UserId {
+        &self.author_id
     }
 
-    pub fn assigned_reviewer_id(&self) -> HashSet<UserId> {
-        self.assigned_reviewer_id.clone()
+    pub fn assigned_reviewer_id(&self) -> &HashSet<UserId> {
+        &self.assigned_reviewer_id
     }
 
-    pub fn created_at(&self) -> DateTime {
-        self.created_at.clone()
+    pub fn created_at(&self) -> &DateTime {
+        &self.created_at
     }
 
-    pub fn updated_at(&self) -> DateTime {
-        self.updated_at.clone()
+    pub fn updated_at(&self) -> &DateTime {
+        &self.updated_at
     }
 
-    pub fn due_date(&self) -> Option<DateTime> {
-        self.due_date.clone()
+    pub fn due_date(&self) -> &Option<DateTime> {
+        &self.due_date
     }
 
-    pub fn version(&self) -> u64 {
-        self.version
+    pub fn version(&self) -> &u64 {
+        &self.version
     }
 }
 
@@ -222,7 +221,7 @@ impl ReportBuilder {
             status: self.status.unwrap_or(ReportStatus::default()),
             author_id: self.author_id,
             assigned_reviewer_id: self.reviewer_id,
-            created_at: self.created_at.unwrap_or(updated_at.clone()),
+            created_at: self.created_at.unwrap_or(updated_at),
             updated_at,
             due_date: self.due,
             version: self.version,

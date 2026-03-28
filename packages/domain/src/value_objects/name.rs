@@ -43,8 +43,8 @@ impl Name {
         Ok(Self(name.to_string()))
     }
 
-    pub fn name(&self) -> String {
-        self.0.clone()
+    pub fn name(&self) -> &String {
+        &self.0
     }
 }
 

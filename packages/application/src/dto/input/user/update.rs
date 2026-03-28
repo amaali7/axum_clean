@@ -8,7 +8,7 @@ use crate::error::AppError;
 
 /// Owner User Output Data
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct UpdateUserInput {
     pub id: UserId,
     pub email: Option<Email>,
@@ -18,7 +18,7 @@ pub struct UpdateUserInput {
     pub status: Option<UserStatus>,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct UpdateUserPreferencesInput {
     pub email_notifications: Option<bool>,
     pub push_notifications: Option<bool>,
@@ -26,7 +26,7 @@ pub struct UpdateUserPreferencesInput {
     pub language: Option<Language>,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct UpdateUserProfileInput {
     pub first_name: Option<Name>,
     pub last_name: Option<Name>,
@@ -39,46 +39,6 @@ pub struct UpdateUserProfileInput {
     pub website: Option<Url>,
 }
 
-impl From<User> for UpdateUserInput {
-    fn from(value: User) -> Self {
-        UpdateUserInput {
-            email: Some(value.email()),
-            username: Some(value.username()),
-            profile: Some(UpdateUserProfileInput::from(value.profile())),
-            preferences: Some(UpdateUserPreferencesInput::from(value.preferences())),
-            status: Some(value.status()),
-            id: value.id(),
-        }
-    }
-}
-
-impl From<UserProfile> for UpdateUserProfileInput {
-    fn from(value: UserProfile) -> Self {
-        UpdateUserProfileInput {
-            first_name: Some(value.first_name()),
-            last_name: Some(value.last_name()),
-            bio: value.bio(),
-            phone_numbers: value.phone_numbers(),
-            avatar_url: value.avatar_url(),
-            date_of_birth: value.date_of_birth(),
-            addresses: value.addresses(),
-            website: value.website(),
-            password: Some(value.password()),
-        }
-    }
-}
-
-impl From<UserPreferences> for UpdateUserPreferencesInput {
-    fn from(value: UserPreferences) -> Self {
-        UpdateUserPreferencesInput {
-            email_notifications: Some(value.email_notifications()),
-            push_notifications: Some(value.push_notifications()),
-            two_factor_auth: Some(value.two_factor_auth()),
-            language: Some(value.language()),
-        }
-    }
-}
-
 /// Mapper from DTO
 
 impl TryFrom<UpdateUserInput> for User {
@@ -87,11 +47,15 @@ impl TryFrom<UpdateUserInput> for User {
     fn try_from(value: UpdateUserInput) -> Result<Self, Self::Error> {
         let mut builder = User::new(value.id);
         builder
-            .set_email(value.email.unwrap_or_default())
-            .set_profile(UserProfile::try_from(value.profile.unwrap_or_default())?)
-            .set_username(value.username.unwrap_or_default())
-            .set_preferences(UserPreferences::from(value.preferences.unwrap_or_default()))
-            .set_status(value.status.unwrap_or_default());
+            .set_email(value.email.unwrap_or_default().clone())
+            .set_profile(UserProfile::try_from(
+                value.profile.unwrap_or_default().clone(),
+            )?)
+            .set_username(value.username.unwrap_or_default().clone())
+            .set_preferences(UserPreferences::from(
+                value.preferences.unwrap_or_default().clone(),
+            ))
+            .set_status(value.status.unwrap_or_default().clone());
         let user = builder.build()?;
 
         Ok(user)

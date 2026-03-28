@@ -30,7 +30,7 @@ impl ApplicationPolicyId {
 }
 
 impl std::ops::Deref for ApplicationPolicyId {
-    type Target = String;
+    type Target = str;
 
     fn deref(&self) -> &Self::Target {
         &self.0

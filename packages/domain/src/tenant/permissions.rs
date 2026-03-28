@@ -29,19 +29,19 @@ impl Permission {
     pub fn matches(&self, resource: &Resource, action: &Action) -> bool {
         &self.resource == resource && &self.action == action
     }
-    pub fn resource(&self) -> Resource {
-        self.resource.clone()
+    pub fn resource(&self) -> &Resource {
+        &self.resource
     }
 
-    pub fn action(&self) -> Action {
-        self.action.clone()
+    pub fn action(&self) -> &Action {
+        &self.action
     }
-    pub fn description(&self) -> Description {
-        self.description.clone()
+    pub fn description(&self) -> &Description {
+        &self.description
     }
 
-    pub fn created_at(&self) -> DateTime {
-        self.created_at.clone()
+    pub fn created_at(&self) -> &DateTime {
+        &self.created_at
     }
 }
 

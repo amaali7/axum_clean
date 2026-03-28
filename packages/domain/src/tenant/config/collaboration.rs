@@ -23,17 +23,17 @@ impl TenantCollaborationConfig {
         }
     }
 
-    pub fn trusted_tenants(&self) -> Vec<TenantId> {
-        self.trusted_tenants.clone()
+    pub fn trusted_tenants(&self) -> &Vec<TenantId> {
+        &self.trusted_tenants
     }
-    pub fn allowed_modes(&self) -> Vec<CollaborationMode> {
-        self.allowed_modes.clone()
+    pub fn allowed_modes(&self) -> &Vec<CollaborationMode> {
+        &self.allowed_modes
     }
-    pub fn federation(&self) -> FederationPolicy {
-        self.federation
+    pub fn federation(&self) -> &FederationPolicy {
+        &self.federation
     }
-    pub fn access_level(&self) -> CollaborationAccessLevel {
-        self.access_level
+    pub fn access_level(&self) -> &CollaborationAccessLevel {
+        &self.access_level
     }
 }
 

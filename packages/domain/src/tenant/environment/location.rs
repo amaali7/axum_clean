@@ -17,7 +17,7 @@ impl EnvironmentLocation {
     pub fn new(zone: LocationZone) -> Self {
         Self { zone }
     }
-    pub fn zone(&self) -> LocationZone {
-        self.zone.clone()
+    pub fn zone(&self) -> &LocationZone {
+        &self.zone
     }
 }

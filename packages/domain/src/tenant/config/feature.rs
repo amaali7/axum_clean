@@ -19,14 +19,14 @@ impl TenantFeatureConfig {
     }
     // Getters
 
-    pub fn enabled_features(&self) -> Vec<Feature> {
-        self.enabled_features.clone()
+    pub fn enabled_features(&self) -> &Vec<Feature> {
+        &self.enabled_features
     }
-    pub fn limits(&self) -> FeatureLimits {
-        self.limits.clone()
+    pub fn limits(&self) -> &FeatureLimits {
+        &self.limits
     }
-    pub fn rollout(&self) -> FeatureRolloutPolicy {
-        self.rollout
+    pub fn rollout(&self) -> &FeatureRolloutPolicy {
+        &self.rollout
     }
     pub fn is_enabled(&self, feature: Feature) -> bool {
         self.enabled_features.contains(&feature)
@@ -58,14 +58,14 @@ impl FeatureLimits {
         }
     }
 
-    pub fn max_projects(&self) -> u32 {
-        self.max_projects
+    pub fn max_projects(&self) -> &u32 {
+        &self.max_projects
     }
-    pub fn max_users(&self) -> u32 {
-        self.max_users
+    pub fn max_users(&self) -> &u32 {
+        &self.max_users
     }
-    pub fn api_rate_limit(&self) -> u32 {
-        self.api_rate_limit
+    pub fn api_rate_limit(&self) -> &u32 {
+        &self.api_rate_limit
     }
 }
 

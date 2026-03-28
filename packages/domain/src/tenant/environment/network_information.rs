@@ -27,11 +27,11 @@ impl NetworkInformation {
     }
 
     pub fn is_secure_transport(&self) -> bool {
-        self.is_secure_transport.clone()
+        self.is_secure_transport
     }
 
-    pub fn connection_type(&self) -> ConnectionType {
-        self.connection_type.clone()
+    pub fn connection_type(&self) -> &ConnectionType {
+        &self.connection_type
     }
 
     pub fn is_corporate_ip(&self) -> bool {

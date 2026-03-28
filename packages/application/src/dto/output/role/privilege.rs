@@ -17,12 +17,12 @@ pub struct PrivilegeRoleOutput {
 impl From<Role> for PrivilegeRoleOutput {
     fn from(value: Role) -> Self {
         Self {
-            id: value.id(),
-            name: value.name(),
-            description: value.description(),
-            permissions: value.permissions(),
-            is_system_role: value.is_system_role(),
-            created_at: value.created_at(),
+            id: value.id().clone(),
+            name: value.name().clone(),
+            description: value.description().clone(),
+            permissions: value.permissions().clone(),
+            is_system_role: value.is_system_role().clone(),
+            created_at: value.created_at().clone(),
         }
     }
 }

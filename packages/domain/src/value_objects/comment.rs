@@ -20,8 +20,8 @@ impl Comment {
 
         Ok(Self(comment.to_string()))
     }
-    pub fn comment(&self) -> String {
-        self.0.clone()
+    pub fn comment(&self) -> &String {
+        &self.0
     }
 }
 

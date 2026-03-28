@@ -1,0 +1,252 @@
+#+TITLE: Axum Clean Architecture
+#+AUTHOR: Project Architecture State
+#+STARTUP: overview
+#+PROPERTY: header-args:plantuml :results file :exports both
+
+* System Architecture Overview
+
+This document describes:
+
+1. Current system status
+2. Authorization subsystem
+3. Next architectural step
+4. Runtime request lifecycle
+
+The diagrams reflect the *current repository state*, not a future redesign.
+
+---
+
+* Current Architecture (Domain → Infrastructure)
+
+#+begin_src plantuml :file current-architecture.png
+@startuml
+title Axum Clean - Current System Architecture (Detailed)
+
+skinparam componentStyle rectangle
+
+package "Interface Layer (Axum)" {
+
+  class HttpRouter
+  class HttpHandler
+  class Extractors
+  class DTO_Request
+  class DTO_Response
+}
+
+package "Application Layer" {
+
+  package "UseCases" {
+      interface UseCaseDescriptor {
+        +NAME
+        +RESOURCE
+        +ACTION
+        +AUDIT
+        +METRICS
+        +RATE_LIMITED
+        +CACHEABLE
+      }
+
+      interface UseCase
+      class UseCaseInput
+      class UseCaseOutput
+  }
+
+  package "Authorization Context" {
+      class RiskSignals
+      class EnvironmentTime
+      class EnvironmentLocation
+      class DeviceSecurityPosture
+      class NetworkInformation
+  }
+
+  package "Services (Application)" {
+      class Authorizer
+  }
+}
+
+package "Domain Layer" {
+
+  class Entity
+  class ValueObject
+  class DomainService
+  class DomainPolicy
+  class RepositoryPort <<interface>>
+}
+
+package "Infrastructure Layer" {
+
+  package "Persistence" {
+      class RepositoryImpl
+      class Database
+  }
+
+  package "External Services" {
+      class AuditLogger
+      class MetricsCollector
+  }
+
+  package "System Adapters" {
+      class TimeProvider
+      class NetworkProvider
+      class DeviceInfoProvider
+  }
+}
+
+HttpRouter --> HttpHandler
+HttpHandler --> Extractors
+Extractors --> DTO_Request
+
+HttpHandler --> RiskSignals : build context
+RiskSignals --> EnvironmentTime
+RiskSignals --> EnvironmentLocation
+RiskSignals --> DeviceSecurityPosture
+RiskSignals --> NetworkInformation
+
+HttpHandler --> UseCaseDescriptor
+HttpHandler --> Authorizer
+HttpHandler --> UseCase
+
+UseCase --> Entity
+UseCase --> DomainService
+UseCase --> RepositoryPort
+
+RepositoryPort <|.. RepositoryImpl
+RepositoryImpl --> Database
+
+Authorizer --> RiskSignals
+
+UseCase --> DTO_Response
+
+AuditLogger ..> UseCase
+MetricsCollector ..> UseCase
+
+@enduml
+#+end_src
+
+---
+
+* Authorization Context Model
+
+#+begin_src plantuml :file authorization-context.png
+@startuml
+title Authorization Context Model (Current)
+
+package "Authorization Context" {
+
+class RiskSignals {
+    +time
+    +location
+    +device
+    +network
+}
+
+class EnvironmentTime
+class EnvironmentLocation
+class DeviceSecurityPosture
+class NetworkInformation
+}
+
+package "Authorization" {
+class Authorizer
+}
+
+RiskSignals --> EnvironmentTime
+RiskSignals --> EnvironmentLocation
+RiskSignals --> DeviceSecurityPosture
+RiskSignals --> NetworkInformation
+
+Authorizer --> RiskSignals : evaluate()
+
+@enduml
+#+end_src
+
+---
+
+* Next Step Architecture (Minimal Evolution)
+
+Goal: connect UseCaseDescriptor with authorization input.
+
+#+begin_src plantuml :file next-step-architecture.png
+@startuml
+title Next Step - Descriptor Binding Added
+
+package "Application Layer" {
+
+interface UseCaseDescriptor
+
+class AuthorizationInput {
+    resource
+    action
+    subject
+    risk
+}
+
+class AuthorizationAdapter
+class Authorizer
+class RiskSignals
+}
+
+AuthorizationAdapter --> UseCaseDescriptor
+AuthorizationAdapter --> RiskSignals
+AuthorizationAdapter --> AuthorizationInput
+
+Authorizer --> AuthorizationInput
+
+@enduml
+#+end_src
+
+---
+
+* Request Lifecycle (Sequence Diagram)
+
+#+begin_src plantuml :file request-sequence.png
+@startuml
+title Request Execution Flow
+
+actor Client
+
+participant Router
+participant Handler
+participant RiskSignals
+participant Authorizer
+participant UseCase
+participant Repository
+database DB
+
+Client -> Router : HTTP Request
+Router -> Handler : route()
+
+Handler -> RiskSignals : build()
+RiskSignals --> Handler : context
+
+Handler -> Authorizer : authorize(resource, action, context)
+Authorizer --> Handler : decision OK
+
+Handler -> UseCase : execute()
+
+UseCase -> Repository : load/save
+Repository -> DB : query
+DB --> Repository
+Repository --> UseCase
+
+UseCase --> Handler : result
+Handler --> Client : HTTP Response
+
+@enduml
+#+end_src
+
+---
+
+* Architectural Phase
+
+Current phase:
+
+- [X] UseCase identity defined
+- [X] Environment context model
+- [X] Authorization evaluation
+- [ ] Descriptor → Authorization binding
+- [ ] Automated execution pipeline
+
+Next milestone:
+
+Create =AuthorizationInput= as the unified decision object.

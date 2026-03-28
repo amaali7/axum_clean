@@ -24,7 +24,7 @@ impl TenantAuthorizationConfig {
     pub fn require_reviewer_for_publish(&self) -> bool {
         self.require_reviewer_for_publish
     }
-    pub fn default_role(&self) -> Option<RoleId> {
-        self.default_role.clone()
+    pub fn default_role(&self) -> &Option<RoleId> {
+        &self.default_role
     }
 }

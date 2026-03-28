@@ -42,19 +42,19 @@ pub struct AutherReviewCommentOutput {
 impl From<Report> for AutherReportOutput {
     fn from(value: Report) -> Self {
         Self {
-            id: value.id(),
-            title: value.title(),
-            content: AutherReportContentOutput::from(value.content()),
-            report_type: value.report_type(),
-            status: value.status(),
-            author_id: value.author_id(),
-            assigned_reviewer_id: value.assigned_reviewer_id(),
-            created_at: value.created_at(),
-            updated_at: value.updated_at(),
-            due_date: value.due_date(),
-            version: value.version(),
-            owner_tenant: value.owner_tenant(),
-            shared_with_tenants: value.shared_with_tenants(),
+            id: value.id().clone().clone(),
+            title: value.title().clone().clone(),
+            content: AutherReportContentOutput::from(value.content().clone()),
+            report_type: value.report_type().clone().clone(),
+            status: value.status().clone().clone(),
+            author_id: value.author_id().clone().clone(),
+            assigned_reviewer_id: value.assigned_reviewer_id().clone().clone(),
+            created_at: value.created_at().clone().clone(),
+            updated_at: value.updated_at().clone().clone(),
+            due_date: value.due_date().clone().clone(),
+            version: value.version().clone().clone(),
+            owner_tenant: value.owner_tenant().clone().clone(),
+            shared_with_tenants: value.shared_with_tenants().clone().clone(),
         }
     }
 }
@@ -62,14 +62,15 @@ impl From<Report> for AutherReportOutput {
 impl From<ReportContent> for AutherReportContentOutput {
     fn from(value: ReportContent) -> Self {
         Self {
-            body: value.body(),
-            attachments: value.attachments(),
+            body: value.body().clone().clone(),
+            attachments: value.attachments().clone().clone(),
             review_comments: value
                 .review_comments()
                 .into_iter()
-                .map(|item| AutherReviewCommentOutput::from(item))
-                .collect(),
-            rejection_reason: value.rejection_reason(),
+                .map(|item| AutherReviewCommentOutput::from(item.clone()))
+                .collect::<HashSet<_>>()
+                .clone(),
+            rejection_reason: value.rejection_reason().clone().clone(),
         }
     }
 }
@@ -77,9 +78,9 @@ impl From<ReportContent> for AutherReportContentOutput {
 impl From<ReviewComment> for AutherReviewCommentOutput {
     fn from(value: ReviewComment) -> Self {
         Self {
-            reviewer_id: value.reviewer_id(),
-            comment: value.comment(),
-            created_at: value.created_at(),
+            reviewer_id: value.reviewer_id().clone().clone(),
+            comment: value.comment().clone().clone(),
+            created_at: value.created_at().clone().clone(),
         }
     }
 }

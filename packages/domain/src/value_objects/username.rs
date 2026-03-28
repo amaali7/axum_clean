@@ -40,8 +40,8 @@ impl Username {
         Ok(Self(username.to_string()))
     }
 
-    pub fn username(&self) -> String {
-        self.0.clone()
+    pub fn username(&self) -> &String {
+        &self.0
     }
 }
 

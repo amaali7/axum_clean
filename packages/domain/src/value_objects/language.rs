@@ -20,8 +20,8 @@ impl Language {
 
         Ok(Self(language.to_string()))
     }
-    pub fn language(&self) -> String {
-        self.0.clone()
+    pub fn language(&self) -> &String {
+        &self.0
     }
 }
 
