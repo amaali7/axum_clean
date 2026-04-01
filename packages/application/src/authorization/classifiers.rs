@@ -1,5 +1,5 @@
-use domain::tenant::{
-    environment::network_information::NetworkInformation, value_objects::network_zone::NetworkZone,
+use domain::{
+    tenant::environment::network_information::NetworkInformation, value_objects::NetworkZone,
 };
 
 pub struct NetworkZoneClassifier;

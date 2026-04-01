@@ -42,6 +42,14 @@ pub struct ReportType {
     created_at: DateTime,
 }
 
+#[derive(Debug)]
+pub struct ReportTypeParts {
+    pub id: ReportTypeId,
+    pub name: Name,
+    pub description: Description,
+    pub created_at: DateTime,
+}
+
 impl ReportType {
     pub fn new(
         id: ReportTypeId,
@@ -50,6 +58,21 @@ impl ReportType {
         created_at: DateTime,
     ) -> Self {
         Self {
+            id,
+            name,
+            description,
+            created_at,
+        }
+    }
+
+    pub fn into_parts(self) -> ReportTypeParts {
+        let Self {
+            id,
+            name,
+            description,
+            created_at,
+        } = self;
+        ReportTypeParts {
             id,
             name,
             description,

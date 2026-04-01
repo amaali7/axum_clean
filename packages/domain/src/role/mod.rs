@@ -1,10 +1,12 @@
-pub mod specifications;
+pub mod permissions;
 use std::collections::HashSet;
 use std::ops::{Deref, DerefMut};
 
+pub use permissions::{Permission, PermissionId, PermissionParts};
+
 use crate::error::DomainResult;
 use crate::value_objects::{Action, DateTime, Description, Resource};
-use crate::{DomainError, Event, Name, Permission};
+use crate::{DomainError, Event, Name};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct RoleId(String);
@@ -40,9 +42,20 @@ pub struct Role {
     id: RoleId,
     name: Name,
     description: Description,
-    permissions: HashSet<Permission>,
+    permissions: HashSet<PermissionId>,
     is_system_role: bool,
     created_at: DateTime,
+    version: u64,
+}
+#[derive(Debug, Clone)]
+pub struct RoleParts {
+    pub id: RoleId,
+    pub name: Name,
+    pub description: Description,
+    pub permissions: HashSet<PermissionId>,
+    pub is_system_role: bool,
+    pub created_at: DateTime,
+    pub version: u64,
 }
 
 impl Role {
@@ -50,9 +63,27 @@ impl Role {
         RoleBuilder::new(id)
     }
 
-    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
-        self.permissions.iter().any(|p| p.matches(resource, action))
+    pub fn into_parts(self) -> RoleParts {
+        let Self {
+            id,
+            name,
+            description,
+            permissions,
+            is_system_role,
+            created_at,
+            version,
+        } = self;
+        RoleParts {
+            id,
+            name,
+            description,
+            permissions,
+            is_system_role,
+            created_at,
+            version,
+        }
     }
+
     pub fn id(&self) -> &RoleId {
         &self.id
     }
@@ -64,7 +95,7 @@ impl Role {
         &self.description
     }
 
-    pub fn permissions(&self) -> &HashSet<Permission> {
+    pub fn permissions(&self) -> &HashSet<PermissionId> {
         &self.permissions
     }
 
@@ -75,6 +106,9 @@ impl Role {
     pub fn created_at(&self) -> &DateTime {
         &self.created_at
     }
+    pub fn version(&self) -> &u64 {
+        &self.version
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -82,9 +116,10 @@ pub struct RoleBuilder {
     id: RoleId,
     name: Option<Name>,
     description: Option<Description>,
-    permissions: HashSet<Permission>,
+    permissions: HashSet<PermissionId>,
     is_system_role: Option<bool>,
     created_at: Option<DateTime>,
+    version: u64,
 }
 
 impl RoleBuilder {
@@ -96,6 +131,7 @@ impl RoleBuilder {
             permissions: HashSet::new(),
             is_system_role: None,
             created_at: None,
+            version: 0,
         }
     }
 
@@ -103,12 +139,16 @@ impl RoleBuilder {
         self.name = Some(name);
         self
     }
+    pub fn set_version(&mut self, version: u64) -> &mut Self {
+        self.version = version;
+        self
+    }
     pub fn set_description(&mut self, description: Description) -> &mut Self {
         self.description = Some(description);
         self
     }
 
-    pub fn add_permission(&mut self, permission: Permission) -> &mut Self {
+    pub fn add_permission(&mut self, permission: PermissionId) -> &mut Self {
         self.permissions.insert(permission);
         self
     }
@@ -139,6 +179,7 @@ impl RoleBuilder {
             created_at: self.created_at.ok_or(DomainError::ValidationError(
                 "Created At not found".to_string(),
             ))?,
+            version: self.version,
         })
     }
 }

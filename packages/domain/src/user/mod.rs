@@ -56,6 +56,20 @@ pub struct User {
     failed_logins: Option<u64>,
     locked_until: Option<DateTime>,
     last_login: Option<DateTime>,
+    version: u64,
+}
+#[derive(Debug, Default, Clone)]
+pub struct UserParts {
+    pub id: UserId,
+    pub email: Email,
+    pub username: Username,
+    pub profile: UserProfile,
+    pub preferences: UserPreferences,
+    pub status: UserStatus,
+    pub failed_logins: Option<u64>,
+    pub locked_until: Option<DateTime>,
+    pub last_login: Option<DateTime>,
+    pub version: u64,
 }
 
 impl User {
@@ -65,7 +79,33 @@ impl User {
     pub fn is_active(&self) -> bool {
         self.status == UserStatus::Active
     }
-
+    // into parts
+    pub fn into_parts(self) -> UserParts {
+        let User {
+            id,
+            email,
+            username,
+            profile,
+            preferences,
+            status,
+            failed_logins,
+            locked_until,
+            last_login,
+            version,
+        } = self;
+        UserParts {
+            id,
+            email,
+            username,
+            profile,
+            preferences,
+            status,
+            failed_logins,
+            locked_until,
+            last_login,
+            version,
+        }
+    }
     // Basic getters - return references to avoid cloning
     pub fn id(&self) -> &UserId {
         &self.id
@@ -103,6 +143,10 @@ impl User {
     pub fn last_login(&self) -> &Option<DateTime> {
         &self.last_login
     }
+
+    pub fn version(&self) -> &u64 {
+        &self.version
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -125,6 +169,7 @@ pub struct UserBuilder {
     failed_logins: Option<u64>,
     locked_until: Option<DateTime>,
     last_login: Option<DateTime>,
+    version: u64,
 }
 
 impl UserBuilder {
@@ -139,6 +184,7 @@ impl UserBuilder {
             failed_logins: None,
             locked_until: None,
             last_login: None,
+            version: 0,
         }
     }
 
@@ -148,6 +194,10 @@ impl UserBuilder {
     }
     pub fn set_status(&mut self, status: UserStatus) -> &mut Self {
         self.status = status;
+        self
+    }
+    pub fn set_version(&mut self, version: u64) -> &mut Self {
+        self.version = version;
         self
     }
     pub fn set_email(&mut self, email: Email) -> &mut Self {
@@ -196,6 +246,7 @@ impl UserBuilder {
             failed_logins: self.failed_logins,
             locked_until: self.locked_until,
             last_login: self.last_login,
+            version: self.version,
         })
     }
 }

@@ -5,8 +5,6 @@ use crate::{
     DateTime, Description, Event, UserId,
 };
 
-use super::Permission;
-
 #[derive(Debug, Clone)]
 pub struct TemporaryGrant {
     user_id: UserId,
@@ -15,6 +13,18 @@ pub struct TemporaryGrant {
     action: Action,
     expires_at: DateTime,
     created_at: DateTime,
+    version: u64,
+}
+
+#[derive(Debug, Clone)]
+pub struct TemporaryGrantParts {
+    pub user_id: UserId,
+    pub description: Description,
+    pub resource: Resource,
+    pub action: Action,
+    pub expires_at: DateTime,
+    pub created_at: DateTime,
+    pub version: u64,
 }
 
 impl TemporaryGrant {
@@ -25,6 +35,7 @@ impl TemporaryGrant {
         action: Action,
         expires_at: DateTime,
         created_at: DateTime,
+        version: u64,
     ) -> Self {
         Self {
             user_id,
@@ -33,6 +44,28 @@ impl TemporaryGrant {
             created_at,
             resource,
             action,
+            version,
+        }
+    }
+
+    pub fn into_parts(self) -> TemporaryGrantParts {
+        let Self {
+            user_id,
+            description,
+            resource,
+            action,
+            expires_at,
+            created_at,
+            version,
+        } = self;
+        TemporaryGrantParts {
+            user_id,
+            description,
+            resource,
+            action,
+            expires_at,
+            created_at,
+            version,
         }
     }
 
@@ -54,6 +87,9 @@ impl TemporaryGrant {
     }
     pub fn expires_at(&self) -> &DateTime {
         &self.expires_at
+    }
+    pub fn version(&self) -> &u64 {
+        &self.version
     }
 }
 

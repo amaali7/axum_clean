@@ -49,7 +49,6 @@ impl std::fmt::Display for ReportId {
         write!(f, "{}", self.0)
     }
 }
-
 #[derive(Debug, Clone)]
 pub struct Report {
     id: ReportId,
@@ -67,9 +66,59 @@ pub struct Report {
     version: u64,
 }
 
+#[derive(Debug, Clone)]
+pub struct ReportParts {
+    pub id: ReportId,
+    pub title: Title,
+    pub content: ReportContent,
+    pub report_type: ReportType,
+    pub status: ReportStatus,
+    pub author_id: UserId,
+    pub owner_tenant: TenantId,
+    pub shared_with_tenants: HashSet<TenantId>,
+    pub assigned_reviewer_id: HashSet<UserId>,
+    pub created_at: DateTime,
+    pub updated_at: DateTime,
+    pub due_date: Option<DateTime>,
+    pub version: u64,
+}
+
 impl Report {
     pub fn new(id: ReportId, author_id: UserId, owner_tenant: TenantId) -> ReportBuilder {
         ReportBuilder::new(id, author_id, owner_tenant)
+    }
+
+    pub fn into_parts(self) -> ReportParts {
+        let Self {
+            id,
+            title,
+            content,
+            report_type,
+            status,
+            author_id,
+            owner_tenant,
+            shared_with_tenants,
+            assigned_reviewer_id,
+            created_at,
+            updated_at,
+            due_date,
+            version,
+        } = self;
+        ReportParts {
+            id,
+            title,
+            content,
+            report_type,
+            status,
+            author_id,
+            owner_tenant,
+            shared_with_tenants,
+            assigned_reviewer_id,
+            created_at,
+            updated_at,
+            due_date,
+            version,
+        }
     }
 
     pub fn belongs_to(&self, tenant: &TenantId) -> bool {

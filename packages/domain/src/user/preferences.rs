@@ -7,6 +7,13 @@ pub struct UserPreferences {
     two_factor_auth: bool,
     language: Language,
 }
+#[derive(Debug, Clone)]
+pub struct UserPreferencesParts {
+    pub email_notifications: bool,
+    pub push_notifications: bool,
+    pub two_factor_auth: bool,
+    pub language: Language,
+}
 
 impl UserPreferences {
     pub fn new(
@@ -16,6 +23,21 @@ impl UserPreferences {
         language: Language,
     ) -> Self {
         Self {
+            email_notifications,
+            push_notifications,
+            two_factor_auth,
+            language,
+        }
+    }
+    // into parts
+    pub fn into_parts(self) -> UserPreferencesParts {
+        let Self {
+            email_notifications,
+            push_notifications,
+            two_factor_auth,
+            language,
+        } = self;
+        UserPreferencesParts {
             email_notifications,
             push_notifications,
             two_factor_auth,

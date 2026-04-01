@@ -4,7 +4,8 @@ use domain::{tenant::temporary_grant::TemporaryGrant, Role, TenantId, UserId};
 pub mod authorization;
 pub mod dto;
 pub mod error;
-pub mod ports;
+// pub mod ports;
+pub mod projection;
 pub mod usecases;
 
 #[derive(Debug, Clone)]

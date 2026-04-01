@@ -1,0 +1,409 @@
+#+TITLE: Axum Clean — Interaction Graph Architecture
+#+AUTHOR: Architecture Specification
+#+STARTUP: overview
+#+OPTIONS: toc:3 num:nil
+
+* Overview
+
+This document defines the Interaction Graph model used by Axum Clean
+to unify authorization, projection, and business interaction rules.
+
+The system moves from permission checking toward:
+
+#+begin_quote
+Defining the set of interactions an actor may perform within the system.
+#+end_quote
+
+Authorization becomes a graph evaluation problem.
+
+---
+
+* Motivation
+
+Traditional systems evaluate permissions per endpoint:
+
+User → Role → Permission → Allow/Deny
+
+Problems:
+
+- rules scattered across use cases
+- ownership rules duplicated
+- difficult policy evolution
+- hard to simulate behavior
+
+The Interaction Graph solves this by modeling interactions explicitly.
+
+---
+
+* Core Idea
+
+All system behavior is represented as:
+
+Actor ── interacts via Intent ──> Resource
+
+Each interaction becomes a node in a graph.
+
+Policy evaluation determines whether an edge exists.
+
+---
+
+* Interaction Definition
+
+Interaction =
+
+| Component   | Meaning             |
+| ----------- | ------------------- |
+| Actor       | who performs action |
+| Intent      | capability          |
+| Resource    | target entity       |
+| Context     | environment data    |
+| Constraints | validation rules    |
+
+---
+
+Example:
+
+Author --(Approve)--> Report
+
+Constraint:
+
+report.author_id ≠ actor.id
+
+---
+
+* Interaction Graph Model
+
+#+begin_src plantuml
+@startuml
+
+class Actor
+class Intent
+class Resource
+class Interaction
+class Constraint
+
+Actor --> Interaction
+Interaction --> Intent
+Interaction --> Resource
+Interaction --> Constraint
+
+@enduml
+#+end_src
+
+---
+
+* Intents (Capabilities)
+
+Intents represent business actions.
+
+Examples:
+
+- Read
+- Update
+- Create
+- Delete
+- Approve
+- Review
+- Manage
+
+Intents are stable concepts independent of fields.
+
+---
+
+* Resources
+
+Resources are domain aggregates:
+
+- User
+- Report
+- Tenant
+- Role
+- Permission
+
+The graph never exposes database structure.
+
+---
+
+* Constraints
+
+Constraints express dynamic rules.
+
+Examples:
+
+- ownership rules
+- tenant isolation
+- temporal restrictions
+- workflow state validation
+
+---
+
+#+begin_src plantuml
+@startuml
+
+class Constraint {
+evaluate(context)
+}
+
+class OwnershipConstraint
+class TimeConstraint
+class StateConstraint
+
+Constraint <|-- OwnershipConstraint
+Constraint <|-- TimeConstraint
+Constraint <|-- StateConstraint
+
+@enduml
+#+end_src
+
+---
+
+* Interaction Evaluation Flow
+
+1. Actor requests intent
+2. Interaction node located
+3. Policy resolves scopes
+4. Constraints evaluated
+5. Decision produced
+6. Projection derived
+
+---
+
+* Interaction Evaluation Sequence
+
+#+begin_src plantuml
+@startuml
+
+actor Client
+
+Client -> Controller : request
+Controller -> UseCase
+
+UseCase -> InteractionEngine
+InteractionEngine -> PolicyEngine
+PolicyEngine --> InteractionEngine
+
+InteractionEngine -> ConstraintEvaluator
+ConstraintEvaluator --> InteractionEngine
+
+InteractionEngine -> ProjectionBuilder
+ProjectionBuilder --> UseCase
+
+UseCase -> Controller : response
+Controller -> Client
+
+@enduml
+#+end_src
+
+---
+
+* Relationship With Policy Engine
+
+Policy answers:
+
+Which interactions exist?
+
+Interaction Graph answers:
+
+Is this specific interaction valid now?
+
+Policy = structure
+Graph = execution
+
+---
+
+* Field Projection Integration
+
+After interaction approval:
+
+AllowedScopes are produced.
+
+Scopes derive allowed fields automatically.
+
+Projection = Interaction Result View
+
+---
+
+#+begin_src plantuml
+@startuml
+
+class InteractionDecision
+class ScopeResolver
+class Projection
+
+InteractionDecision --> ScopeResolver
+ScopeResolver --> Projection
+
+@enduml
+#+end_src
+
+---
+
+* Read vs Write Unification
+
+Reads and writes follow identical logic.
+
+Read:
+
+Actor --(Read)--> Resource
+
+Write:
+
+Actor --(Update)--> Resource
+
+Both evaluated through same interaction graph.
+
+---
+
+* Ownership Rule Example
+
+Rule:
+
+Author cannot approve own report.
+
+Graph representation:
+
+#+begin_src plantuml
+@startuml
+
+actor Author
+entity Report
+
+Author --> (Approve)
+(Approve) --> Report
+(Approve) --> OwnershipConstraint
+
+@enduml
+#+end_src
+
+Constraint blocks invalid edge.
+
+---
+
+* Reference Resolution Integration
+
+Domain stores only identifiers.
+
+Application resolves identities before graph evaluation.
+
+Flow:
+
+AnythingId → Resolver → Entity Meaning → Interaction Evaluation
+
+---
+
+#+begin_src plantuml
+@startuml
+
+class InteractionEngine
+class ReferenceResolver
+class Repository
+
+InteractionEngine -> ReferenceResolver
+ReferenceResolver -> Repository
+
+@enduml
+#+end_src
+
+---
+
+* Policy Sandbox Integration
+
+Sandbox runs graph evaluation using draft policies.
+
+No production mutation occurs.
+
+---
+
+#+begin_src plantuml
+@startuml
+
+class Sandbox
+class DraftPolicy
+class InteractionEngine
+class SimulationResult
+
+Sandbox -> DraftPolicy
+Sandbox -> InteractionEngine
+InteractionEngine --> SimulationResult
+
+@enduml
+#+end_src
+
+---
+
+* Governance Lifecycle
+
+Policy lifecycle:
+
+Draft
+→ Simulation
+→ Review
+→ Approval
+→ Active
+→ Archived
+
+Interaction graph automatically updates after activation.
+
+---
+
+* Advantages
+
+- Unified authorization model
+- Eliminates special-case logic
+- Supports dynamic policies
+- Enables safe experimentation
+- Simplifies use cases
+- Improves auditability
+
+---
+
+* Tradeoffs
+
+- Higher conceptual abstraction
+- Requires visualization tools
+- Needs policy debugging interface
+
+---
+
+* Mental Model
+
+System behavior becomes:
+
+#+begin_quote
+A graph of allowed interactions instead of permission checks.
+#+end_quote
+
+Actor perceives only reachable nodes.
+
+---
+
+* Relationship to Overall Architecture
+
+Policy Engine → defines edges
+Interaction Graph → validates edges
+Projection System → shapes data
+Domain → executes business logic
+
+---
+
+* Architectural Outcome
+
+The system becomes:
+
+Policy-Governed Interaction Platform
+
+Authorization defines possible actions.
+Projection defines visible data.
+Domain enforces business invariants.
+
+---
+
+* Next Evolution (Future Work)
+
+- Policy DSL definition
+- Graph caching model
+- Incremental policy compilation
+- Visualization dashboard
+- Explainable authorization tracing
+
+#+END

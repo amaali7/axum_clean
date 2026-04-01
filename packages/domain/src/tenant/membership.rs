@@ -10,6 +10,16 @@ pub struct Membership {
     tenet_id: TenantId,
     roles: HashSet<RoleId>,
     created_at: DateTime,
+    version: u64,
+}
+
+#[derive(Debug, Clone)]
+pub struct MembershipParts {
+    pub user_id: UserId,
+    pub tenet_id: TenantId,
+    pub roles: HashSet<RoleId>,
+    pub created_at: DateTime,
+    pub version: u64,
 }
 
 impl Membership {
@@ -18,12 +28,31 @@ impl Membership {
         tenet_id: TenantId,
         roles: HashSet<RoleId>,
         created_at: DateTime,
+        version: u64,
     ) -> Self {
         Self {
             user_id,
             tenet_id,
             roles,
             created_at,
+            version,
+        }
+    }
+
+    pub fn into_parts(self) -> MembershipParts {
+        let Self {
+            user_id,
+            tenet_id,
+            roles,
+            created_at,
+            version,
+        } = self;
+        MembershipParts {
+            user_id,
+            tenet_id,
+            roles,
+            created_at,
+            version,
         }
     }
 
@@ -44,6 +73,10 @@ impl Membership {
 
     pub fn created_at(&self) -> &DateTime {
         &self.created_at
+    }
+
+    pub fn version(&self) -> &u64 {
+        &self.version
     }
 }
 

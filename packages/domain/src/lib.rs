@@ -13,8 +13,8 @@ pub mod value_objects;
 pub use error::DomainError;
 pub use events::{DomainEvent, DomainEventId, Event, Table};
 pub use report::{Report, ReportContent, ReportId, ReportStatus, ReportType};
-pub use role::{Role, RoleId};
-pub use tenant::{Membership, Permission, Tenant, TenantId};
+pub use role::{Permission, PermissionId, PermissionParts, Role, RoleId};
+pub use tenant::{Membership, Tenant, TenantId};
 pub use traits::{AndSpecification, Specification};
 pub use user::{User, UserId, UserProfile};
 pub use value_objects::{

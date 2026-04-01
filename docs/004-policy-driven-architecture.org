@@ -1,0 +1,499 @@
+#+TITLE: Axum Clean — Policy-Driven Authorization & Projection Architecture
+#+AUTHOR: Architecture Specification
+#+STARTUP: overview
+#+OPTIONS: toc:3 num:nil
+
+* Introduction
+
+This document defines the conceptual architecture of the Axum Clean system
+after introducing dynamic authorization and projection.
+
+The system evolves from endpoint authorization toward:
+
+#+begin_quote
+Policy defines what reality an actor can see or modify.
+#+end_quote
+
+Authorization is implemented strictly inside the *Application Layer*.
+
+---
+
+* Architectural Evolution
+
+** Previous Model
+
+UseCase
+→ load entity
+→ check permissions
+→ manually filter fields
+→ build DTO
+
+Problems:
+
+- duplicated authorization
+- fragile security
+- DTO explosion
+- developer responsibility for safety
+
+---
+
+** New Model
+
+Policy → Scopes → Fields → Projection → Response
+
+Authorization shapes data automatically.
+
+---
+
+* Conceptual Layers
+
+| Layer       | Responsibility      |
+| ----------- | ------------------- |
+| Domain      | Business truth      |
+| Application | Policy + projection |
+| Interface   | Transport only      |
+
+---
+
+** Domain Layer
+
+- Pure entities
+- No roles
+- No permissions
+- No visibility logic
+
+Domain answers:
+
+#+begin_quote
+What is true?
+#+end_quote
+
+---
+
+** Application Layer
+
+Contains:
+
+- Policy Engine
+- Scope Resolver
+- Projection Builder
+- Authorization Validation
+- Reference Resolver
+
+Answers:
+
+#+begin_quote
+Who may interact with what?
+#+end_quote
+
+---
+
+** Interface Layer
+
+- HTTP adapters
+- serialization
+- request parsing
+
+No authorization decisions.
+
+---
+
+* Core Vocabulary
+
+** Capability (Intent)
+
+Describes action:
+
+- READ
+- UPDATE
+- APPROVE
+- MANAGE
+
+---
+
+** Scope (Security Meaning)
+
+Semantic protection zones.
+
+Examples:
+
+- PublicProfile
+- PrivateProfile
+- Preferences
+- SecurityCredentials
+- SystemMetadata
+
+Scopes explain *WHY* data is protected.
+
+---
+
+** Field (Data Precision)
+
+Selectable unit of information.
+
+Examples:
+
+- profile.first_name
+- preferences.language
+- email
+- version
+
+Fields evolve frequently.
+
+---
+
+** Mapping (Bridge)
+
+Every field belongs to exactly one scope.
+
+Field → Scope
+
+Example:
+
+email → PrivateProfile
+password → SecurityCredentials
+version → SystemMetadata
+
+This mapping is the single security truth.
+
+---
+
+* Unified Authorization Flow
+
+1. Actor expresses intent
+2. Policy evaluates context
+3. Allowed scopes returned
+4. Fields derived automatically
+5. Projection shapes result
+
+---
+
+* Request → Response Lifecycle
+
+1. HTTP request received
+2. Controller invokes use case
+3. Policy context created
+4. Policy evaluated
+5. Projection generated
+6. Repository queried
+7. Projection applied
+8. Response returned
+
+---
+
+* System Flow Diagram
+
+#+begin_src plantuml
+@startuml
+
+actor Client
+
+rectangle "Interface Layer" {
+Client -> Controller : HTTP Request
+}
+
+rectangle "Application Layer" {
+Controller -> UseCase
+UseCase -> PolicyContextBuilder
+PolicyContextBuilder -> PolicyEngine
+PolicyEngine -> ProjectionBuilder
+UseCase -> Repository
+Repository --> UseCase
+UseCase -> ProjectionApplier
+}
+
+rectangle "Domain Layer" {
+entity User
+entity Report
+}
+
+UseCase -> Controller : Response DTO
+Controller -> Client
+
+@enduml
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-OcoI2w.png]]
+
+---
+
+* Policy Engine Concept
+
+Policy evaluates:
+
+Actor + Capability + Target → AllowedScopes
+
+Policies are data, not code.
+
+---
+
+** Policy Structure
+
+#+begin_src plantuml
+@startuml
+
+class PolicyEngine {
+evaluate(context)
+}
+
+class DynamicPolicy
+class PolicyRule
+class ScopeRule
+class Condition
+
+PolicyEngine --> DynamicPolicy
+DynamicPolicy --> PolicyRule
+PolicyRule --> ScopeRule
+ScopeRule --> Condition
+
+@enduml
+#+end_src
+
+---
+
+* Projection System
+
+Projection derives visible data automatically.
+
+Client does NOT control security.
+
+Policy determines visibility.
+
+---
+
+** Projection Diagram
+
+#+begin_src plantuml
+@startuml
+
+class Projection
+class ProjectionBuilder
+class ProjectionApplier
+
+ProjectionBuilder --> Projection
+ProjectionApplier --> Projection
+
+@enduml
+#+end_src
+
+---
+
+* Read Authorization
+
+AllowedFields =
+all fields whose scope ∈ AllowedScopes
+
+Manual filtering disappears.
+
+---
+
+* Write Authorization (Unified Model)
+
+UpdateFields ⊆ AllowedWritableFields
+
+Unauthorized changes rejected BEFORE domain execution.
+
+Example:
+
+Author cannot approve own report.
+
+Handled by policy constraints.
+
+---
+
+#+begin_src plantuml
+@startuml
+
+class WriteRequest
+class PolicyEngine
+class OwnershipValidator
+
+WriteRequest -> PolicyEngine
+PolicyEngine -> OwnershipValidator
+OwnershipValidator --> Decision
+
+@enduml
+#+end_src
+
+---
+
+* Sensitive Fields Model
+
+Sensitive data stops being special-case logic.
+
+| Field    | Scope               |
+| -------- | ------------------- |
+| password | SecurityCredentials |
+| version  | SystemMetadata      |
+| email    | PrivateProfile      |
+
+Security becomes structural.
+
+---
+
+* Reference Resolution (AnythingId Pattern)
+
+Domain stores identifiers only:
+
+UserId
+PermissionId
+RoleId
+
+Application layer resolves references when needed.
+
+---
+
+#+begin_src plantuml
+@startuml
+
+class UseCase
+class ReferenceResolver
+class Repository
+class Permission
+
+UseCase -> ReferenceResolver
+ReferenceResolver -> Repository
+Repository --> Permission
+
+@enduml
+#+end_src
+
+---
+
+* Dynamic Roles
+
+Roles map dynamically to scopes:
+
+Role → AllowedScopes
+
+Changing DB configuration changes system behavior instantly.
+
+No redeployment required.
+
+---
+
+* Policy Sandbox (Future Extension)
+
+Allows safe policy experimentation.
+
+Flow:
+
+1. Draft policy created
+2. Simulation executed
+3. Result compared
+4. Management approval
+5. Activation
+
+---
+
+#+begin_src plantuml
+@startuml
+
+class PolicySandbox
+class DraftPolicy
+class SimulationContext
+class PolicyEngine
+
+PolicySandbox -> DraftPolicy
+PolicySandbox -> SimulationContext
+PolicySandbox -> PolicyEngine
+PolicyEngine --> SimulationResult
+
+@enduml
+#+end_src
+
+---
+
+* Full Request Sequence
+
+#+begin_src plantuml
+@startuml
+
+actor Client
+
+Client -> Controller : GET /user
+Controller -> UseCase
+
+UseCase -> PolicyContextBuilder
+PolicyContextBuilder -> PolicyEngine
+
+PolicyEngine -> ProjectionBuilder
+ProjectionBuilder --> UseCase : Projection
+
+UseCase -> Repository
+Repository --> UseCase : Entity
+
+UseCase -> ProjectionApplier
+ProjectionApplier --> UseCase : FilteredEntity
+
+UseCase -> Controller : DTO
+Controller -> Client : JSON
+
+@enduml
+#+end_src
+
+---
+
+* Final Mental Model
+
+Policy
+↓
+Scopes
+↓
+Fields
+↓
+Projection
+↓
+Response
+
+Authorization defines visible reality.
+
+---
+
+* Advantages
+
+- Structural security
+- No accidental data leakage
+- Dynamic authorization
+- Cleaner use cases
+- Multi-tenant ready
+- GraphQL-like flexibility without GraphQL complexity
+- Audit-friendly behavior
+
+---
+
+* Tradeoffs
+
+- Higher abstraction complexity
+- Requires mapping discipline
+- Needs debugging visibility tools
+- Slight runtime filtering cost
+
+---
+
+* Architectural Classification
+
+This architecture aligns conceptually with:
+
+- Capability-based access control
+- Attribute-based access control
+- Policy-driven systems
+- Zanzibar-style reasoning models
+
+---
+
+* Next Step
+
+Design Policy DSL:
+
+- policy syntax
+- validation model
+- conflict resolution
+- inheritance rules
+- runtime compilation
+- sandbox execution
+
+This DSL becomes the foundation of dynamic governance.
+
+#+END

@@ -1,0 +1,406 @@
+#+TITLE: Dynamic Field Authorization & Projection
+#+AUTHOR: Axum Clean Architecture
+#+STARTUP: overview
+#+OPTIONS: toc:2
+
+* Goal
+
+Implement **dynamic policy-driven field filtering** without:
+
+- polluting Domain layer
+- duplicating authorization logic
+- introducing GraphQL complexity
+** breaking Clean Architecture
+
+We want:
+
+#+begin_quote
+Authorization engine decides WHICH FIELDS are visible.
+Application layer projects entity accordingly.
+#+end_quote
+
+Result:
+
+- dynamic policies (DB/config driven)
+- role-based + contextual filtering
+- reusable across all use cases
+
+---
+
+** Current Situation (Repo Status)
+
+Domain entity example:
+
+#+begin_src rust
+pub struct User {
+id: UserId,
+email: Email,
+username: Username,
+profile: UserProfile,
+preferences: UserPreferences,
+status: UserStatus,
+failed_logins: Option<u64>,
+locked_until: Option<DateTime>,
+last_login: Option<DateTime>,
+version: u64,
+}
+#+end_src
+
+Observations:
+
+- Domain is PURE ✅
+- Getters expose references ✅
+- Version exists for concurrency ✅
+- Authorization subsystem already dynamic ✅
+
+Missing:
+
+- Authorized projection mechanism
+
+---
+
+** Target Architecture
+
+#+begin_example
+Interface (axum)
+↓
+UseCase
+↓
+Authorization Engine
+↓
+Access Descriptor (allowed fields)
+↓
+Projector
+↓
+DTO/View
+#+end_example
+
+Domain remains unchanged.
+
+---
+
+* Step 1 — Add Projection Module (Application Layer)
+
+Create:
+
+#+begin_example
+application/
+projection/
+mod.rs
+user_field.rs
+user_projector.rs
+#+end_example
+
+---
+
+**user_field.rs**
+
+Defines projection language.
+
+#+begin_src rust
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum UserField {
+Id,
+Email,
+Username,
+Profile,
+Preferences,
+Status,
+FailedLogins,
+LockedUntil,
+LastLogin,
+Version,
+}
+#+end_src
+
+NOTE:
+This is NOT authorization.
+This is only a field identifier.
+
+---
+
+* Step 2 — Introduce Field Groups (Policy Friendly)
+
+Create:
+
+#+begin_src rust
+pub enum UserFieldGroup {
+Public,
+Private,
+Security,
+Audit,
+}
+#+end_src
+
+Mapping resolver:
+
+#+begin_src rust
+impl UserFieldGroup {
+pub fn fields(&self) -> &'static [UserField] {
+match self {
+Self::Public => &[
+UserField::Id,
+UserField::Username,
+UserField::Status,
+],
+Self::Private => &[
+UserField::Email,
+UserField::Preferences,
+],
+Self::Security => &[
+UserField::FailedLogins,
+UserField::LockedUntil,
+],
+Self::Audit => &[
+UserField::LastLogin,
+UserField::Version,
+],
+}
+}
+}
+#+end_src
+
+Policies reference GROUPS, not fields.
+
+---
+
+* Step 3 — Authorization Output (Access Descriptor)
+
+Add to authorization subsystem:
+
+#+begin_src rust
+use std::collections::HashSet;
+
+pub struct UserAccess {
+pub can_read: bool,
+pub allowed_fields: HashSet<UserField>,
+}
+#+end_src
+
+Authorization engine becomes:
+
+#+begin_src rust
+fn evaluate_user_access(
+&self,
+ctx: &RequestContext,
+user: &User,
+) -> UserAccess;
+#+end_src
+
+Policy engine resolves:
+
+#+begin_example
+Role policy
+
+  → tenant rules
+  → risk signals
+  → environment
+  → allowed field groups
+  → concrete fields
+
+#+end_example
+
+---
+
+* Step 4 — Application DTO (Projected View)
+
+Create:
+
+#+begin_src rust
+pub struct UserView {
+pub id: Option<UserId>,
+pub email: Option<Email>,
+pub username: Option<Username>,
+pub profile: Option<UserProfile>,
+pub preferences: Option<UserPreferences>,
+pub status: Option<UserStatus>,
+pub failed_logins: Option<u64>,
+pub locked_until: Option<DateTime>,
+pub last_login: Option<DateTime>,
+pub version: Option<u64>,
+}
+#+end_src
+
+Why Option?
+
+Because visibility is dynamic.
+
+---
+
+* Step 5 — Projector (Core Behavior)
+
+Create:
+
+**user_projector.rs**
+
+#+begin_src rust
+pub struct UserProjector;
+
+impl UserProjector {
+pub fn project(
+user: &User,
+access: &UserAccess,
+) -> UserView {
+
+```
+    let allow = |f| access.allowed_fields.contains(&f);
+
+    UserView {
+        id: allow(UserField::Id)
+            .then(|| user.id().clone()),
+
+        email: allow(UserField::Email)
+            .then(|| user.email().clone()),
+
+        username: allow(UserField::Username)
+            .then(|| user.username().clone()),
+
+        profile: allow(UserField::Profile)
+            .then(|| user.profile().clone()),
+
+        preferences: allow(UserField::Preferences)
+            .then(|| user.preferences().clone()),
+
+        status: allow(UserField::Status)
+            .then(|| user.status().clone()),
+
+        failed_logins: allow(UserField::FailedLogins)
+            .then(|| *user.failed_logins())
+            .flatten(),
+
+        locked_until: allow(UserField::LockedUntil)
+            .then(|| user.locked_until().clone())
+            .flatten(),
+
+        last_login: allow(UserField::LastLogin)
+            .then(|| user.last_login().clone())
+            .flatten(),
+
+        version: allow(UserField::Version)
+            .then(|| *user.version()),
+    }
+}
+```
+
+}
+#+end_src
+
+Domain untouched.
+
+---
+
+* Step 6 — UseCase Changes
+
+Before:
+
+#+begin_src rust
+fn execute(id: UserId) -> UserResponse
+#+end_src
+
+After:
+
+#+begin_src rust
+pub async fn execute(
+&self,
+ctx: RequestContext,
+id: UserId,
+) -> Result<UserView>
+#+end_src
+
+Implementation:
+
+#+begin_src rust
+let user = self.repo.get(id).await?;
+
+let access =
+self.authz.evaluate_user_access(&ctx, &user);
+
+if !access.can_read {
+return Err(Error::Forbidden);
+}
+
+let view = UserProjector::project(&user, &access);
+
+Ok(view)
+#+end_src
+
+---
+
+* Step 7 — Policy Example (Dynamic)
+
+Stored in DB/config:
+
+#+begin_src json
+{
+"role": "support_agent",
+"resource": "user",
+"action": "read",
+"allow_groups": ["Public", "Audit"]
+}
+#+end_src
+
+No code changes required.
+
+---
+
+* Step 8 — Integration with UseCaseDescriptor (Recommended)
+
+Extend descriptor:
+
+#+begin_src rust
+trait UseCaseDescriptor {
+fn resource() -> Resource;
+fn action() -> Action;
+}
+#+end_src
+
+Authorization derives projection automatically.
+
+UseCases no longer manually specify fields.
+
+---
+
+* Step 9 — Responsibilities Summary
+
+| Layer         | Responsibility        |
+| ------------- | --------------------- |
+| Domain        | business rules only   |
+| Repository    | load full entity      |
+| Authorization | decide allowed fields |
+| Application   | project entity        |
+| Interface     | serialize             |
+
+---
+
+* Step 10 — Benefits Achieved
+
+- Dynamic policies
+- No DTO explosion
+- No domain pollution
+- Centralized authorization
+- GraphQL-like flexibility
+- Compile-time entity safety
+
+---
+
+* Future Extensions (No Refactor Needed)
+
+- masked fields
+- encrypted fields
+- audit-only visibility
+- tenant customization
+- risk-based redaction
+
+All reuse same mechanism.
+
+---
+
+* Final Result
+
+#+begin_quote
+Authorization decides DATA SHAPE.
+Application enforces it.
+Domain stays pure.
+#+end_quote
+
+This aligns fully with Clean Architecture and the current Axum Clean repo direction.

@@ -1,12 +1,9 @@
 pub mod config;
 pub mod environment;
 pub mod membership;
-pub mod permissions;
-pub mod specifications;
 pub mod temporary_grant;
-pub mod value_objects;
+use config::TenantConfig;
 pub use membership::Membership;
-pub use permissions::Permission;
 
 use std::ops::DerefMut;
 
@@ -54,15 +51,55 @@ pub struct Tenant {
     name: Name,
     description: Description,
     created_at: DateTime,
+    config: TenantConfig,
+    version: u64,
+}
+
+#[derive(Debug, Clone)]
+pub struct TenantParts {
+    pub id: TenantId,
+    pub name: Name,
+    pub description: Description,
+    pub created_at: DateTime,
+    pub config: TenantConfig,
+    pub version: u64,
 }
 
 impl Tenant {
-    pub fn new(id: TenantId, name: Name, description: Description, created_at: DateTime) -> Self {
+    pub fn new(
+        id: TenantId,
+        name: Name,
+        description: Description,
+        created_at: DateTime,
+        config: TenantConfig,
+        version: u64,
+    ) -> Self {
         Self {
             id,
             name,
             description,
             created_at,
+            config,
+            version,
+        }
+    }
+
+    pub fn into_parts(self) -> TenantParts {
+        let Self {
+            id,
+            name,
+            description,
+            created_at,
+            config,
+            version,
+        } = self;
+        TenantParts {
+            id,
+            name,
+            description,
+            created_at,
+            config,
+            version,
         }
     }
 
@@ -79,6 +116,9 @@ impl Tenant {
 
     pub fn created_at(&self) -> &DateTime {
         &self.created_at
+    }
+    pub fn config(&self) -> &TenantConfig {
+        &self.config
     }
 }
 

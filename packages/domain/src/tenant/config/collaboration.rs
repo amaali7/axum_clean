@@ -7,6 +7,13 @@ pub struct TenantCollaborationConfig {
     federation: FederationPolicy,
     access_level: CollaborationAccessLevel,
 }
+#[derive(Debug, Clone)]
+pub struct TenantCollaborationConfigParts {
+    pub trusted_tenants: Vec<TenantId>,
+    pub allowed_modes: Vec<CollaborationMode>,
+    pub federation: FederationPolicy,
+    pub access_level: CollaborationAccessLevel,
+}
 
 impl TenantCollaborationConfig {
     pub fn new(
@@ -16,6 +23,21 @@ impl TenantCollaborationConfig {
         access_level: CollaborationAccessLevel,
     ) -> Self {
         Self {
+            trusted_tenants,
+            allowed_modes,
+            federation,
+            access_level,
+        }
+    }
+
+    pub fn into_parts(self) -> TenantCollaborationConfigParts {
+        let Self {
+            trusted_tenants,
+            allowed_modes,
+            federation,
+            access_level,
+        } = self;
+        TenantCollaborationConfigParts {
             trusted_tenants,
             allowed_modes,
             federation,

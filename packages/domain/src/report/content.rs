@@ -13,9 +13,29 @@ pub struct ReviewComment {
     created_at: DateTime,
 }
 
+#[derive(Debug, Default)]
+pub struct ReviewCommentParts {
+    pub reviewer_id: UserId,
+    pub comment: Comment,
+    pub created_at: DateTime,
+}
+
 impl ReviewComment {
     pub fn new(reviewer_id: UserId, comment: Comment, created_at: DateTime) -> Self {
         Self {
+            reviewer_id,
+            comment,
+            created_at,
+        }
+    }
+
+    pub fn into_parts(self) -> ReviewCommentParts {
+        let Self {
+            reviewer_id,
+            comment,
+            created_at,
+        } = self;
+        ReviewCommentParts {
             reviewer_id,
             comment,
             created_at,
@@ -41,11 +61,33 @@ pub struct ReportContent {
     review_comments: HashSet<ReviewComment>,
     rejection_reason: Option<Comment>,
 }
+#[derive(Debug)]
+pub struct ReportContentParts {
+    pub body: Body,
+    pub attachments: HashSet<Url>, // URLs or paths to attachments
+    pub review_comments: HashSet<ReviewComment>,
+    pub rejection_reason: Option<Comment>,
+}
 
 impl ReportContent {
     /// Creates a new [`ReportContent`].
     pub fn new() -> ReportContentBuilder {
         ReportContentBuilder::new()
+    }
+
+    pub fn into_parts(self) -> ReportContentParts {
+        let Self {
+            body,
+            attachments,
+            review_comments,
+            rejection_reason,
+        } = self;
+        ReportContentParts {
+            body,
+            attachments,
+            review_comments,
+            rejection_reason,
+        }
     }
 
     pub fn body(&self) -> &Body {
@@ -71,12 +113,6 @@ pub struct ReportContentBuilder {
     attachments: HashSet<Url>, // URLs or paths to attachments
     review_comments: HashSet<ReviewComment>,
     rejection_reason: Option<Comment>,
-}
-
-impl Default for ReportContentBuilder {
-    fn default() -> Self {
-        Self::new()
-    }
 }
 
 impl ReportContentBuilder {

@@ -20,11 +20,57 @@ pub struct UserProfile {
     updated_at: DateTime,
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct UserProfileParts {
+    pub first_name: Name,
+    pub last_name: Name,
+    pub password: Password,
+    pub bio: Option<Bio>,
+    pub phone_numbers: PhoneNumbers,
+    pub avatar_url: Option<Url>,
+    pub date_of_birth: Option<DateTime>,
+    pub addressess: Addressess,
+    pub website: Option<Url>,
+    pub is_deleted: bool,
+    pub created_at: DateTime,
+    pub updated_at: DateTime,
+}
+
 impl UserProfile {
     pub fn new() -> UserProfileBuilder {
         UserProfileBuilder::new()
     }
-
+    // into parts
+    pub fn into_parts(self) -> UserProfileParts {
+        let Self {
+            first_name,
+            last_name,
+            password,
+            bio,
+            phone_numbers,
+            avatar_url,
+            date_of_birth,
+            addressess,
+            website,
+            is_deleted,
+            created_at,
+            updated_at,
+        } = self;
+        UserProfileParts {
+            first_name,
+            last_name,
+            password,
+            bio,
+            phone_numbers,
+            avatar_url,
+            date_of_birth,
+            addressess,
+            website,
+            is_deleted,
+            created_at,
+            updated_at,
+        }
+    }
     pub fn first_name(&self) -> &Name {
         &self.first_name
     }
