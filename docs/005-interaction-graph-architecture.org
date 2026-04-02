@@ -90,6 +90,9 @@ Interaction --> Constraint
 @enduml
 #+end_src
 
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-RUMo6H.png]]
+
 ---
 
 * Intents (Capabilities)
@@ -155,6 +158,9 @@ Constraint <|-- StateConstraint
 @enduml
 #+end_src
 
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-qmJhJF.png]]
+
 ---
 
 * Interaction Evaluation Flow
@@ -193,6 +199,9 @@ Controller -> Client
 
 @enduml
 #+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-RAzGZU.png]]
 
 ---
 
@@ -236,6 +245,9 @@ ScopeResolver --> Projection
 @enduml
 #+end_src
 
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-8apnzP.png]]
+
 ---
 
 * Read vs Write Unification
@@ -275,6 +287,9 @@ Author --> (Approve)
 @enduml
 #+end_src
 
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-EyJdu0.png]]
+
 Constraint blocks invalid edge.
 
 ---
@@ -304,6 +319,9 @@ ReferenceResolver -> Repository
 @enduml
 #+end_src
 
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-ICMSxP.png]]
+
 ---
 
 * Policy Sandbox Integration
@@ -328,6 +346,9 @@ InteractionEngine --> SimulationResult
 
 @enduml
 #+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-u4ANrV.png]]
 
 ---
 

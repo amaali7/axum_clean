@@ -111,6 +111,9 @@ pub allowed_fields: HashSet<UserField>,
 }
 #+end_src
 
+#+RESULTS:
+: error: Could not compile `cargon5qEs4`.
+
 NOTE:
 
 authorization depends on application TYPES only,
@@ -161,6 +164,8 @@ projector.rs
 pub mod user;
 #+end_src
 
+#+RESULTS:
+
 ---
 
 * Step 3 — Field Definition
@@ -183,6 +188,8 @@ Version,
 }
 #+end_src
 
+#+RESULTS:
+
 This enum becomes the shared language between:
 
 ** authorization
@@ -202,6 +209,8 @@ Security,
 Audit,
 }
 #+end_src
+
+#+RESULTS:
 
 Resolver:
 
@@ -230,6 +239,9 @@ UserField::Version,
 }
 }
 #+end_src
+
+#+RESULTS:
+: error: Could not compile `cargoDG7X4d`.
 
 Authorization policies reference GROUPS only.
 

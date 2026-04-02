@@ -214,7 +214,7 @@ Controller -> Client
 #+end_src
 
 #+RESULTS:
-[[file:/tmp/babel-tOY3y0/plantuml-OcoI2w.png]]
+[[file:/tmp/babel-tOY3y0/plantuml-GaWmha.png]]
 
 ---
 
@@ -250,6 +250,9 @@ ScopeRule --> Condition
 @enduml
 #+end_src
 
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-XaBY04.png]]
+
 ---
 
 * Projection System
@@ -276,6 +279,9 @@ ProjectionApplier --> Projection
 
 @enduml
 #+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-k32Qul.png]]
 
 ---
 
@@ -315,6 +321,9 @@ OwnershipValidator --> Decision
 
 @enduml
 #+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-VnGDaf.png]]
 
 ---
 
@@ -358,6 +367,9 @@ Repository --> Permission
 
 @enduml
 #+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-F7TOYw.png]]
 
 ---
 
@@ -403,6 +415,9 @@ PolicyEngine --> SimulationResult
 @enduml
 #+end_src
 
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-H0xTPp.png]]
+
 ---
 
 * Full Request Sequence
@@ -432,6 +447,9 @@ Controller -> Client : JSON
 
 @enduml
 #+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-tOY3y0/plantuml-peJrQB.png]]
 
 ---
 
