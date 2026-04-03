@@ -5,9 +5,9 @@ pub struct ReportTypeId(String);
 
 impl ReportTypeId {
     pub fn new(id: &str) -> Self {
-        Self(id.to_string())
+        Self(id.into())
     }
-    pub fn id(&self) -> &String {
+    pub fn id(&self) -> &str {
         &self.0
     }
 

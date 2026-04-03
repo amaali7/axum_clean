@@ -14,9 +14,9 @@ pub struct UserId(String);
 
 impl UserId {
     pub fn new(id: &str) -> Self {
-        Self(id.to_string())
+        Self(id.into())
     }
-    pub fn id(&self) -> &String {
+    pub fn id(&self) -> &str {
         &self.0
     }
 
@@ -234,12 +234,12 @@ impl UserBuilder {
             id: self.id,
             email: self
                 .email
-                .ok_or(DomainError::ValidationError("Email not found".to_string()))?,
+                .ok_or(DomainError::ValidationError("Email not found".into()))?,
             username: self.username.ok_or(DomainError::ValidationError(
-                "Username not found".to_string(),
+                "Username not found".into(),
             ))?,
             profile: self.profile.ok_or(DomainError::ValidationError(
-                "Profile not found".to_string(),
+                "Profile not found".into(),
             ))?,
             preferences: self.preferences.unwrap_or_default(),
             status: self.status,

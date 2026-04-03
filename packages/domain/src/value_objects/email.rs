@@ -1,44 +1,28 @@
-use std::{
-    ops::{Deref, DerefMut},
-    str::FromStr,
-};
+use std::{ops::Deref, str::FromStr};
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
-pub struct Email(String);
+pub struct Email(SharedStr);
 
 impl Email {
     pub fn new(email: &str) -> DomainResult<Self> {
         let email = email.trim().to_lowercase();
 
         if email.len() > 254 {
-            return Err(DomainError::ValidationError("Email too long".to_string()));
+            return Err(DomainError::ValidationError("Email too long".into()));
         }
 
         if !email.contains('@') {
-            return Err(DomainError::ValidationError(
-                "Email must contain @".to_string(),
-            ));
+            return Err(DomainError::ValidationError("Email must contain @".into()));
         }
 
-        Ok(Self(email))
+        Ok(Self(email.into()))
     }
 
-    pub fn email(&self) -> &String {
+    pub fn email(&self) -> &str {
         &self.0
     }
-
-    // pub fn domain(&self) -> &str {
-    //     self.0.split('@').nth(1).unwrap_or("")
-    // }
-
-    // pub fn is_disposable(&self) -> bool {
-    //     let disposable_domains = ["tempmail.com", "throwaway.com", "guerrillamail.com"];
-    //     disposable_domains
-    //         .iter()
-    //         .any(|domain| self.domain() == *domain)
-    // }
 }
 
 impl Deref for Email {
@@ -46,12 +30,6 @@ impl Deref for Email {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Email {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

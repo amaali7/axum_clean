@@ -1,9 +1,9 @@
-use std::ops::{Deref, DerefMut};
+use std::ops::Deref;
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
-pub struct Title(String);
+pub struct Title(SharedStr);
 
 impl Title {
     pub fn new(title: &str) -> DomainResult<Self> {
@@ -11,13 +11,13 @@ impl Title {
 
         if title.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Title must be at least 3 characters".to_string(),
+                "Title must be at least 3 characters".into(),
             ));
         }
 
         if title.len() > 30 {
             return Err(DomainError::ValidationError(
-                "Title must be less than 30 characters".to_string(),
+                "Title must be less than 30 characters".into(),
             ));
         }
 
@@ -26,21 +26,20 @@ impl Title {
             .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
         {
             return Err(DomainError::ValidationError(
-                "Title can only contain alphanumeric characters, underscores, and hyphens"
-                    .to_string(),
+                "Title can only contain alphanumeric characters, underscores, and hyphens".into(),
             ));
         }
 
         if title.starts_with('_') || title.starts_with('-') {
             return Err(DomainError::ValidationError(
-                "Title cannot start with underscore or hyphen".to_string(),
+                "Title cannot start with underscore or hyphen".into(),
             ));
         }
 
-        Ok(Self(title.to_string()))
+        Ok(Self(title.into()))
     }
 
-    pub fn title(&self) -> &String {
+    pub fn title(&self) -> &str {
         &self.0
     }
 }
@@ -50,12 +49,6 @@ impl Deref for Title {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Title {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

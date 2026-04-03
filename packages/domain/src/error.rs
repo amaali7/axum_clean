@@ -1,5 +1,7 @@
 use thiserror::Error;
 
+use crate::SharedStr;
+
 #[derive(Error, Debug)]
 pub enum DomainError {
     #[error("User error: {0}")]
@@ -15,13 +17,13 @@ pub enum DomainError {
     PermissionError(#[from] PermissionError),
 
     #[error("Validation error: {0}")]
-    ValidationError(String),
+    ValidationError(SharedStr),
 
     #[error("Invalid operation: {0}")]
-    InvalidOperation(String),
+    InvalidOperation(SharedStr),
 
     #[error("Domain invariant violation: {0}")]
-    InvariantViolation(String),
+    InvariantViolation(SharedStr),
 }
 
 #[derive(Error, Debug)]
@@ -30,7 +32,7 @@ pub enum RoleError {
     NotFound,
 
     #[error("Invalid role ID: {0}")]
-    InvalidRoleId(String),
+    InvalidRoleId(SharedStr),
 
     #[error("Permission: {0}")]
     PermissionError(#[from] PermissionError),
@@ -46,7 +48,7 @@ pub enum ReportError {
     NotFound,
 
     #[error("Invalid report ID: {0}")]
-    InvalidReportId(String),
+    InvalidReportId(SharedStr),
 }
 
 #[derive(Error, Debug)]
@@ -55,7 +57,7 @@ pub enum PermissionError {
     NotFound,
 
     #[error("Invalid user ID: {0}")]
-    InvalidPermission(String),
+    InvalidPermission(SharedStr),
 }
 
 #[derive(Error, Debug)]
@@ -64,13 +66,13 @@ pub enum UserError {
     NotFound,
 
     #[error("Invalid user ID: {0}")]
-    InvalidUserId(String),
+    InvalidUserId(SharedStr),
 
     #[error("Invalid email: {0}")]
-    InvalidEmail(String),
+    InvalidEmail(SharedStr),
 
     #[error("Invalid username: {0}")]
-    InvalidUsername(String),
+    InvalidUsername(SharedStr),
 
     #[error("Invalid password")]
     InvalidPassword,

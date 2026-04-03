@@ -3,10 +3,10 @@ use std::{
     str::FromStr,
 };
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Conutry(String);
+pub struct Conutry(SharedStr);
 
 impl Conutry {
     pub fn new(conutry: &str) -> DomainResult<Self> {
@@ -14,19 +14,19 @@ impl Conutry {
 
         if conutry.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Conutry must be at least 3 characters".to_string(),
+                "Conutry must be at least 3 characters".into(),
             ));
         }
 
         if conutry.len() > 60 {
             return Err(DomainError::ValidationError(
-                "conutry must be less than 160 characters".to_string(),
+                "conutry must be less than 160 characters".into(),
             ));
         }
 
-        Ok(Self(conutry.to_string()))
+        Ok(Self(conutry.into()))
     }
-    pub fn conutry(&self) -> &String {
+    pub fn conutry(&self) -> &str {
         &self.0
     }
 }
@@ -36,12 +36,6 @@ impl Deref for Conutry {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Conutry {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

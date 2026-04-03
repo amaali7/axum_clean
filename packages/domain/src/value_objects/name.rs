@@ -1,12 +1,9 @@
-use std::{
-    ops::{Deref, DerefMut},
-    str::FromStr,
-};
+use std::{ops::Deref, str::FromStr};
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
-pub struct Name(String);
+pub struct Name(SharedStr);
 
 impl Name {
     pub fn new(name: &str) -> DomainResult<Self> {
@@ -14,13 +11,13 @@ impl Name {
 
         if name.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Name must be at least 3 characters".to_string(),
+                "Name must be at least 3 characters".into(),
             ));
         }
 
         if name.len() > 30 {
             return Err(DomainError::ValidationError(
-                "Name must be less than 30 characters".to_string(),
+                "Name must be less than 30 characters".into(),
             ));
         }
 
@@ -29,21 +26,20 @@ impl Name {
             .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
         {
             return Err(DomainError::ValidationError(
-                "Name can only contain alphanumeric characters, underscores, and hyphens"
-                    .to_string(),
+                "Name can only contain alphanumeric characters, underscores, and hyphens".into(),
             ));
         }
 
         if name.starts_with('_') || name.starts_with('-') {
             return Err(DomainError::ValidationError(
-                "Name cannot start with underscore or hyphen".to_string(),
+                "Name cannot start with underscore or hyphen".into(),
             ));
         }
 
-        Ok(Self(name.to_string()))
+        Ok(Self(name.into()))
     }
 
-    pub fn name(&self) -> &String {
+    pub fn name(&self) -> &str {
         &self.0
     }
 }
@@ -53,12 +49,6 @@ impl Deref for Name {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Name {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

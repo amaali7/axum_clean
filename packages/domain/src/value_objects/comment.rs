@@ -1,12 +1,9 @@
-use std::{
-    ops::{Deref, DerefMut},
-    str::FromStr,
-};
+use std::{ops::Deref, str::FromStr};
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, Hash, PartialEq, Eq)]
-pub struct Comment(String);
+pub struct Comment(SharedStr);
 
 impl Comment {
     pub fn new(comment: &str) -> DomainResult<Self> {
@@ -14,13 +11,13 @@ impl Comment {
 
         if comment.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Comment must be at least 3 characters".to_string(),
+                "Comment must be at least 3 characters".into(),
             ));
         }
 
-        Ok(Self(comment.to_string()))
+        Ok(Self(comment.into()))
     }
-    pub fn comment(&self) -> &String {
+    pub fn comment(&self) -> &str {
         &self.0
     }
 }
@@ -30,12 +27,6 @@ impl Deref for Comment {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Comment {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

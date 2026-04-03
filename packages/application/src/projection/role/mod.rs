@@ -1,3 +1,7 @@
+use crate::authorization::access_descriptor::AccessableField;
+
+pub mod projector;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum RoleField {
     Id,
@@ -8,6 +12,9 @@ pub enum RoleField {
     CreatedAt,
     Version,
 }
+
+impl AccessableField for RoleField {}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum PermissionField {
     Id,
@@ -17,3 +24,5 @@ pub enum PermissionField {
     CreatedAt,
     Version,
 }
+
+impl AccessableField for PermissionField {}

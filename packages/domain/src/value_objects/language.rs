@@ -1,12 +1,9 @@
-use std::{
-    ops::{Deref, DerefMut},
-    str::FromStr,
-};
+use std::{ops::Deref, str::FromStr};
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Language(String);
+pub struct Language(SharedStr);
 
 impl Language {
     pub fn new(language: &str) -> DomainResult<Self> {
@@ -14,13 +11,13 @@ impl Language {
 
         if language.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Language must be at least 3 characters".to_string(),
+                "Language must be at least 3 characters".into(),
             ));
         }
 
-        Ok(Self(language.to_string()))
+        Ok(Self(language.into()))
     }
-    pub fn language(&self) -> &String {
+    pub fn language(&self) -> &str {
         &self.0
     }
 }
@@ -30,12 +27,6 @@ impl Deref for Language {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Language {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

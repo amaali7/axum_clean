@@ -1,9 +1,9 @@
-use std::ops::{Deref, DerefMut};
+use std::ops::Deref;
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
-pub struct Username(String);
+pub struct Username(SharedStr);
 
 impl Username {
     pub fn new(username: &str) -> DomainResult<Self> {
@@ -11,13 +11,13 @@ impl Username {
 
         if username.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Username must be at least 3 characters".to_string(),
+                "Username must be at least 3 characters".into(),
             ));
         }
 
         if username.len() > 30 {
             return Err(DomainError::ValidationError(
-                "Username must be less than 30 characters".to_string(),
+                "Username must be less than 30 characters".into(),
             ));
         }
 
@@ -27,20 +27,20 @@ impl Username {
         {
             return Err(DomainError::ValidationError(
                 "Username can only contain alphanumeric characters, underscores, and hyphens"
-                    .to_string(),
+                    .into(),
             ));
         }
 
         if username.starts_with('_') || username.starts_with('-') {
             return Err(DomainError::ValidationError(
-                "Username cannot start with underscore or hyphen".to_string(),
+                "Username cannot start with underscore or hyphen".into(),
             ));
         }
 
-        Ok(Self(username.to_string()))
+        Ok(Self(username.into()))
     }
 
-    pub fn username(&self) -> &String {
+    pub fn username(&self) -> &str {
         &self.0
     }
 }
@@ -50,12 +50,6 @@ impl Deref for Username {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Username {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

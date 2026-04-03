@@ -1,12 +1,9 @@
-use std::{
-    ops::{Deref, DerefMut},
-    str::FromStr,
-};
+use std::{ops::Deref, str::FromStr};
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Body(String);
+pub struct Body(SharedStr);
 
 impl Body {
     pub fn new(body: &str) -> DomainResult<Self> {
@@ -14,13 +11,13 @@ impl Body {
 
         if body.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Body must be at least 3 characters".to_string(),
+                "Body must be at least 3 characters".into(),
             ));
         }
 
-        Ok(Self(body.to_string()))
+        Ok(Self(body.into()))
     }
-    pub fn body(&self) -> &String {
+    pub fn body(&self) -> &str {
         &self.0
     }
 }
@@ -30,12 +27,6 @@ impl Deref for Body {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Body {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

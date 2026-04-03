@@ -8,9 +8,9 @@ pub struct PermissionId(String);
 
 impl PermissionId {
     pub fn new(id: &str) -> Self {
-        Self(id.to_string())
+        Self(id.into())
     }
-    pub fn id(&self) -> &String {
+    pub fn id(&self) -> &str {
         &self.0
     }
 

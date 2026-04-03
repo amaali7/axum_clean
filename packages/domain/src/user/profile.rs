@@ -92,7 +92,7 @@ impl UserProfile {
     pub fn date_of_birth(&self) -> &Option<DateTime> {
         &self.date_of_birth
     }
-    pub fn addresses(&self) -> &Addressess {
+    pub fn addressess(&self) -> &Addressess {
         &self.addressess
     }
     pub fn website(&self) -> &Option<Url> {
@@ -214,7 +214,7 @@ impl UserProfileBuilder {
             phone_numbers: self.phone_numbers,
             avatar_url: self.avatar_url,
             date_of_birth: Some(self.date_of_birth.ok_or(DomainError::ValidationError(
-                "Date of Birth is not Optional !".to_string(),
+                "Date of Birth is not Optional !".into(),
             ))?),
             addressess: self.addressess,
             website: self.website,

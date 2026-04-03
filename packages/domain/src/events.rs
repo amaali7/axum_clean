@@ -13,9 +13,9 @@ pub enum Table {
 pub struct DomainEventId(String);
 impl DomainEventId {
     pub fn new(id: &str) -> Self {
-        Self(id.to_string())
+        Self(id.into())
     }
-    pub fn id(&self) -> &String {
+    pub fn id(&self) -> &str {
         &self.0
     }
 
@@ -72,7 +72,7 @@ impl<T: Clone + Event> DomainEvent<T> {
     pub fn table(&self) -> &Table {
         &self.table
     }
-    pub fn action(&self) -> &String {
+    pub fn action(&self) -> &str {
         &self.action
     }
     pub fn user_id(&self) -> &UserId {

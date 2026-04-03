@@ -3,10 +3,10 @@ use std::{
     ops::{Deref, DerefMut},
 };
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
-pub struct Url(String);
+pub struct Url(SharedStr);
 
 impl Url {
     pub fn new(url: &str) -> DomainResult<Self> {
@@ -27,7 +27,7 @@ impl Url {
         Ok(Self(raw.into()))
     }
 
-    pub fn url(&self) -> &String {
+    pub fn url(&self) -> &str {
         &self.0
     }
 }
@@ -37,12 +37,6 @@ impl Deref for Url {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Url {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

@@ -11,8 +11,6 @@ use super::{
     AccessDecision,
 };
 
-pub mod report;
-
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ApplicationPolicyId(String);
 

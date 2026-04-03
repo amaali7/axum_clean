@@ -3,10 +3,10 @@ use std::{
     str::FromStr,
 };
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
-pub struct Action(String);
+pub struct Action(SharedStr);
 
 impl Action {
     pub fn new(action: &str) -> DomainResult<Self> {
@@ -14,13 +14,13 @@ impl Action {
 
         if action.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Action must be at least 3 characters".to_string(),
+                "Action must be at least 3 characters".into(),
             ));
         }
 
         if action.len() > 30 {
             return Err(DomainError::ValidationError(
-                "Action must be less than 30 characters".to_string(),
+                "Action must be less than 30 characters".into(),
             ));
         }
 
@@ -29,21 +29,20 @@ impl Action {
             .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
         {
             return Err(DomainError::ValidationError(
-                "Action can only contain alphanumeric characters, underscores, and hyphens"
-                    .to_string(),
+                "Action can only contain alphanumeric characters, underscores, and hyphens".into(),
             ));
         }
 
         if action.starts_with('_') || action.starts_with('-') {
             return Err(DomainError::ValidationError(
-                "Action cannot start with underscore or hyphen".to_string(),
+                "Action cannot start with underscore or hyphen".into(),
             ));
         }
 
-        Ok(Self(action.to_string()))
+        Ok(Self(action.into()))
     }
 
-    pub fn action(&self) -> &String {
+    pub fn action(&self) -> &str {
         &self.0
     }
 }
@@ -53,12 +52,6 @@ impl Deref for Action {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Action {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

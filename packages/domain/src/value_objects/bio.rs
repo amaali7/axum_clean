@@ -3,10 +3,10 @@ use std::{
     str::FromStr,
 };
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Bio(String);
+pub struct Bio(SharedStr);
 
 impl Bio {
     pub fn new(bio: &str) -> DomainResult<Self> {
@@ -14,19 +14,19 @@ impl Bio {
 
         if bio.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Bio must be at least 3 characters".to_string(),
+                "Bio must be at least 3 characters".into(),
             ));
         }
 
         if bio.len() > 160 {
             return Err(DomainError::ValidationError(
-                "bio must be less than 160 characters".to_string(),
+                "bio must be less than 160 characters".into(),
             ));
         }
 
-        Ok(Self(bio.to_string()))
+        Ok(Self(bio.into()))
     }
-    pub fn bio(&self) -> &String {
+    pub fn bio(&self) -> &str {
         &self.0
     }
 }
@@ -36,12 +36,6 @@ impl Deref for Bio {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Bio {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

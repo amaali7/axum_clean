@@ -13,9 +13,9 @@ pub struct RoleId(String);
 
 impl RoleId {
     pub fn new(id: &str) -> Self {
-        Self(id.to_string())
+        Self(id.into())
     }
-    pub fn id(&self) -> &String {
+    pub fn id(&self) -> &str {
         &self.0
     }
 
@@ -168,16 +168,16 @@ impl RoleBuilder {
             id: self.id,
             name: self
                 .name
-                .ok_or(DomainError::ValidationError("Name not found".to_string()))?,
+                .ok_or(DomainError::ValidationError("Name not found".into()))?,
             description: self.description.ok_or(DomainError::ValidationError(
-                "Description not found".to_string(),
+                "Description not found".into(),
             ))?,
             permissions: self.permissions,
             is_system_role: self.is_system_role.ok_or(DomainError::ValidationError(
-                "Is System Role not found".to_string(),
+                "Is System Role not found".into(),
             ))?,
             created_at: self.created_at.ok_or(DomainError::ValidationError(
-                "Created At not found".to_string(),
+                "Created At not found".into(),
             ))?,
             version: self.version,
         })

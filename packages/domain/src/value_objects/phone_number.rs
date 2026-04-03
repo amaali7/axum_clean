@@ -3,7 +3,7 @@ use std::{
     ops::{Deref, DerefMut},
 };
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 use super::Title;
 
@@ -36,35 +36,30 @@ impl Deref for PhoneNumbers {
     }
 }
 
-impl DerefMut for PhoneNumbers {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-
 // More value objects...
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct PhoneNumber {
     title: Title,
-    number: String,
+    number: SharedStr,
 }
 
 impl PhoneNumber {
     pub fn new(title: &str, number: &str) -> DomainResult<Self> {
-        let cleaned = number
+        let cleaned: SharedStr = number
             .chars()
             .filter(|c| c.is_ascii_digit())
-            .collect::<String>();
+            .collect::<String>()
+            .into();
 
         if cleaned.len() < 10 || cleaned.len() > 15 {
             return Err(DomainError::ValidationError(
-                "Invalid phone number length".to_string(),
+                "Invalid phone number length".into(),
             ));
         }
 
         if title.len() > 15 {
             return Err(DomainError::ValidationError(
-                "Invalid title for phone number length".to_string(),
+                "Invalid title for phone number length".into(),
             ));
         }
 
@@ -76,7 +71,7 @@ impl PhoneNumber {
     pub fn title(&self) -> &Title {
         &self.title
     }
-    pub fn number(&self) -> &String {
+    pub fn number(&self) -> &str {
         &self.number
     }
 }

@@ -1,18 +1,15 @@
-use std::{
-    ops::{Deref, DerefMut},
-    str::FromStr,
-};
+use std::{ops::Deref, str::FromStr};
 
-use crate::DomainError;
+use crate::{DomainError, SharedStr};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Diff(String);
+pub struct Diff(SharedStr);
 
 impl Diff {
     pub fn new(diff: &str) -> Self {
-        Self(diff.to_string())
+        Self(diff.into())
     }
-    pub fn diff(&self) -> &String {
+    pub fn diff(&self) -> &str {
         &self.0
     }
 }
@@ -22,12 +19,6 @@ impl Deref for Diff {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Diff {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

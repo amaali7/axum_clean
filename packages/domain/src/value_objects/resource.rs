@@ -1,12 +1,9 @@
-use std::{
-    ops::{Deref, DerefMut},
-    str::FromStr,
-};
+use std::{ops::Deref, str::FromStr};
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
-pub struct Resource(String);
+pub struct Resource(SharedStr);
 
 impl Resource {
     pub fn new(resource: &str) -> DomainResult<Self> {
@@ -14,13 +11,13 @@ impl Resource {
 
         if resource.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Resource must be at least 3 characters".to_string(),
+                "Resource must be at least 3 characters".into(),
             ));
         }
 
         if resource.len() > 30 {
             return Err(DomainError::ValidationError(
-                "Resource must be less than 30 characters".to_string(),
+                "Resource must be less than 30 characters".into(),
             ));
         }
 
@@ -30,20 +27,20 @@ impl Resource {
         {
             return Err(DomainError::ValidationError(
                 "Resource can only contain alphanumeric characters, underscores, and hyphens"
-                    .to_string(),
+                    .into(),
             ));
         }
 
         if resource.starts_with('_') || resource.starts_with('-') {
             return Err(DomainError::ValidationError(
-                "Resource cannot start with underscore or hyphen".to_string(),
+                "Resource cannot start with underscore or hyphen".into(),
             ));
         }
 
-        Ok(Self(resource.to_string()))
+        Ok(Self(resource.into()))
     }
 
-    pub fn resource(&self) -> &String {
+    pub fn resource(&self) -> &str {
         &self.0
     }
 }
@@ -53,12 +50,6 @@ impl Deref for Resource {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Resource {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

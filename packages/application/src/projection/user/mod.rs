@@ -1,3 +1,7 @@
+use crate::authorization::access_descriptor::AccessableField;
+
+pub mod projector;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UserField {
     Id,
@@ -11,11 +15,13 @@ pub enum UserField {
     LastLogin,
     Version,
 }
+
+impl AccessableField for UserField {}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UserProfileField {
     FirstName,
     LastName,
-    Password,
     Bio,
     PhoneNumbers,
     AvatarUrl,
@@ -26,6 +32,9 @@ pub enum UserProfileField {
     CreatedAt,
     UpdatedAt,
 }
+
+impl AccessableField for UserProfileField {}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UserPreferencesField {
     EmailNotifications,
@@ -33,3 +42,5 @@ pub enum UserPreferencesField {
     TwoFactorAuth,
     Language,
 }
+
+impl AccessableField for UserPreferencesField {}

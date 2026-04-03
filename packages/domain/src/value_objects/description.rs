@@ -1,12 +1,9 @@
-use std::{
-    ops::{Deref, DerefMut},
-    str::FromStr,
-};
+use std::{ops::Deref, str::FromStr};
 
-use crate::{error::DomainResult, DomainError};
+use crate::{error::DomainResult, DomainError, SharedStr};
 
 #[derive(Debug, Clone, Default, Hash, PartialEq, Eq)]
-pub struct Description(String);
+pub struct Description(SharedStr);
 
 impl Description {
     pub fn new(description: &str) -> DomainResult<Self> {
@@ -14,13 +11,13 @@ impl Description {
 
         if description.len() < 3 {
             return Err(DomainError::ValidationError(
-                "Description must be at least 3 characters".to_string(),
+                "Description must be at least 3 characters".into(),
             ));
         }
-        Ok(Self(description.to_string()))
+        Ok(Self(description.into()))
     }
 
-    pub fn description(&self) -> &String {
+    pub fn description(&self) -> &str {
         &self.0
     }
 }
@@ -30,12 +27,6 @@ impl Deref for Description {
 
     fn deref(&self) -> &Self::Target {
         &self.0
-    }
-}
-
-impl DerefMut for Description {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
     }
 }
 

@@ -1,18 +1,4 @@
 #+TITLE: readme
 
-#+BEGIN_SRC
-               +--------------------+
-Role/Session → |  Presenter Layer   |  → JSON/DTO
-               +---------↑----------+
-                         |
-                         |
-               +---------|----------+
-               |   Use-Case Layer   |
-               |  (returns domain)  |
-               +---------↑----------+
-                         |
-               +---------|----------+
-               |   Domain Entity    |
-               +--------------------+
-
-#+END_SRC
+* TODO Features [0%]
+- [ ] Implement query using projection 
