@@ -1,9 +1,8 @@
 pub mod config;
 pub mod environment;
-pub mod membership;
-pub mod temporary_grant;
+pub mod fields;
+
 use config::TenantConfig;
-pub use membership::Membership;
 
 use std::ops::DerefMut;
 

@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use domain::{tenant::temporary_grant::TemporaryGrant, Role, TenantId, UserId};
+use domain::{Role, TemporaryGrant, TenantId, UserId};
 pub mod authorization;
 pub mod dto;
 pub mod error;

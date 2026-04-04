@@ -1,6 +1,13 @@
 use std::collections::HashSet;
 
-pub trait AccessableField {}
+pub trait AccessableField: Copy + Eq {
+    fn db_column(&self) -> &'static str;
+
+    /// nested selection support
+    fn sub_fields(&self) -> Option<&[Self]> {
+        None
+    }
+}
 
 pub struct AccessControl<T: AccessableField> {
     pub can_read: bool,

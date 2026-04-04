@@ -1,11 +1,13 @@
-pub mod permissions;
+pub mod fields;
+pub mod relations;
+
 use std::collections::HashSet;
 use std::ops::{Deref, DerefMut};
 
-pub use permissions::{Permission, PermissionId, PermissionParts};
+pub use super::permissions::{Permission, PermissionId, PermissionParts};
 
 use crate::error::DomainResult;
-use crate::value_objects::{Action, DateTime, Description, Resource};
+use crate::value_objects::{DateTime, Description};
 use crate::{DomainError, Event, Name};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -169,16 +171,16 @@ impl RoleBuilder {
             name: self
                 .name
                 .ok_or(DomainError::ValidationError("Name not found".into()))?,
-            description: self.description.ok_or(DomainError::ValidationError(
-                "Description not found".into(),
-            ))?,
+            description: self
+                .description
+                .ok_or(DomainError::ValidationError("Description not found".into()))?,
             permissions: self.permissions,
             is_system_role: self.is_system_role.ok_or(DomainError::ValidationError(
                 "Is System Role not found".into(),
             ))?,
-            created_at: self.created_at.ok_or(DomainError::ValidationError(
-                "Created At not found".into(),
-            ))?,
+            created_at: self
+                .created_at
+                .ok_or(DomainError::ValidationError("Created At not found".into()))?,
             version: self.version,
         })
     }

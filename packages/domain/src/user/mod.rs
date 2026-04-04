@@ -1,3 +1,4 @@
+pub mod fields;
 pub mod preferences;
 pub mod profile;
 
@@ -235,12 +236,12 @@ impl UserBuilder {
             email: self
                 .email
                 .ok_or(DomainError::ValidationError("Email not found".into()))?,
-            username: self.username.ok_or(DomainError::ValidationError(
-                "Username not found".into(),
-            ))?,
-            profile: self.profile.ok_or(DomainError::ValidationError(
-                "Profile not found".into(),
-            ))?,
+            username: self
+                .username
+                .ok_or(DomainError::ValidationError("Username not found".into()))?,
+            profile: self
+                .profile
+                .ok_or(DomainError::ValidationError("Profile not found".into()))?,
             preferences: self.preferences.unwrap_or_default(),
             status: self.status,
             failed_logins: self.failed_logins,
