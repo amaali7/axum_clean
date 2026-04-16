@@ -6,7 +6,7 @@ use domain::{
 
 use std::collections::HashSet;
 
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct ReportView {
     pub id: Option<ReportId>,
     pub title: Option<Title>,
@@ -23,14 +23,14 @@ pub struct ReportView {
     pub version: Option<u64>,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct ReviewCommentView {
     pub reviewer_id: Option<UserId>,
     pub comment: Option<Comment>,
     pub created_at: Option<DateTime>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ReportContentView {
     pub body: Option<Body>,
     pub attachments: Option<HashSet<Url>>, // URLs or paths to attachments
@@ -38,7 +38,7 @@ pub struct ReportContentView {
     pub rejection_reason: Option<Option<Comment>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ReportTypeView {
     pub id: Option<ReportTypeId>,
     pub name: Option<Name>,

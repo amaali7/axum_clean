@@ -1,4 +1,4 @@
-use crate::traits::field::Field;
+use domain::traits::field::Field;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum PermissionField {

@@ -2,7 +2,9 @@ use std::sync::Arc;
 
 use domain::User;
 
-use crate::{ SubjectContex, authorization::ports::AuthorizationService, dto::user_dto::{input::UpdateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository, usecases::usecase_discriptor::UseCaseDescriptor};
+use crate::{ SubjectContex, dto::{user::{command::UserCommand, view::UserView}},
+                                   error::AppResult, ports::UserRepository, usecases::usecase_discriptor::UseCaseDescriptor;
+use crate::authorization::ports::AuthorizationService;
 
 
 pub struct UpdateUserUseCase{
@@ -11,9 +13,8 @@ pub struct UpdateUserUseCase{
 }
 
 impl UpdateUserUseCase {
-    pub async fn execute(&self, ctx: SubjectContex, input: UpdateUserInput) -> AppResult<OwnerUserOutput> {
-        let user: User = self.repo.update( ctx, input.try_into()?).await?;
-        Ok(OwnerUserOutput::from(user))
+    pub async fn execute(&self, ctx: SubjectContex, input: UserCommand) -> AppResult<UserView> {
+        self.repo.update( ctx, input).await
     }
 }
 

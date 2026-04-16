@@ -1,6 +1,5 @@
 pub mod config;
 pub mod environment;
-pub mod fields;
 
 use config::TenantConfig;
 

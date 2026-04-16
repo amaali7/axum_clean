@@ -1,5 +1,4 @@
 pub mod content;
-pub mod fields;
 pub mod report_type;
 pub mod status;
 

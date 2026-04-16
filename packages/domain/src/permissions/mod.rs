@@ -1,5 +1,3 @@
-pub mod fields;
-
 use crate::{
     value_objects::{Action, Resource},
     DateTime, Description, Event,

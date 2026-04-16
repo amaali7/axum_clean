@@ -3,7 +3,7 @@ use domain::{
     PhoneNumbers, Url, UserId, Username,
 };
 
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct UserView {
     pub id: Option<UserId>,
     pub email: Option<Email>,
@@ -17,7 +17,7 @@ pub struct UserView {
     pub version: Option<u64>,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct UserProfileView {
     pub first_name: Option<Name>,
     pub last_name: Option<Name>,
@@ -32,7 +32,7 @@ pub struct UserProfileView {
     pub updated_at: Option<DateTime>,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct UserPreferencesView {
     pub email_notifications: Option<bool>,
     pub push_notifications: Option<bool>,

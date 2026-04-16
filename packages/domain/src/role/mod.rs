@@ -1,4 +1,3 @@
-pub mod fields;
 pub mod relations;
 
 use std::collections::HashSet;

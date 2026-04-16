@@ -12,6 +12,6 @@ pub struct DeleteUserUseCase {
 
 impl DeleteUserUseCase {
     pub async fn execute(&self, ctx: SubjectContex, user_id: UserId) -> AppResult<bool> {
-        self.repo.delete(ctx, user_id.clone()).await
+        self.repo.delete(ctx, user_id).await
     }
 }

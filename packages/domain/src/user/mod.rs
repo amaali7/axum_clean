@@ -1,4 +1,3 @@
-pub mod fields;
 pub mod preferences;
 pub mod profile;
 

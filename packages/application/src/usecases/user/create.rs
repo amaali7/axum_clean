@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use domain::User;
 
-use crate::{ SubjectContex, authorization::ports::AuthorizationService, dto::user_dto::{input::CreateUserInput, output::OwnerUserOutput}, error::AppResult, ports::UserRepository};
+use crate::{ SubjectContex, authorization::ports::AuthorizationService, dto::{user::{command::UserCommand, view::UserView}, user_dto::{input::CreateUserInput, output::OwnerUserOutput}}, error::AppResult, ports::UserRepository};
 
 
 pub struct CreateUserUseCase
@@ -12,9 +11,8 @@ pub struct CreateUserUseCase
 }
 
 impl CreateUserUseCase {
-    pub async fn execute(&self, ctx: SubjectContex, input: CreateUserInput) -> AppResult<OwnerUserOutput> {
-        let user: User = self.repo.create(ctx, input.try_into()?).await?;
-        Ok(OwnerUserOutput::from(user))
+    pub async fn execute(&self, ctx: SubjectContex, input: UserCommand) -> AppResult<UserView> {
+        self.repo.create(ctx, input).await
     }
 }
 

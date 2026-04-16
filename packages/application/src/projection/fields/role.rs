@@ -1,4 +1,6 @@
-use crate::{permissions::fields::PermissionField, traits::field::Field};
+use domain::traits::field::Field;
+
+use super::permissions::PermissionField;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum RoleField {

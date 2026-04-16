@@ -1,3 +1,4 @@
+pub mod fields;
 pub mod projection_any;
 pub mod traits;
 pub mod vistor;

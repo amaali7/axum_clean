@@ -1,5 +1,3 @@
-pub mod fields;
-
 use std::collections::HashSet;
 
 use crate::{DateTime, Event, RoleId, UserId};
