@@ -24,7 +24,7 @@ pub use address::{Address, AddressBuilder, Addressess};
 pub use bio::Bio;
 pub use body::Body;
 pub use comment::Comment;
-pub use conutry::Conutry;
+pub use conutry::Country;
 pub use date_time::DateTime;
 pub use description::Description;
 pub use diff::Diff;

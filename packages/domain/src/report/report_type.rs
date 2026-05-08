@@ -80,6 +80,15 @@ impl ReportType {
         }
     }
 
+    pub fn id(&self) -> &ReportTypeId {
+        &self.id
+    }
+    pub fn name(&self) -> &Name {
+        &self.name
+    }
+    pub fn description(&self) -> &Description {
+        &self.description
+    }
     pub fn created_at(&self) -> &DateTime {
         &self.created_at
     }

@@ -3,15 +3,14 @@ use std::collections::HashSet;
 
 use crate::{
     value_objects::{Action, Resource},
-    DateTime, Description, Event, UserId,
+    DateTime, Description, Event, Permission, UserId,
 };
 
 #[derive(Debug, Clone)]
 pub struct TemporaryGrant {
     user_id: UserId,
     description: Description,
-    resource: Resource,
-    action: Action,
+    permissions: HashSet<Permission>,
     expires_at: DateTime,
     created_at: DateTime,
     version: u64,
@@ -21,8 +20,7 @@ pub struct TemporaryGrant {
 pub struct TemporaryGrantParts {
     pub user_id: UserId,
     pub description: Description,
-    pub resource: Resource,
-    pub action: Action,
+    pub permissions: HashSet<Permission>,
     pub expires_at: DateTime,
     pub created_at: DateTime,
     pub version: u64,
@@ -32,8 +30,7 @@ impl TemporaryGrant {
     pub fn new(
         user_id: UserId,
         description: Description,
-        resource: Resource,
-        action: Action,
+        permissions: HashSet<Permission>,
         expires_at: DateTime,
         created_at: DateTime,
         version: u64,
@@ -43,8 +40,7 @@ impl TemporaryGrant {
             expires_at,
             description,
             created_at,
-            resource,
-            action,
+            permissions,
             version,
         }
     }
@@ -53,8 +49,7 @@ impl TemporaryGrant {
         let Self {
             user_id,
             description,
-            resource,
-            action,
+            permissions,
             expires_at,
             created_at,
             version,
@@ -62,12 +57,20 @@ impl TemporaryGrant {
         TemporaryGrantParts {
             user_id,
             description,
-            resource,
-            action,
+            permissions,
             expires_at,
             created_at,
             version,
         }
+    }
+
+    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
+        for permission in self.permissions.iter() {
+            if permission.matches(&resource, &action) {
+                return true;
+            }
+        }
+        false
     }
 
     pub fn user_id(&self) -> &UserId {
@@ -77,11 +80,8 @@ impl TemporaryGrant {
         &self.description
     }
 
-    pub fn resource(&self) -> &Resource {
-        &self.resource
-    }
-    pub fn action(&self) -> &Action {
-        &self.action
+    pub fn permissions(&self) -> &HashSet<Permission> {
+        &self.permissions
     }
     pub fn created_at(&self) -> &DateTime {
         &self.created_at

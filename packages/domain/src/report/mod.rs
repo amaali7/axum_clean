@@ -1,7 +1,7 @@
 pub mod content;
 pub mod fields;
 pub mod report_type;
-pub mod row_report;
+
 pub mod status;
 
 use std::collections::HashSet;

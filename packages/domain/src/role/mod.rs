@@ -1,6 +1,5 @@
 pub mod fields;
 pub mod relations;
-pub mod row_role;
 
 use std::collections::HashSet;
 use std::ops::{Deref, DerefMut};
@@ -8,7 +7,7 @@ use std::ops::{Deref, DerefMut};
 pub use super::permissions::Permission;
 
 use crate::error::DomainResult;
-use crate::value_objects::{DateTime, Description};
+use crate::value_objects::{Action, DateTime, Description, Resource};
 use crate::{DomainError, Event, Name};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -87,8 +86,13 @@ impl Role {
         }
     }
 
-    pub fn has_permission(&self, permission: Permission) -> bool {
-        self.permissions.contains(&permission)
+    pub fn has_permission(&self, resource: &Resource, action: &Action) -> bool {
+        for permission in self.permissions.iter() {
+            if permission.matches(&resource, &action) {
+                return true;
+            }
+        }
+        false
     }
 
     pub fn id(&self) -> &RoleId {

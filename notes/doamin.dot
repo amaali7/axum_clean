@@ -648,19 +648,19 @@ digraph {
     "domain::value_objects::comment::Comment::hash" [label="pub(self) fn|domain::value_objects::comment::Comment::hash", fillcolor="#db5367"]; // "fn" node
     "domain::value_objects::comment::Comment::new" [label="pub fn|domain::value_objects::comment::Comment::new", fillcolor="#81c169"]; // "fn" node
     "domain::value_objects::conutry" [label="pub mod|domain::value_objects::conutry", fillcolor="#81c169"]; // "mod" node
-    "domain::value_objects::conutry::Conutry" [label="pub struct|domain::value_objects::conutry::Conutry", fillcolor="#81c169"]; // "struct" node
-    "domain::value_objects::conutry::Conutry::Err" [label="pub(self) type|domain::value_objects::conutry::Conutry::Err", fillcolor="#db5367"]; // "type" node
-    "domain::value_objects::conutry::Conutry::Target" [label="pub(self) type|domain::value_objects::conutry::Conutry::Target", fillcolor="#db5367"]; // "type" node
-    "domain::value_objects::conutry::Conutry::clone" [label="pub(self) fn|domain::value_objects::conutry::Conutry::clone", fillcolor="#db5367"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::conutry" [label="pub fn|domain::value_objects::conutry::Conutry::conutry", fillcolor="#81c169"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::default" [label="pub(self) fn|domain::value_objects::conutry::Conutry::default", fillcolor="#db5367"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::deref" [label="pub(self) fn|domain::value_objects::conutry::Conutry::deref", fillcolor="#db5367"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::deref_mut" [label="pub(self) fn|domain::value_objects::conutry::Conutry::deref_mut", fillcolor="#db5367"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::eq" [label="pub(self) fn|domain::value_objects::conutry::Conutry::eq", fillcolor="#db5367"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::fmt" [label="pub(self) fn|domain::value_objects::conutry::Conutry::fmt", fillcolor="#db5367"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::fmt" [label="pub(self) fn|domain::value_objects::conutry::Conutry::fmt", fillcolor="#db5367"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::from_str" [label="pub(self) fn|domain::value_objects::conutry::Conutry::from_str", fillcolor="#db5367"]; // "fn" node
-    "domain::value_objects::conutry::Conutry::new" [label="pub fn|domain::value_objects::conutry::Conutry::new", fillcolor="#81c169"]; // "fn" node
+    "domain::value_objects::conutry::Country" [label="pub struct|domain::value_objects::conutry::Country", fillcolor="#81c169"]; // "struct" node
+    "domain::value_objects::conutry::Country::Err" [label="pub(self) type|domain::value_objects::conutry::Country::Err", fillcolor="#db5367"]; // "type" node
+    "domain::value_objects::conutry::Country::Target" [label="pub(self) type|domain::value_objects::conutry::Country::Target", fillcolor="#db5367"]; // "type" node
+    "domain::value_objects::conutry::Country::clone" [label="pub(self) fn|domain::value_objects::conutry::Country::clone", fillcolor="#db5367"]; // "fn" node
+    "domain::value_objects::conutry::Country::conutry" [label="pub fn|domain::value_objects::conutry::Country::conutry", fillcolor="#81c169"]; // "fn" node
+    "domain::value_objects::conutry::Country::default" [label="pub(self) fn|domain::value_objects::conutry::Country::default", fillcolor="#db5367"]; // "fn" node
+    "domain::value_objects::conutry::Country::deref" [label="pub(self) fn|domain::value_objects::conutry::Country::deref", fillcolor="#db5367"]; // "fn" node
+    "domain::value_objects::conutry::Country::deref_mut" [label="pub(self) fn|domain::value_objects::conutry::Country::deref_mut", fillcolor="#db5367"]; // "fn" node
+    "domain::value_objects::conutry::Country::eq" [label="pub(self) fn|domain::value_objects::conutry::Country::eq", fillcolor="#db5367"]; // "fn" node
+    "domain::value_objects::conutry::Country::fmt" [label="pub(self) fn|domain::value_objects::conutry::Country::fmt", fillcolor="#db5367"]; // "fn" node
+    "domain::value_objects::conutry::Country::fmt" [label="pub(self) fn|domain::value_objects::conutry::Country::fmt", fillcolor="#db5367"]; // "fn" node
+    "domain::value_objects::conutry::Country::from_str" [label="pub(self) fn|domain::value_objects::conutry::Country::from_str", fillcolor="#db5367"]; // "fn" node
+    "domain::value_objects::conutry::Country::new" [label="pub fn|domain::value_objects::conutry::Country::new", fillcolor="#81c169"]; // "fn" node
     "domain::value_objects::date_time" [label="pub mod|domain::value_objects::date_time", fillcolor="#81c169"]; // "mod" node
     "domain::value_objects::date_time::DateTime" [label="pub struct|domain::value_objects::date_time::DateTime", fillcolor="#81c169"]; // "struct" node
     "domain::value_objects::date_time::DateTime::between" [label="pub fn|domain::value_objects::date_time::DateTime::between", fillcolor="#81c169"]; // "fn" node
@@ -2521,7 +2521,7 @@ digraph {
     "domain::tenant::environment::device_security_posture::DeviceSecurityPosture::new" -> "domain::tenant::environment::device_security_posture::DeviceSecurityPosture" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location" -> "domain::tenant::environment::location::EnvironmentLocation" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::tenant::environment::location" -> "domain::tenant::environment::location::LocationZone" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::tenant::environment::location" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::tenant::environment::location" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::EnvironmentLocation" -> "domain::tenant::environment::location::EnvironmentLocation::clone" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::tenant::environment::location::EnvironmentLocation" -> "domain::tenant::environment::location::EnvironmentLocation::fmt" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::tenant::environment::location::EnvironmentLocation" -> "domain::tenant::environment::location::EnvironmentLocation::new" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
@@ -2542,15 +2542,15 @@ digraph {
     "domain::tenant::environment::location::EnvironmentLocation::zone" -> "domain::tenant::environment::location::LocationZone" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::LocationZone" -> "domain::tenant::environment::location::LocationZone::clone" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::tenant::environment::location::LocationZone" -> "domain::tenant::environment::location::LocationZone::fmt" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::tenant::environment::location::LocationZone" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::tenant::environment::location::LocationZone" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::LocationZone::clone" -> "domain::tenant::environment::location::LocationZone" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::tenant::environment::location::LocationZone::clone" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::tenant::environment::location::LocationZone::clone" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::LocationZone::fmt" -> "core::fmt::Error" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::LocationZone::fmt" -> "core::fmt::Formatter" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::LocationZone::fmt" -> "core::fmt::builders::DebugTuple" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::LocationZone::fmt" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::LocationZone::fmt" -> "domain::tenant::environment::location::LocationZone" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::tenant::environment::location::LocationZone::fmt" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::tenant::environment::location::LocationZone::fmt" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::location::LocationZone::fmt" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::tenant::environment::network_information" -> "domain::tenant::environment::network_information::ConnectionType" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::tenant::environment::network_information" -> "domain::tenant::environment::network_information::NetworkInformation" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
@@ -3396,7 +3396,7 @@ digraph {
     "domain::value_objects" -> "domain::value_objects::comment" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::value_objects" -> "domain::value_objects::comment::Comment" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::value_objects" -> "domain::value_objects::conutry" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::value_objects" -> "domain::value_objects::date_time" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::value_objects" -> "domain::value_objects::date_time::DateTime" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::value_objects" -> "domain::value_objects::description" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
@@ -3862,65 +3862,65 @@ digraph {
     "domain::value_objects::conutry" -> "core::str::traits::FromStr" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::value_objects::conutry" -> "domain::error::DomainError" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::value_objects::conutry" -> "domain::error::DomainResult" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry" -> "domain::value_objects::conutry::Conutry" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::Err" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::Target" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::clone" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::conutry" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::default" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::deref" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::deref_mut" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::eq" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::fmt" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::fmt" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::from_str" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry" -> "domain::value_objects::conutry::Conutry::new" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
-    "domain::value_objects::conutry::Conutry::Err" -> "domain::error::DomainError" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::clone" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::clone" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::conutry" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::conutry" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::default" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::default" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::deref" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::deref" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::deref" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::deref_mut" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::deref_mut" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::eq" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::eq" -> "bool" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::eq" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::Arguments" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::Error" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::Error" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::Formatter" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::Formatter" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::builders::DebugTuple" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::rt::Argument" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::rt::Count" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::fmt::rt::Placeholder" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "u32" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::fmt" -> "usize" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::from_str" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::from_str" -> "domain::error::DomainError" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::from_str" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::from_str" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::new" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::new" -> "bool" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::new" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::new" -> "domain::error::DomainError" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::new" -> "domain::value_objects::conutry::Conutry" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::new" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
-    "domain::value_objects::conutry::Conutry::new" -> "usize" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry" -> "domain::value_objects::conutry::Country" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::Err" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::Target" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::clone" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::conutry" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::default" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::deref" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::deref_mut" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::eq" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::fmt" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::fmt" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::from_str" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country" -> "domain::value_objects::conutry::Country::new" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
+    "domain::value_objects::conutry::Country::Err" -> "domain::error::DomainError" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::clone" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::clone" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::conutry" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::conutry" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::default" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::default" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::deref" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::deref" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::deref" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::deref_mut" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::deref_mut" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::eq" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::eq" -> "bool" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::eq" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::Arguments" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::Error" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::Error" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::Formatter" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::Formatter" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::builders::DebugTuple" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::rt::Argument" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::rt::Count" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::fmt::rt::Placeholder" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "u32" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::fmt" -> "usize" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::from_str" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::from_str" -> "domain::error::DomainError" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::from_str" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::from_str" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::new" -> "alloc::string::String" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::new" -> "bool" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::new" -> "core::result::Result" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::new" -> "domain::error::DomainError" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::new" -> "domain::value_objects::conutry::Country" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::new" -> "str" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
+    "domain::value_objects::conutry::Country::new" -> "usize" [label="uses", color="#7f7f7f", style="dashed"] [constraint=false]; // "uses" edge
     "domain::value_objects::date_time" -> "domain::value_objects::date_time::DateTime" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::value_objects::date_time" -> "domain::value_objects::date_time::Weekday" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge
     "domain::value_objects::date_time::DateTime" -> "domain::value_objects::date_time::DateTime::between" [label="owns", color="#000000", style="solid"] [constraint=true]; // "owns" edge

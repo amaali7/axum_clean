@@ -1,10 +1,10 @@
-use crate::value_objects::Conutry;
+use crate::value_objects::Country;
 
 #[derive(Debug, Clone)]
 pub enum LocationZone {
     InternalNetwork,
     CorporateOffice,
-    Country(Conutry),
+    Country(Country),
     Unknown,
 }
 

@@ -157,7 +157,7 @@ impl UserProfileBuilder {
     }
 
     pub fn set_last_name(&mut self, name: Name) -> &mut Self {
-        self.first_name = Some(name);
+        self.last_name = Some(name);
         self
     }
 

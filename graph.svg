@@ -14533,7 +14533,7 @@
 <polygon fill="#000000" stroke="#000000" points="2706.38,-2766.83 2716.89,-2768.21 2709.53,-2760.58 2706.38,-2766.83"/>
 <text text-anchor="middle" x="2314.71" y="-2574.72" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country -->
 <g id="node602" class="node">
 <title>domain::value_objects::conutry::Conutry</title>
 <polygon fill="#81c169" stroke="black" points="5102.84,-2533.23 5102.84,-2574.73 5352.84,-2574.73 5352.84,-2533.23 5102.84,-2533.23"/>
@@ -14541,7 +14541,7 @@
 <polyline fill="none" stroke="black" points="5102.84,-2553.98 5352.84,-2553.98"/>
 <text text-anchor="middle" x="5227.84" y="-2540.48" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry</text>
 </g>
-<!-- domain::tenant::environment::location&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::tenant::environment::location&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge1645" class="edge">
 <title>domain::tenant::environment::location&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M2022.42,-2364.91C2534.74,-2395.13 4546.76,-2513.81 5091.31,-2545.93"/>
@@ -14736,7 +14736,7 @@
 <polygon fill="#000000" stroke="#000000" points="6487.18,-1858.54 6495.95,-1852.6 6485.39,-1851.77 6487.18,-1858.54"/>
 <text text-anchor="middle" x="4658.1" y="-2315.29" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::tenant::environment::location::LocationZone&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::tenant::environment::location::LocationZone&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge1666" class="edge">
 <title>domain::tenant::environment::location::LocationZone&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M2921.76,-2774.67C3377.38,-2731.07 4667.68,-2607.59 5091.26,-2567.05"/>
@@ -14750,7 +14750,7 @@
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="2833.83,-2812.05 2823.23,-2811.89 2831.41,-2818.62 2833.83,-2812.05"/>
 <text text-anchor="middle" x="4029.6" y="-3275.34" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::tenant::environment::location::LocationZone::clone&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::tenant::environment::location::LocationZone::clone&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge1668" class="edge">
 <title>domain::tenant::environment::location::LocationZone::clone&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5251.67,-3729.14C5248.78,-3586.47 5232.03,-2760.4 5228.49,-2586.22"/>
@@ -14792,7 +14792,7 @@
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="2846.51,-2762.55 2837.74,-2768.49 2848.3,-2769.32 2846.51,-2762.55"/>
 <text text-anchor="middle" x="4651.59" y="-2299.55" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::tenant::environment::location::LocationZone::fmt&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::tenant::environment::location::LocationZone::fmt&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge1674" class="edge">
 <title>domain::tenant::environment::location::LocationZone::fmt&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6533.81,-1852.21C6340.13,-1956.29 5492.19,-2411.93 5277.42,-2527.34"/>
@@ -22010,7 +22010,7 @@
 <polygon fill="#000000" stroke="#000000" points="6661.6,-2141.31 6671.74,-2138.23 6661.89,-2134.32 6661.6,-2141.31"/>
 <text text-anchor="middle" x="5524.35" y="-2094.74" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge2520" class="edge">
 <title>domain::value_objects&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M4376.22,-2063.41C4517.36,-2144.71 5024.44,-2436.81 5181.28,-2527.16"/>
@@ -26000,7 +26000,7 @@
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5761.19,-1606.24 5750.71,-1604.68 5757.93,-1612.44 5761.19,-1606.24"/>
 <text text-anchor="middle" x="6233.42" y="-1868.44" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge2986" class="edge">
 <title>domain::value_objects::conutry&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#000000" d="M6692.24,-2163.53C6430.24,-2233.39 5594.84,-2456.13 5317.96,-2529.95"/>
@@ -26014,489 +26014,489 @@
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5017.82,-2550.46 5007.82,-2553.96 5017.82,-2557.46 5017.82,-2550.46"/>
 <text text-anchor="middle" x="5072.11" y="-2557.21" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::Err -->
+<!-- domain::value_objects::conutry::Country::Err -->
 <g id="node603" class="node">
-<title>domain::value_objects::conutry::Conutry::Err</title>
+<title>domain::value_objects::conutry::Country::Err</title>
 <polygon fill="#db5367" stroke="black" points="6940.71,-2498.11 6940.71,-2539.61 7220.71,-2539.61 7220.71,-2498.11 6940.71,-2498.11"/>
 <text text-anchor="middle" x="7080.71" y="-2526.11" font-family="monospace" font-size="10.00">pub(self) type</text>
 <polyline fill="none" stroke="black" points="6940.71,-2518.86 7220.71,-2518.86"/>
-<text text-anchor="middle" x="7080.71" y="-2505.36" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::Err</text>
+<text text-anchor="middle" x="7080.71" y="-2505.36" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::Err</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::Err -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::Err -->
 <g id="edge2988" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::Err</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::Err</title>
 <path fill="none" stroke="#000000" d="M5353.01,-2551.61C5682.24,-2545.37 6571.56,-2528.51 6928.96,-2521.73"/>
 <polygon fill="#000000" stroke="#000000" points="6928.97,-2525.23 6938.9,-2521.54 6928.84,-2518.24 6928.97,-2525.23"/>
 <text text-anchor="middle" x="6128.99" y="-2527.17" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::Target -->
+<!-- domain::value_objects::conutry::Country::Target -->
 <g id="node604" class="node">
-<title>domain::value_objects::conutry::Conutry::Target</title>
+<title>domain::value_objects::conutry::Country::Target</title>
 <polygon fill="#db5367" stroke="black" points="6475.93,-3225.09 6475.93,-3266.59 6773.93,-3266.59 6773.93,-3225.09 6475.93,-3225.09"/>
 <text text-anchor="middle" x="6624.93" y="-3253.09" font-family="monospace" font-size="10.00">pub(self) type</text>
 <polyline fill="none" stroke="black" points="6475.93,-3245.84 6773.93,-3245.84"/>
-<text text-anchor="middle" x="6624.93" y="-3232.34" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::Target</text>
+<text text-anchor="middle" x="6624.93" y="-3232.34" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::Target</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::Target -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::Target -->
 <g id="edge2989" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::Target</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::Target</title>
 <path fill="none" stroke="#000000" d="M5270.42,-2575.06C5474,-2675.88 6347.61,-3108.5 6572.15,-3219.7"/>
 <polygon fill="#000000" stroke="#000000" points="6570.48,-3222.78 6580.99,-3224.08 6573.59,-3216.5 6570.48,-3222.78"/>
 <text text-anchor="middle" x="5927.28" y="-2887.88" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::clone -->
+<!-- domain::value_objects::conutry::Country::clone -->
 <g id="node605" class="node">
-<title>domain::value_objects::conutry::Conutry::clone</title>
+<title>domain::value_objects::conutry::Country::clone</title>
 <polygon fill="#db5367" stroke="black" points="5267.82,-3413.6 5267.82,-3455.1 5559.82,-3455.1 5559.82,-3413.6 5267.82,-3413.6"/>
 <text text-anchor="middle" x="5413.82" y="-3441.6" font-family="monospace" font-size="10.00">pub(self) fn</text>
 <polyline fill="none" stroke="black" points="5267.82,-3434.35 5559.82,-3434.35"/>
-<text text-anchor="middle" x="5413.82" y="-3420.85" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::clone</text>
+<text text-anchor="middle" x="5413.82" y="-3420.85" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::clone</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::clone -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::clone -->
 <g id="edge2990" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::clone</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::clone</title>
 <path fill="none" stroke="#000000" d="M5229.98,-2574.91C5248.64,-2691.5 5368.71,-3260.71 5404.25,-3402.38"/>
 <polygon fill="#000000" stroke="#000000" points="5400.79,-3403 5406.66,-3411.82 5407.58,-3401.27 5400.79,-3403"/>
 <text text-anchor="middle" x="5305.11" y="-2991.89" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::conutry -->
+<!-- domain::value_objects::conutry::Country::conutry -->
 <g id="node606" class="node">
-<title>domain::value_objects::conutry::Conutry::conutry</title>
+<title>domain::value_objects::conutry::Country::conutry</title>
 <polygon fill="#81c169" stroke="black" points="5592.56,-3114.78 5592.56,-3156.28 5896.56,-3156.28 5896.56,-3114.78 5592.56,-3114.78"/>
 <text text-anchor="middle" x="5744.56" y="-3142.78" font-family="monospace" font-size="10.00">pub fn</text>
 <polyline fill="none" stroke="black" points="5592.56,-3135.53 5896.56,-3135.53"/>
-<text text-anchor="middle" x="5744.56" y="-3122.03" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::conutry</text>
+<text text-anchor="middle" x="5744.56" y="-3122.03" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::conutry</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::conutry -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::conutry -->
 <g id="edge2991" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::conutry</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::conutry</title>
 <path fill="none" stroke="#000000" d="M5243.07,-2575.08C5314.58,-2663.5 5616.66,-3003.81 5714.15,-3106.24"/>
 <polygon fill="#000000" stroke="#000000" points="5711.39,-3108.41 5720.83,-3113.21 5716.44,-3103.57 5711.39,-3108.41"/>
 <text text-anchor="middle" x="5466.61" y="-2843.91" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::default -->
+<!-- domain::value_objects::conutry::Country::default -->
 <g id="node607" class="node">
-<title>domain::value_objects::conutry::Conutry::default</title>
+<title>domain::value_objects::conutry::Country::default</title>
 <polygon fill="#db5367" stroke="black" points="6120.97,-2814.66 6120.97,-2856.16 6424.97,-2856.16 6424.97,-2814.66 6120.97,-2814.66"/>
 <text text-anchor="middle" x="6272.97" y="-2842.66" font-family="monospace" font-size="10.00">pub(self) fn</text>
 <polyline fill="none" stroke="black" points="6120.97,-2835.41 6424.97,-2835.41"/>
-<text text-anchor="middle" x="6272.97" y="-2821.91" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::default</text>
+<text text-anchor="middle" x="6272.97" y="-2821.91" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::default</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::default -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::default -->
 <g id="edge2992" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::default</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::default</title>
 <path fill="none" stroke="#000000" d="M5293.1,-2575.18C5468.79,-2626.7 5952.94,-2757.33 6167.85,-2811.5"/>
 <polygon fill="#000000" stroke="#000000" points="6166.79,-2814.84 6177.34,-2813.89 6168.5,-2808.06 6166.79,-2814.84"/>
 <text text-anchor="middle" x="5718.47" y="-2683.84" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::deref -->
+<!-- domain::value_objects::conutry::Country::deref -->
 <g id="node608" class="node">
-<title>domain::value_objects::conutry::Conutry::deref</title>
+<title>domain::value_objects::conutry::Country::deref</title>
 <polygon fill="#db5367" stroke="black" points="5872.7,-2529.65 5872.7,-2571.15 6164.7,-2571.15 6164.7,-2529.65 5872.7,-2529.65"/>
 <text text-anchor="middle" x="6018.7" y="-2557.65" font-family="monospace" font-size="10.00">pub(self) fn</text>
 <polyline fill="none" stroke="black" points="5872.7,-2550.4 6164.7,-2550.4"/>
-<text text-anchor="middle" x="6018.7" y="-2536.9" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::deref</text>
+<text text-anchor="middle" x="6018.7" y="-2536.9" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::deref</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::deref -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::deref -->
 <g id="edge2993" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::deref</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::deref</title>
 <path fill="none" stroke="#000000" d="M5353.18,-2558.5C5490.86,-2559.94 5712.21,-2559.08 5861.43,-2556.63"/>
 <polygon fill="#000000" stroke="#000000" points="5861.05,-2560.14 5870.98,-2556.47 5860.93,-2553.14 5861.05,-2560.14"/>
 <text text-anchor="middle" x="5595.3" y="-2560.82" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::deref_mut -->
+<!-- domain::value_objects::conutry::Country::deref_mut -->
 <g id="node609" class="node">
-<title>domain::value_objects::conutry::Conutry::deref_mut</title>
+<title>domain::value_objects::conutry::Country::deref_mut</title>
 <polygon fill="#db5367" stroke="black" points="5734.55,-3319.84 5734.55,-3361.34 6050.55,-3361.34 6050.55,-3319.84 5734.55,-3319.84"/>
 <text text-anchor="middle" x="5892.55" y="-3347.84" font-family="monospace" font-size="10.00">pub(self) fn</text>
 <polyline fill="none" stroke="black" points="5734.55,-3340.59 6050.55,-3340.59"/>
-<text text-anchor="middle" x="5892.55" y="-3327.09" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::deref_mut</text>
+<text text-anchor="middle" x="5892.55" y="-3327.09" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::deref_mut</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::deref_mut -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::deref_mut -->
 <g id="edge2994" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::deref_mut</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::deref_mut</title>
 <path fill="none" stroke="#000000" d="M5242.52,-2574.91C5326.95,-2683.73 5749.63,-3184.21 5864.02,-3311.24"/>
 <polygon fill="#000000" stroke="#000000" points="5861.08,-3313.21 5870.39,-3318.28 5866.27,-3308.51 5861.08,-3313.21"/>
 <text text-anchor="middle" x="5541.27" y="-2946.32" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::eq -->
+<!-- domain::value_objects::conutry::Country::eq -->
 <g id="node610" class="node">
-<title>domain::value_objects::conutry::Conutry::eq</title>
+<title>domain::value_objects::conutry::Country::eq</title>
 <polygon fill="#db5367" stroke="black" points="3622.66,-2629.79 3622.66,-2671.29 3896.66,-2671.29 3896.66,-2629.79 3622.66,-2629.79"/>
 <text text-anchor="middle" x="3759.66" y="-2657.79" font-family="monospace" font-size="10.00">pub(self) fn</text>
 <polyline fill="none" stroke="black" points="3622.66,-2650.54 3896.66,-2650.54"/>
-<text text-anchor="middle" x="3759.66" y="-2637.04" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::eq</text>
+<text text-anchor="middle" x="3759.66" y="-2637.04" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::eq</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::eq -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::eq -->
 <g id="edge2995" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::eq</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::eq</title>
 <path fill="none" stroke="#000000" d="M5102.4,-2558.24C4832.55,-2572.39 4197.95,-2614.03 3908.39,-2636.47"/>
 <polygon fill="#000000" stroke="#000000" points="3908.18,-2632.98 3898.49,-2637.25 3908.73,-2639.96 3908.18,-2632.98"/>
 <text text-anchor="middle" x="4493.4" y="-2600.61" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt -->
+<!-- domain::value_objects::conutry::Country::fmt -->
 <g id="node611" class="node">
-<title>domain::value_objects::conutry::Conutry::fmt</title>
+<title>domain::value_objects::conutry::Country::fmt</title>
 <polygon fill="#db5367" stroke="black" points="6016.69,-2119.12 6016.69,-2160.62 6296.69,-2160.62 6296.69,-2119.12 6016.69,-2119.12"/>
 <text text-anchor="middle" x="6156.69" y="-2147.12" font-family="monospace" font-size="10.00">pub(self) fn</text>
 <polyline fill="none" stroke="black" points="6016.69,-2139.87 6296.69,-2139.87"/>
-<text text-anchor="middle" x="6156.69" y="-2126.37" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::fmt</text>
+<text text-anchor="middle" x="6156.69" y="-2126.37" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::fmt</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::fmt -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::fmt -->
 <g id="edge2996" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::fmt</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::fmt</title>
 <path fill="none" stroke="#000000" d="M5303.44,-2532.76C5492.46,-2462.23 5979.93,-2244.02 6119.15,-2166.45"/>
 <polygon fill="#000000" stroke="#000000" points="6120.65,-2169.62 6127.62,-2161.64 6117.19,-2163.53 6120.65,-2169.62"/>
 <text text-anchor="middle" x="5723.29" y="-2352.85" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::fmt -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::fmt -->
 <g id="edge2997" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::fmt</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::fmt</title>
 <path fill="none" stroke="#000000" d="M5255.79,-2532.85C5378.33,-2461.89 5869.64,-2241.33 6070.53,-2165.07"/>
 <polygon fill="#000000" stroke="#000000" points="6071.49,-2168.45 6079.61,-2161.65 6069.02,-2161.9 6071.49,-2168.45"/>
 <text text-anchor="middle" x="5669.16" y="-2339.46" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::from_str -->
+<!-- domain::value_objects::conutry::Country::from_str -->
 <g id="node612" class="node">
-<title>domain::value_objects::conutry::Conutry::from_str</title>
+<title>domain::value_objects::conutry::Country::from_str</title>
 <polygon fill="#db5367" stroke="black" points="7112.13,-1941.7 7112.13,-1983.2 7422.13,-1983.2 7422.13,-1941.7 7112.13,-1941.7"/>
 <text text-anchor="middle" x="7267.13" y="-1969.7" font-family="monospace" font-size="10.00">pub(self) fn</text>
 <polyline fill="none" stroke="black" points="7112.13,-1962.45 7422.13,-1962.45"/>
-<text text-anchor="middle" x="7267.13" y="-1948.95" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::from_str</text>
+<text text-anchor="middle" x="7267.13" y="-1948.95" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::from_str</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::from_str -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::from_str -->
 <g id="edge2998" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::from_str</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::from_str</title>
 <path fill="none" stroke="#000000" d="M5311.43,-2532.73C5644.75,-2441.46 6876.22,-2084.21 7192.63,-1986.93"/>
 <polygon fill="#000000" stroke="#000000" points="7193.53,-1990.32 7202.05,-1984.03 7191.47,-1983.63 7193.53,-1990.32"/>
 <text text-anchor="middle" x="6240.03" y="-2263.08" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::new -->
+<!-- domain::value_objects::conutry::Country::new -->
 <g id="node613" class="node">
-<title>domain::value_objects::conutry::Conutry::new</title>
+<title>domain::value_objects::conutry::Country::new</title>
 <polygon fill="#81c169" stroke="black" points="4239.4,-2227.84 4239.4,-2269.34 4519.4,-2269.34 4519.4,-2227.84 4239.4,-2227.84"/>
 <text text-anchor="middle" x="4379.4" y="-2255.84" font-family="monospace" font-size="10.00">pub fn</text>
 <polyline fill="none" stroke="black" points="4239.4,-2248.59 4519.4,-2248.59"/>
-<text text-anchor="middle" x="4379.4" y="-2235.09" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Conutry::new</text>
+<text text-anchor="middle" x="4379.4" y="-2235.09" font-family="monospace" font-size="10.00">domain::value_objects::conutry::Country::new</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::new -->
+<!-- domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::new -->
 <g id="edge2999" class="edge">
-<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Conutry::new</title>
+<title>domain::value_objects::conutry::Conutry&#45;&gt;domain::value_objects::conutry::Country::new</title>
 <path fill="none" stroke="#000000" d="M5179.08,-2532.82C5039.06,-2477.95 4634.69,-2332.13 4460.64,-2273.42"/>
 <polygon fill="#000000" stroke="#000000" points="4461.79,-2270.12 4451.2,-2270.25 4459.56,-2276.75 4461.79,-2270.12"/>
 <text text-anchor="middle" x="4807.86" y="-2406.37" font-family="monospace" font-size="10.00">owns</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::Err&#45;&gt;domain::error::DomainError -->
+<!-- domain::value_objects::conutry::Country::Err&#45;&gt;domain::error::DomainError -->
 <g id="edge3000" class="edge">
-<title>domain::value_objects::conutry::Conutry::Err&#45;&gt;domain::error::DomainError</title>
+<title>domain::value_objects::conutry::Country::Err&#45;&gt;domain::error::DomainError</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6983.31,-2497.67C6674.87,-2430.59 5721.8,-2223.31 5413.32,-2156.23"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5414.18,-2152.83 5403.66,-2154.12 5412.69,-2159.67 5414.18,-2152.83"/>
 <text text-anchor="middle" x="6186.32" y="-2317.45" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::clone&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::clone&#45;&gt;alloc::string::String -->
 <g id="edge3001" class="edge">
-<title>domain::value_objects::conutry::Conutry::clone&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::clone&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5402.46,-3413.45C5339,-3296.71 5028.42,-2725.42 4952.14,-2585.11"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="4955.24,-2583.48 4947.39,-2576.37 4949.09,-2586.83 4955.24,-2583.48"/>
 <text text-anchor="middle" x="5165.3" y="-2989.78" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::clone&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::clone&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3002" class="edge">
-<title>domain::value_objects::conutry::Conutry::clone&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::clone&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5411.68,-3413.42C5393.02,-3296.83 5272.95,-2727.61 5237.41,-2585.95"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5240.87,-2585.32 5235,-2576.5 5234.09,-2587.06 5240.87,-2585.32"/>
 <text text-anchor="middle" x="5336.55" y="-3002.93" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::conutry&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::conutry&#45;&gt;alloc::string::String -->
 <g id="edge3003" class="edge">
-<title>domain::value_objects::conutry::Conutry::conutry&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::conutry&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5715.27,-3114.49C5591.72,-3025.7 5112.95,-2681.68 4973.51,-2581.48"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="4975.84,-2578.84 4965.67,-2575.85 4971.75,-2584.53 4975.84,-2578.84"/>
 <text text-anchor="middle" x="5332.39" y="-2838.48" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::conutry&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::conutry&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3004" class="edge">
-<title>domain::value_objects::conutry::Conutry::conutry&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::conutry&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5729.33,-3114.44C5657.82,-3026.01 5355.74,-2685.71 5258.24,-2583.27"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5261.01,-2581.1 5251.56,-2576.3 5255.96,-2585.94 5261.01,-2581.1"/>
 <text text-anchor="middle" x="5505.79" y="-2839.35" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::default&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::default&#45;&gt;alloc::string::String -->
 <g id="edge3005" class="edge">
-<title>domain::value_objects::conutry::Conutry::default&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::default&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6172.14,-2814.2C5917.39,-2760.6 5251.53,-2620.5 5017.77,-2571.32"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5018.62,-2567.93 5008.12,-2569.29 5017.18,-2574.78 5018.62,-2567.93"/>
 <text text-anchor="middle" x="5582.96" y="-2696.01" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::default&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::default&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3006" class="edge">
-<title>domain::value_objects::conutry::Conutry::default&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::default&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6207.71,-2814.21C6032.02,-2762.69 5547.87,-2632.06 5332.96,-2577.89"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5334.02,-2574.55 5323.47,-2575.51 5332.31,-2581.34 5334.02,-2574.55"/>
 <text text-anchor="middle" x="5758.33" y="-2699.3" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::deref&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::deref&#45;&gt;alloc::string::String -->
 <g id="edge3007" class="edge">
-<title>domain::value_objects::conutry::Conutry::deref&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::deref&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5872.29,-2550.88C5641.61,-2551.64 5201,-2553.08 5018.03,-2553.68"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5018.13,-2550.18 5008.14,-2553.71 5018.15,-2557.18 5018.13,-2550.18"/>
 <text text-anchor="middle" x="5457.16" y="-2555.53" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::deref&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::deref&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3008" class="edge">
-<title>domain::value_objects::conutry::Conutry::deref&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::deref&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5872.23,-2545.68C5727.02,-2544.47 5506.31,-2545.52 5364.59,-2548.11"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5364.69,-2544.61 5354.76,-2548.29 5364.83,-2551.6 5364.69,-2544.61"/>
 <text text-anchor="middle" x="5606.41" y="-2537.4" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::deref&#45;&gt;str -->
+<!-- domain::value_objects::conutry::Country::deref&#45;&gt;str -->
 <g id="edge3009" class="edge">
-<title>domain::value_objects::conutry::Conutry::deref&#45;&gt;str</title>
+<title>domain::value_objects::conutry::Country::deref&#45;&gt;str</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6006.8,-2529.54C5938.51,-2409.72 5596.34,-1809.38 5514.14,-1665.15"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5517.2,-1663.47 5509.21,-1656.51 5511.12,-1666.94 5517.2,-1663.47"/>
 <text text-anchor="middle" x="5748.47" y="-2100.6" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::deref_mut&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::deref_mut&#45;&gt;alloc::string::String -->
 <g id="edge3010" class="edge">
-<title>domain::value_objects::conutry::Conutry::deref_mut&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::deref_mut&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5866.69,-3319.35C5733.08,-3209.56 5121.22,-2706.8 4969.38,-2582.03"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="4971.98,-2579.64 4962.03,-2576 4967.53,-2585.05 4971.98,-2579.64"/>
 <text text-anchor="middle" x="5406.03" y="-2953.94" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::deref_mut&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::deref_mut&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3011" class="edge">
-<title>domain::value_objects::conutry::Conutry::deref_mut&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::deref_mut&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M5877.87,-3319.66C5793.44,-3210.84 5370.76,-2710.36 5256.37,-2583.33"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5259.3,-2581.36 5250,-2576.29 5254.12,-2586.06 5259.3,-2581.36"/>
 <text text-anchor="middle" x="5579.12" y="-2954.75" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::eq&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::eq&#45;&gt;alloc::string::String -->
 <g id="edge3012" class="edge">
-<title>domain::value_objects::conutry::Conutry::eq&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::eq&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M3897.1,-2639.25C4143.49,-2619 4653.25,-2577.12 4852.67,-2560.73"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="4852.74,-2564.24 4862.42,-2559.93 4852.17,-2557.26 4852.74,-2564.24"/>
 <text text-anchor="middle" x="4386.88" y="-2590.49" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::eq&#45;&gt;bool -->
+<!-- domain::value_objects::conutry::Country::eq&#45;&gt;bool -->
 <g id="edge3013" class="edge">
-<title>domain::value_objects::conutry::Conutry::eq&#45;&gt;bool</title>
+<title>domain::value_objects::conutry::Country::eq&#45;&gt;bool</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M3739.97,-2629.45C3636.65,-2518.76 3157.24,-2005.16 3036.7,-1876.02"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="3039.38,-1873.77 3030,-1868.85 3034.27,-1878.55 3039.38,-1873.77"/>
 <text text-anchor="middle" x="3376.34" y="-2255.99" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::eq&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::eq&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3014" class="edge">
-<title>domain::value_objects::conutry::Conutry::eq&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::eq&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M3897.07,-2645.65C4177.2,-2630.72 4811.42,-2589.01 5091.04,-2567.12"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5091.26,-2570.61 5100.96,-2566.34 5090.71,-2563.63 5091.26,-2570.61"/>
 <text text-anchor="middle" x="4482.05" y="-2596.88" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;alloc::string::String -->
 <g id="edge3015" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6083.75,-2161.01C5863.38,-2230.94 5206.86,-2453.55 4999.03,-2528.89"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="4997.93,-2525.56 4989.73,-2532.27 5000.33,-2532.14 4997.93,-2525.56"/>
 <text text-anchor="middle" x="5529.39" y="-2335.45" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;alloc::string::String -->
 <g id="edge3016" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6103.59,-2161.03C5911.29,-2231.29 5250.44,-2455.52 5017.37,-2529.87"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5016.51,-2526.47 5008.04,-2532.84 5018.63,-2533.14 5016.51,-2526.47"/>
 <text text-anchor="middle" x="5548.48" y="-2348.7" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Arguments -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Arguments -->
 <g id="edge3017" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Arguments</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Arguments</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6146.03,-2118.72C6103.58,-2034.55 5946.51,-1723.04 5896.06,-1622.99"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5899.29,-1621.62 5891.66,-1614.27 5893.04,-1624.78 5899.29,-1621.62"/>
 <text text-anchor="middle" x="6033.04" y="-1874.11" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Error -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Error -->
 <g id="edge3018" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Error</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Error</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6143.92,-2118.74C6081.39,-2027.42 5808.43,-1667 5721.7,-1560.72"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5724.61,-1558.76 5715.56,-1553.26 5719.21,-1563.21 5724.61,-1558.76"/>
 <text text-anchor="middle" x="5926.81" y="-1830.23" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Error -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Error -->
 <g id="edge3019" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Error</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Error</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6137.23,-2118.79C6061.68,-2027.74 5789.23,-1668.49 5714.32,-1561.38"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5717.33,-1559.57 5708.75,-1553.34 5711.57,-1563.56 5717.33,-1559.57"/>
 <text text-anchor="middle" x="5913.78" y="-1830.58" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Formatter -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Formatter -->
 <g id="edge3020" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Formatter</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Formatter</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6143.77,-2118.94C6076.76,-2022.65 5769.98,-1622.53 5676.69,-1509.26"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5679.38,-1507.02 5670.31,-1501.56 5674,-1511.49 5679.38,-1507.02"/>
 <text text-anchor="middle" x="5922.23" y="-1804.6" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Formatter -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Formatter -->
 <g id="edge3021" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::Formatter</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::Formatter</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6137.12,-2118.76C6056.34,-2022.26 5750.22,-1623.51 5669.38,-1509.71"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5672.39,-1507.9 5663.77,-1501.74 5666.66,-1511.93 5672.39,-1507.9"/>
 <text text-anchor="middle" x="5891.25" y="-1817.48" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::builders::DebugTuple -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::builders::DebugTuple -->
 <g id="edge3022" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::builders::DebugTuple</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::builders::DebugTuple</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6186.47,-2118.78C6251.87,-2072.49 6408.02,-1961.96 6481.34,-1910.06"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="6483.33,-1912.94 6489.47,-1904.3 6479.29,-1907.23 6483.33,-1912.94"/>
 <text text-anchor="middle" x="6321.91" y="-2004.92" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::rt::Argument -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::rt::Argument -->
 <g id="edge3023" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::rt::Argument</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::rt::Argument</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6149.45,-2118.71C6125.46,-2048.56 6048.4,-1823.3 6019.66,-1739.27"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="6022.97,-1738.14 6016.42,-1729.81 6016.35,-1740.41 6022.97,-1738.14"/>
 <text text-anchor="middle" x="6096.55" y="-1919.49" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::rt::Count -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::rt::Count -->
 <g id="edge3024" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::rt::Count</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::rt::Count</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6151.86,-2118.78C6137.32,-2055.37 6093.93,-1866.13 6076.48,-1790.02"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="6079.9,-1789.26 6074.25,-1780.29 6073.08,-1790.82 6079.9,-1789.26"/>
 <text text-anchor="middle" x="6126.17" y="-1944.9" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::rt::Placeholder -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::rt::Placeholder -->
 <g id="edge3025" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::fmt::rt::Placeholder</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::fmt::rt::Placeholder</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6146.07,-2118.8C6107.55,-2042.35 5975.01,-1779.33 5929.06,-1688.14"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5932.2,-1686.6 5924.58,-1679.25 5925.95,-1689.75 5932.2,-1686.6"/>
 <text text-anchor="middle" x="6049.56" y="-1893.97" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::result::Result -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::result::Result -->
 <g id="edge3026" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::result::Result</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::result::Result</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6137.2,-2118.7C6049.47,-2032.57 5690.99,-1709.09 5574.99,-1610.96"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5577.49,-1608.49 5567.58,-1604.73 5572.98,-1613.85 5577.49,-1608.49"/>
 <text text-anchor="middle" x="5868.09" y="-1855.33" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::result::Result -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;core::result::Result -->
 <g id="edge3027" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;core::result::Result</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;core::result::Result</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6128.97,-2118.8C6026.25,-2032.99 5668.48,-1710.51 5566.13,-1611.59"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5568.8,-1609.31 5559.2,-1604.84 5563.92,-1614.33 5568.8,-1609.31"/>
 <text text-anchor="middle" x="5859.55" y="-1868.44" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3028" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6101.02,-2160.98C5933.82,-2230.58 5437.89,-2451.71 5278.07,-2527.96"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5276.91,-2524.64 5269.4,-2532.12 5279.93,-2530.95 5276.91,-2524.64"/>
 <text text-anchor="middle" x="5695.54" y="-2334.97" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3029" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6116.5,-2161.07C5971.57,-2230.91 5474.93,-2452.56 5294.24,-2528.38"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5293.1,-2525.07 5285.22,-2532.15 5295.8,-2531.52 5293.1,-2525.07"/>
 <text text-anchor="middle" x="5693.37" y="-2347.98" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;str -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;str -->
 <g id="edge3030" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;str</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;str</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6133.7,-2118.76C6037.18,-2038.42 5664.39,-1752.54 5538.29,-1661.77"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5540.34,-1658.93 5530.18,-1655.96 5536.27,-1664.62 5540.34,-1658.93"/>
 <text text-anchor="middle" x="5823.99" y="-1893.51" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;str -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;str -->
 <g id="edge3031" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;str</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;str</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6124.31,-2118.9C6011.92,-2038.95 5639.78,-1753.9 5528.21,-1662.39"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5530.54,-1659.78 5520.6,-1656.11 5526.08,-1665.17 5530.54,-1659.78"/>
 <text text-anchor="middle" x="5826.26" y="-1881.15" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;u32 -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;u32 -->
 <g id="edge3032" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;u32</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;u32</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6143.1,-2118.9C6073.83,-2012.02 5760.14,-1528 5678.01,-1401.27"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5681.06,-1399.54 5672.68,-1393.05 5675.18,-1403.34 5681.06,-1399.54"/>
 <text text-anchor="middle" x="5898.56" y="-1750.59" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::fmt&#45;&gt;usize -->
+<!-- domain::value_objects::conutry::Country::fmt&#45;&gt;usize -->
 <g id="edge3033" class="edge">
-<title>domain::value_objects::conutry::Conutry::fmt&#45;&gt;usize</title>
+<title>domain::value_objects::conutry::Country::fmt&#45;&gt;usize</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M6127.87,-2118.85C6026.41,-2044.88 5685.75,-1796.53 5571.13,-1712.97"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5573.37,-1710.27 5563.23,-1707.21 5569.25,-1715.93 5573.37,-1710.27"/>
 <text text-anchor="middle" x="5861.5" y="-1919.16" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::from_str&#45;&gt;core::result::Result -->
+<!-- domain::value_objects::conutry::Country::from_str&#45;&gt;core::result::Result -->
 <g id="edge3034" class="edge">
-<title>domain::value_objects::conutry::Conutry::from_str&#45;&gt;core::result::Result</title>
+<title>domain::value_objects::conutry::Country::from_str&#45;&gt;core::result::Result</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M7170.5,-1941.22C6861.45,-1873.3 5900.89,-1662.23 5617.86,-1600.03"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5618.88,-1596.67 5608.36,-1597.95 5617.38,-1603.51 5618.88,-1596.67"/>
 <text text-anchor="middle" x="6382.18" y="-1773.87" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::from_str&#45;&gt;domain::error::DomainError -->
+<!-- domain::value_objects::conutry::Country::from_str&#45;&gt;domain::error::DomainError -->
 <g id="edge3035" class="edge">
-<title>domain::value_objects::conutry::Conutry::from_str&#45;&gt;domain::error::DomainError</title>
+<title>domain::value_objects::conutry::Country::from_str&#45;&gt;domain::error::DomainError</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M7111.98,-1976.17C6725.8,-2010.33 5729.81,-2098.43 5413.7,-2126.39"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5413.46,-2122.89 5403.81,-2127.26 5414.08,-2129.87 5413.46,-2122.89"/>
 <text text-anchor="middle" x="6250.84" y="-2054.53" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::from_str&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::from_str&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3036" class="edge">
-<title>domain::value_objects::conutry::Conutry::from_str&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::from_str&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M7183.54,-1983.7C6850.22,-2074.97 5618.76,-2432.22 5302.34,-2529.5"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5301.45,-2526.11 5292.92,-2532.4 5303.51,-2532.8 5301.45,-2526.11"/>
 <text text-anchor="middle" x="6230.94" y="-2247.1" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::from_str&#45;&gt;str -->
+<!-- domain::value_objects::conutry::Country::from_str&#45;&gt;str -->
 <g id="edge3037" class="edge">
-<title>domain::value_objects::conutry::Conutry::from_str&#45;&gt;str</title>
+<title>domain::value_objects::conutry::Country::from_str&#45;&gt;str</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M7152.65,-1941.21C6815.07,-1878.59 5830.6,-1695.97 5563.75,-1646.47"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5564.66,-1643.08 5554.19,-1644.69 5563.38,-1649.96 5564.66,-1643.08"/>
 <text text-anchor="middle" x="6346.2" y="-1797.09" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::new&#45;&gt;alloc::string::String -->
+<!-- domain::value_objects::conutry::Country::new&#45;&gt;alloc::string::String -->
 <g id="edge3038" class="edge">
-<title>domain::value_objects::conutry::Conutry::new&#45;&gt;alloc::string::String</title>
+<title>domain::value_objects::conutry::Country::new&#45;&gt;alloc::string::String</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M4418.04,-2269.82C4516.77,-2324.06 4778.15,-2467.67 4886.79,-2527.35"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="4885.04,-2530.38 4895.49,-2532.13 4888.41,-2524.25 4885.04,-2530.38"/>
 <text text-anchor="middle" x="4640.42" y="-2401.84" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::new&#45;&gt;bool -->
+<!-- domain::value_objects::conutry::Country::new&#45;&gt;bool -->
 <g id="edge3039" class="edge">
-<title>domain::value_objects::conutry::Conutry::new&#45;&gt;bool</title>
+<title>domain::value_objects::conutry::Country::new&#45;&gt;bool</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M4307.18,-2227.4C4068.63,-2157.4 3307.96,-1934.18 3076.57,-1866.28"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="3077.66,-1862.96 3067.08,-1863.5 3075.69,-1869.67 3077.66,-1862.96"/>
 <text text-anchor="middle" x="3703.87" y="-2050.09" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::new&#45;&gt;core::result::Result -->
+<!-- domain::value_objects::conutry::Country::new&#45;&gt;core::result::Result -->
 <g id="edge3040" class="edge">
-<title>domain::value_objects::conutry::Conutry::new&#45;&gt;core::result::Result</title>
+<title>domain::value_objects::conutry::Country::new&#45;&gt;core::result::Result</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M4416.33,-2227.37C4587.26,-2129.17 5301.36,-1718.93 5491.78,-1609.53"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5493.52,-1612.57 5500.44,-1604.55 5490.03,-1606.5 5493.52,-1612.57"/>
 <text text-anchor="middle" x="4942.06" y="-1921.7" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::new&#45;&gt;domain::error::DomainError -->
+<!-- domain::value_objects::conutry::Country::new&#45;&gt;domain::error::DomainError -->
 <g id="edge3041" class="edge">
-<title>domain::value_objects::conutry::Conutry::new&#45;&gt;domain::error::DomainError</title>
+<title>domain::value_objects::conutry::Country::new&#45;&gt;domain::error::DomainError</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M4519.86,-2231.56C4711.96,-2208.27 5051.77,-2167.06 5218.33,-2146.87"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5218.53,-2150.37 5228.03,-2145.69 5217.69,-2143.42 5218.53,-2150.37"/>
 <text text-anchor="middle" x="4857.1" y="-2192.46" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::new&#45;&gt;domain::value_objects::conutry::Conutry -->
+<!-- domain::value_objects::conutry::Country::new&#45;&gt;domain::value_objects::conutry::Country -->
 <g id="edge3042" class="edge">
-<title>domain::value_objects::conutry::Conutry::new&#45;&gt;domain::value_objects::conutry::Conutry</title>
+<title>domain::value_objects::conutry::Country::new&#45;&gt;domain::value_objects::conutry::Conutry</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M4428.16,-2269.75C4568.18,-2324.62 4972.55,-2470.44 5146.6,-2529.15"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5145.45,-2532.45 5156.04,-2532.32 5147.68,-2525.81 5145.45,-2532.45"/>
 <text text-anchor="middle" x="4775.38" y="-2389.95" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::new&#45;&gt;str -->
+<!-- domain::value_objects::conutry::Country::new&#45;&gt;str -->
 <g id="edge3043" class="edge">
-<title>domain::value_objects::conutry::Conutry::new&#45;&gt;str</title>
+<title>domain::value_objects::conutry::Country::new&#45;&gt;str</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M4417.85,-2227.43C4586.5,-2134.63 5260.79,-1763.59 5447.96,-1660.6"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5449.39,-1663.81 5456.46,-1655.92 5446.01,-1657.68 5449.39,-1663.81"/>
 <text text-anchor="middle" x="4920.9" y="-1934.52" font-family="monospace" font-size="10.00">uses</text>
 </g>
-<!-- domain::value_objects::conutry::Conutry::new&#45;&gt;usize -->
+<!-- domain::value_objects::conutry::Country::new&#45;&gt;usize -->
 <g id="edge3044" class="edge">
-<title>domain::value_objects::conutry::Conutry::new&#45;&gt;usize</title>
+<title>domain::value_objects::conutry::Country::new&#45;&gt;usize</title>
 <path fill="none" stroke="#7f7f7f" stroke-dasharray="5,2" d="M4422.87,-2227.36C4602.06,-2139.87 5283.24,-1807.28 5479.76,-1711.32"/>
 <polygon fill="#7f7f7f" stroke="#7f7f7f" points="5481.03,-1714.6 5488.48,-1707.07 5477.95,-1708.31 5481.03,-1714.6"/>
 <text text-anchor="middle" x="4939.31" y="-1972.59" font-family="monospace" font-size="10.00">uses</text>
