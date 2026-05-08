@@ -1,5 +1,7 @@
+pub mod fields;
 pub mod preferences;
 pub mod profile;
+pub mod row_user;
 
 pub use preferences::UserPreferences;
 pub use profile::UserProfile;

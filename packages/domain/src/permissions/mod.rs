@@ -1,3 +1,5 @@
+pub mod fields;
+pub mod row_permissions;
 use crate::{
     value_objects::{Action, Resource},
     DateTime, Description, Event,

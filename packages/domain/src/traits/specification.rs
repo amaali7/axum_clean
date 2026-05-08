@@ -53,6 +53,6 @@ where
     B: Specification<T>,
 {
     fn is_satisfied_by(&self, candidate: &T) -> bool {
-        self.a.is_satisfied_by(candidate) && self.b.is_satisfied_by(candidate)
+        self.a.is_satisfied_by(candidate) || self.b.is_satisfied_by(candidate)
     }
 }

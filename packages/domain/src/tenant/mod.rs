@@ -1,5 +1,7 @@
 pub mod config;
 pub mod environment;
+pub mod fields;
+pub mod row_tenant;
 
 use config::TenantConfig;
 

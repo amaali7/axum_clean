@@ -1,9 +1,11 @@
+pub mod fields;
 pub mod relations;
+pub mod row_role;
 
 use std::collections::HashSet;
 use std::ops::{Deref, DerefMut};
 
-pub use super::permissions::{Permission, PermissionId, PermissionParts};
+pub use super::permissions::Permission;
 
 use crate::error::DomainResult;
 use crate::value_objects::{DateTime, Description};
@@ -43,7 +45,7 @@ pub struct Role {
     id: RoleId,
     name: Name,
     description: Description,
-    permissions: HashSet<PermissionId>,
+    permissions: HashSet<Permission>,
     is_system_role: bool,
     created_at: DateTime,
     version: u64,
@@ -53,7 +55,7 @@ pub struct RoleParts {
     pub id: RoleId,
     pub name: Name,
     pub description: Description,
-    pub permissions: HashSet<PermissionId>,
+    pub permissions: HashSet<Permission>,
     pub is_system_role: bool,
     pub created_at: DateTime,
     pub version: u64,
@@ -85,6 +87,10 @@ impl Role {
         }
     }
 
+    pub fn has_permission(&self, permission: Permission) -> bool {
+        self.permissions.contains(&permission)
+    }
+
     pub fn id(&self) -> &RoleId {
         &self.id
     }
@@ -96,7 +102,7 @@ impl Role {
         &self.description
     }
 
-    pub fn permissions(&self) -> &HashSet<PermissionId> {
+    pub fn permissions(&self) -> &HashSet<Permission> {
         &self.permissions
     }
 
@@ -117,7 +123,7 @@ pub struct RoleBuilder {
     id: RoleId,
     name: Option<Name>,
     description: Option<Description>,
-    permissions: HashSet<PermissionId>,
+    permissions: HashSet<Permission>,
     is_system_role: Option<bool>,
     created_at: Option<DateTime>,
     version: u64,
@@ -149,7 +155,7 @@ impl RoleBuilder {
         self
     }
 
-    pub fn add_permission(&mut self, permission: PermissionId) -> &mut Self {
+    pub fn add_permission(&mut self, permission: Permission) -> &mut Self {
         self.permissions.insert(permission);
         self
     }

@@ -1,0 +1,29 @@
+#+TITLE: new_changes_21_4
+
+* Domain layer — what needs attention
+
+** The `Permission` entity is overcomplicated for its role.** You have `Permission` as a full entity with `id`, `resource`, `action`, `description`, `created_at`, `version` — but `Role` only stores `HashSet<PermissionId>`, not `HashSet<Permission>`. So `Permission` is effectively a lookup table entry, not a domain concept that participates in behavior. The `HasPermission` specification calls `has_permission(&resource, &action)` on `Role` and `Report`, but neither struct implements that method — the specification compiles but calling it doesn't. The permission model needs to decide: is `Permission` a value object (just `resource + action`, no identity), or a full entity that lives in its own aggregate? Right now it's neither consistently.
+
+** `RiskSignals` has no behavior.** It holds `score`, `authentication_strength`, and `recent_transaction_count` as pure data. But the entire point of risk signals in a policy-driven system is to answer questions — `is_high_risk()`, `exceeds_threshold(max: u8)`, `requires_step_up_auth()`. Without methods, the authorization engine has to reach into the struct and apply its own logic, which puts domain knowledge in the wrong layer. The domain should answer questions about itself.
+
+** `Environment` has the same problem.** It composes `NetworkInformation`, `DeviceSecurityPosture`, `RiskSignals`, `EnvironmentTime`, and `EnvironmentLocation` — but none of these expose any evaluative behavior. `NetworkInformation` has `is_corporate_ip()`, `is_cellular_network()`, `is_public_network()` which is good. `DeviceSecurityPosture` and `RiskSignals` have none. The `TenantEnvironmentConfig` holds the policy thresholds (`max_risk_score`, `require_managed_device`, `allowed_networks`, `allowed_time_window`) but there's no method that takes an `Environment` and evaluates it against a `TenantEnvironmentConfig`. That evaluation logic will end up scattered across authorization policies unless the domain owns it.
+
+** `TemporaryGrant` has no expiry check.** It carries `expires_at` and `created_at` but no `is_expired(now: DateTime)` or `is_valid(now: DateTime)` method. The authorization engine needs to know if a grant is still active, but nothing in the domain answers that question.
+
+** `Membership` doesn't expose role-based queries meaningfully.** `has_role(role_id)` exists, which is good. But there's no `has_any_role(&[RoleId])` or `is_member_of(tenant_id)` — the kinds of questions the authorization engine will actually ask when evaluating a `SubjectContex`.
+
+
+* Application layer — what needs attention
+
+** The `SubjectContex` is a data bag, not a subject.** It holds `user_id`, `tenant_id`, `roles`, and `temporary_grants`, but it can't answer questions. The authorization engine has to decompose it manually every time. It should expose things like `has_role(role_id)`, `has_temporary_grant(resource, action, now)`, `is_tenant_member(tenant_id)`. These are questions about the subject's access state — they belong on the subject, not scattered across policy implementations.
+
+** The port signatures are incomplete for the projection design.** Right now `get_by_id` takes only `ctx` and `id`. For the view to be policy-scoped, the port needs to know what fields to select before it queries. The `Projection<E>` type exists but isn't in any port signature yet. Until it is, the infrastructure can't implement field-level read scoping — it has no contract to follow.
+
+** `AccessControl<T>` in `access_descriptor.rs` is the right shape but disconnected.** It has `readable_fields` and `writable_fields` as `HashSet<T: Field>`. This is exactly what should flow from the authorization decision into the repository. But nothing produces it yet and nothing consumes it. The gap between the authorization engine producing a decision and that decision influencing the query is the core missing wire in the application layer right now.
+
+** The `PolicyRepository` port returns `Vec<ApplicationStoredPolicy>` synchronously.** Policies loaded from a store will be async in any real implementation. The trait should be `async` consistent with the other ports, otherwise the infrastructure will have to do awkward blocking to satisfy it.
+
+
+* The real priority order as it stands
+
+The domain needs to grow behavior before the application layer can use it properly — specifically `RiskSignals`, `DeviceSecurityPosture`, and `TenantEnvironmentConfig` need evaluative methods, and `TemporaryGrant` needs expiry logic. `SubjectContex` needs to become a proper subject that answers authorization questions. Then `AccessControl<T>` can be produced by the engine and consumed by the ports, and the projection system can be wired into the port signatures. That sequence unblocks everything downstream including the infrastructure.
